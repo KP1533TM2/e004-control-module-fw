@@ -16,11 +16,10 @@
 #include <stdbool.h>
 #include <limits.h>
 #include "gpio.hpp"
-#include "systimer.hpp"
 
 //----------------------------- Константы: -----------------------------------
 
-static const uint16_t FW_VERSION = 101; //версия firmware
+static const uint16_t FW_VERSION = 102; //версия firmware
 
 //--------------- Использование портов процессора ATmega64: ------------------
 

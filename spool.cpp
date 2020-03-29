@@ -84,7 +84,6 @@
 
 #include "main.hpp"
 #include "spool.hpp"
-#include "systimer.hpp"
 #include "control.hpp"
 
 //----------------------------------------------------------------------------
@@ -427,6 +426,13 @@ bool TSpool::LowT1(void)
 bool TSpool::LowT2(void)
 {
   return(Sen2 <= Tensions[SPOOL_OFF].m2);
+}
+
+//----------- Проверка падения натяжения T1 или T2 ниже минимума: ------------
+
+bool TSpool::LowT1T2(void)
+{
+  return((Sen1 <= Tensions[SPOOL_OFF].m1) || (Sen2 <= Tensions[SPOOL_OFF].m2));
 }
 
 //--------------------- Чтение параметров из EEPROM: -------------------------

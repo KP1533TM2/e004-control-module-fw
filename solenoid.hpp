@@ -28,7 +28,6 @@
 //----------------------------------------------------------------------------
 
 #include "systimer.hpp"
-#include "gpio.hpp"
 
 //----------------------------- Константы: -----------------------------------
 
@@ -42,7 +41,7 @@ template<class PinForce, class PinHold>
 class TSolenoid
 {
 private:
-  TSoftTimer *ForceTimer;
+  TSoftTimer<TT_ONESHOT> *ForceTimer;
 public:
   TSolenoid(void);
   void Execute(void);
@@ -60,8 +59,8 @@ TSolenoid<PinForce, PinHold>::TSolenoid(void)
 {
   PinForce::DirOut();
   PinHold::DirOut();
-  ForceTimer = new TSoftTimer(NOM_EM_FORCE);
-  ForceTimer->Oneshot = 1;
+  ForceTimer = new TSoftTimer<TT_ONESHOT>(NOM_EM_FORCE);
+  //ForceTimer->Oneshot = 1;
 }
 
 template<class PinForce, class PinHold>

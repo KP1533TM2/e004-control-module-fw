@@ -324,7 +324,7 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима PLAYF или PLAYR
   case KEY_PLAY:
-    if(Transport->Capstan->Reverse())    //если вал вращается назад, то
+    if(Trs(TRS_REV))                     //если вал вращается назад, то
     {
       Mode = TR_PLAYR;                   //включение режима PLAYR,
       Transport->Audio->Rec(OFF);        //выключение тракта записи
@@ -360,7 +360,7 @@ void TControl::SetMode(uint8_t code)
       if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
         else Transport->SetMode(TR_CAPF); //иначе реверс тонвала
     }
-    else if(Transport->Capstan->Reverse()) //иначе реверс тонвала
+    else if(Trs(TRS_REV))                 //иначе реверс тонвала
       Transport->SetMode(TR_CAPF);
         else Transport->SetMode(TR_CAPR);
     break;
@@ -371,6 +371,7 @@ void TControl::SetMode(uint8_t code)
     break;
   };
   fUpdate = 1;
+  fAutostop = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -514,14 +515,17 @@ inline void TControl::AutoStopService(void)
 
 inline void TControl::AutoRevService(void)
 {
-  if(fAutostop && !Trs(TRS_MOVE)) //если сработал автостоп, лента остановлена
+  if(fAutostop &&                 //если сработал автостоп
+     !Trs(TRS_MOVE + TRS_LOWTEN)) //лента остановлена, есть натяжение
   {
     if(Option(OPT_AUTOREVERSE))   //и включена опция автостопа, то
     {
       if(ArMode == TR_PLAYF)      //если был режим PLAYF,
-        SetMode(KEY_PLAYR);       //включение PLAYR
+        Mode = TR_PLAYR;          //включение PLAYR
           else if(ArMode == TR_PLAYR) //если был режим PLAYR,
-            SetMode(KEY_PLAYF);   //включение PLAYF
+            Mode = TR_PLAYF;      //включение PLAYF
+      fUpdate = 1;
+      Transport->SetMode(Mode);
     }
     fAutostop = 0;                //сброс флага автостопа
   }

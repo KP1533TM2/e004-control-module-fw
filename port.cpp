@@ -12,8 +12,9 @@
 //----------------------------------------------------------------------------
 
 #include "main.hpp"
-#include "port.hpp"
 #include "control.hpp"
+#include "port.hpp"
+#include "commands.hpp"
 
 //----------------------------------------------------------------------------
 //------------------------------ Класс TPort ---------------------------------
@@ -163,6 +164,10 @@ void TPort::Execute(void)
         t = Control->Transport->Spool->GetMot();
         WakePort->AddWord(t.m1);
         WakePort->AddWord(t.m2);
+        //not used:
+        //t = Control->Transport->Spool->GetTen();
+        //WakePort->AddWord(t.m1);
+        //WakePort->AddWord(t.m2);
         break;
       }
     case CMD_SET_PARAMS: //установка параметров

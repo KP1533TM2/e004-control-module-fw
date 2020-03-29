@@ -7,6 +7,10 @@
 #ifndef CAPSTAN_HPP
 #define CAPSTAN_HPP
 
+//----------------------------------------------------------------------------
+
+#include "systimer.hpp"
+
 //----------------------------- Константы: -----------------------------------
 
 enum CapDir_t
@@ -23,7 +27,7 @@ class TCapstan
 {
 private:
   Pin_Rev_t Pin_Rev;    //выход управления реверсом ведущего двигателя
-  TSoftTimer *CapTimer; //программный таймер готовности двигателя
+  TSoftTimer<TT_ONESHOT> *CapTimer; //программный таймер готовности двигателя
   uint16_t CapStart;    //время разгона
   static uint16_t const NOM_CAP_START = 2000; //номинальное время разгона, мс
   bool fRun;            //флаг включения двигателя

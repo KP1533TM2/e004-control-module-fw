@@ -29,8 +29,8 @@ TKeyboard::TKeyboard(void)
   New_Msg = MSG_REL;
   Prev_Key = KEY_NO;
   Code = KEY_NO;
-  KeyTimer = new TSoftTimer();
-  KeyTimer->Oneshot = 1;
+  KeyTimer = new TSoftTimer<TT_ONESHOT>();
+  //KeyTimer->Oneshot = 1;
 }
 
 //--------------------------- Обработка кнопок: ------------------------------

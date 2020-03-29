@@ -144,6 +144,7 @@ public:
   ten_t GetSen(void);       //чтение датчиков натяжения
   bool LowT1(void);         //проверка натяжения T1
   bool LowT2(void);         //проверка натяжения T2
+  bool LowT1T2(void);       //проверка натяжений T1 и T2
   void EERead(void);        //чтение параметров из EEPROM
   void EESave(void);        //сохранение параметров в EEPROM
 };

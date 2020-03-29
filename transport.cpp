@@ -201,13 +201,14 @@ TTransport::TTransport(void)
   Audio = new TAudio();
   Spool = new TSpool();
   Op = new TOperations();
-  BrakeTimer = new TSoftTimer();
-  AutostopTimer = new TSoftTimer();
+  BrakeTimer = new TSoftTimer<TT_PLAIN>();
+  AutostopTimer = new TSoftTimer<TT_PLAIN>();
   NowMode = TR_STOP;
   NewMode = TR_STOP;
   ReqMode = TR_STOP;
   AsMode = AS_OFF;
   fCue = 0;
+  fLowTen = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -384,11 +385,13 @@ void TTransport::Execute(void)
 
       case TR_ASTOP:
         Op_Mute(ON, 10);
-        Op_AutoStop(AS_OFF);
         Op_Press(OFF);
-        Op_Spool(SPOOL_OFF, 100);
-        Op_Brake(OFF, 200);
-        Op_Lift(OFF, 100);
+        Op_Spool(SPOOL_BRAKE);
+        Op_Brake(OFF, 100);
+        Op_WaitStop();
+        Op_AutoStop(AS_OFF);
+        Op_Lift(OFF, 200);
+        Op_Spool(SPOOL_OFF);
         Op_Final();
         break;
       }
@@ -495,7 +498,7 @@ void TTransport::Op_WaitStop(void)
 {
   if(Op->NotDone())
   {
-    if(!MoveSensor->Move())
+    if(!MoveSensor->Move() || fLowTen)
       Op->Done();
   }
 }
@@ -546,6 +549,19 @@ void TTransport::Op_Delay(uint16_t del)
   if(Op->NotDone())
   {
     Op->StartDelay(del);
+    Op->Done();
+  }
+}
+
+//--------------------- Пропуск n шагов, если b = true: ----------------------
+
+void TTransport::Op_SkipIf(bool b, uint8_t n)
+{
+  if(Op->NotDone())
+  {
+    if(b)
+      for(uint8_t i = 0; i < n; i++)
+        Op->Done();
     Op->Done();
   }
 }
@@ -639,14 +655,15 @@ void TTransport::SetCue(bool cue)
 uint8_t TTransport::GetState(void)
 {
   uint8_t state = 0;
-  if(Capstan->Running()) state |= TRS_CAP;   //capstan вращается
-  if(Capstan->Reverse()) state |= TRS_REV;   //capstan в режиме реверс
-  if(Capstan->Ready())   state |= TRS_LOCK;  //capstan разогнался
+  if(Capstan->Running()) state |= TRS_CAP;    //capstan вращается
+  if(Capstan->Reverse()) state |= TRS_REV;    //capstan в режиме реверс
+  if(Capstan->Ready())   state |= TRS_LOCK;   //capstan разогнался
   if(Spool->GetMode() == SPOOL_BRAKE)
-                         state |= TRS_BRAKE; //торм. двигателями
-  if(EndSensor->Tape())  state |= TRS_TAPE;  //лента загружена
-  if(MoveSensor->Move()) state |= TRS_MOVE;  //лента движется
-  if(fCue)               state |= TRS_CUE;   //режим обзора
+                         state |= TRS_BRAKE;  //торм. двигателями
+  if(EndSensor->Tape())  state |= TRS_TAPE;   //лента загружена
+  if(MoveSensor->Move()) state |= TRS_MOVE;   //лента движется
+  if(fCue)               state |= TRS_CUE;    //режим обзора
+  if(fLowTen)            state |= TRS_LOWTEN; //нет натяжения
   return(state);
 }
 
@@ -657,35 +674,35 @@ bool TTransport::CheckAutoStop(void)
   bool fas = 0;
   switch(AsMode)
   {
-  //автостоп по пред. натяжению:
+  //автостоп по пред. натяжению 1 и 2:
   case AS_START:
-    if((Spool->LowT1() ||         //если низкое натяжение слева или
-        Spool->LowT2()) &&        //низкое натяжение справа
-        Option(OPT_PREASENABLE))  //и автостоп по пред. натяжению разрешен, то
-          fas = 1;                //автостоп (при усл. переполн. таймера)
+    fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
+    if(fLowTen &&  Option(OPT_PREASENABLE)) //если автостоп разрешен,
+      fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   //автостоп по натяжению 1 и 2:
   case AS_PLAY:
-    if((Spool->LowT1() ||         //если низкое натяжение слева или
-        Spool->LowT2()) &&        //низкое натяжение справа
-        Option(OPT_TENASENABLE))  //и автостоп по натяжению разрешен, то
-          fas = 1;                //автостоп (при усл. переполн. таймера)
+    fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
+    if(fLowTen && Option(OPT_TENASENABLE)) //если автостоп разрешен, то
+      fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   //автостоп по натяжению 2:
   case AS_FFD:
-    if(Spool->LowT2() &&          //если низкое натяжение справа
-       Option(OPT_TENASENABLE))   //и автостоп по натяжению разрешен, то
-         fas = 1;                 //автостоп (при усл. переполн. таймера)
+    fLowTen = Spool->LowT2();     //проверка натяжения справа
+    if(fLowTen && Option(OPT_TENASENABLE)) //если автостоп разрешен, то
+      fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   //автостоп по натяжению 1:
   case AS_REW:
-    if(Spool->LowT1() &&          //если низкое натяжение слева
-       Option(OPT_TENASENABLE))   //и автостоп по натяжению разрешен, то
-         fas = 1;                 //автостоп (при усл. переполн. таймера)
+    fLowTen = Spool->LowT1();     //проверка натяжения слева
+    if(fLowTen && Option(OPT_TENASENABLE)) //если автостоп разрешен, то
+      fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
+  default:
+    fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
   };
-  if(fas && AutostopTimer->Over()) //fas = 1 и интервал истек, то
-    return(1);                    //автостоп
+  if(fas && AutostopTimer->Over()) //если fas = 1 и интервал истек, то
+    return(1);                     //автостоп
 
   //автостоп при торможении:
   if(fAsBrake)

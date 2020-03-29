@@ -23,7 +23,7 @@ private:
   bool fSensorState;
   bool fIsTape;
   uint16_t EndTau;
-  TSoftTimer *EndTimer;
+  TSoftTimer<TT_ONESHOT> *EndTimer;
   static uint16_t const NOM_END_TAU = 200; //постоянная времени по умолчанию
 public:
   TEndSensor(void);

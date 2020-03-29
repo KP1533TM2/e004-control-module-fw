@@ -80,8 +80,8 @@ inline void TRemote::ExtIntDisable(void)
 TRemote::TRemote(void)
 {
   Pin_IR.DirIn(PIN_PULL);            //настройка пина
-  RemTimer = new TSoftTimer(REP_TM); //таймер повторения посылок
-  RemTimer->Oneshot = 1;             //режим одновибратора
+  RemTimer = new TSoftTimer<TT_ONESHOT>(REP_TM); //таймер повторения посылок
+  //RemTimer->Oneshot = 1;             //режим одновибратора
   Command = RC5_NO;                  //очистка кода команды
   Prev_Cmd = RC5_NO;                 //очистка предыдущей команды
   TCCR0 = (1 << CS02);               //прескалер CK/64 для таймера 0

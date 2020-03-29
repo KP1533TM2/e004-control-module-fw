@@ -9,7 +9,6 @@
 
 //----------------------------------------------------------------------------
 
-#include "systimer.hpp"
 #include "local.hpp"
 #include "remote.hpp"
 #include "sound.hpp"

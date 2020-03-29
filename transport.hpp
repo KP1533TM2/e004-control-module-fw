@@ -42,13 +42,14 @@ enum TransportMode_t
 
 enum TransportState_t
 {
-  TRS_CAP   = 1 << 0, //capstan вращается
-  TRS_REV   = 1 << 1, //capstan в режиме реверс
-  TRS_LOCK  = 1 << 2, //capstan разогнался
-  TRS_BRAKE = 1 << 3, //торможение двигателями
-  TRS_TAPE  = 1 << 4, //лента загружена
-  TRS_MOVE  = 1 << 5, //лента движется
-  TRS_CUE   = 1 << 6  //режим обзора
+  TRS_CAP    = 1 << 0, //capstan вращается
+  TRS_REV    = 1 << 1, //capstan в режиме реверс
+  TRS_LOCK   = 1 << 2, //capstan разогнался
+  TRS_BRAKE  = 1 << 3, //торможение двигателями
+  TRS_TAPE   = 1 << 4, //лента загружена
+  TRS_MOVE   = 1 << 5, //лента движется
+  TRS_CUE    = 1 << 6, //режим обзора
+  TRS_LOWTEN = 1 << 7  //низкое натяжение ленты
 };
 
 enum CapMode_t
@@ -86,9 +87,9 @@ private:
   uint8_t Number;
   uint8_t DoNumber;
   static const uint8_t BLOCKED = UINT8_MAX / 2;
-  TSoftTimer *DelTimer;
+  TSoftTimer<TT_PLAIN> *DelTimer;
 public:
-  TOperations(void) { DelTimer = new TSoftTimer(); };
+  TOperations(void) { DelTimer = new TSoftTimer<TT_PLAIN>(); };
   void Start(void) { DoNumber = 1; DelTimer->Force(); };
   bool DelayOver(void) { Number = 0; return(DelTimer->Over()); };
   bool NotDone(void) { return(++Number == DoNumber); };
@@ -130,6 +131,7 @@ private:
   void Op_WaitTension(void);
   void Op_Mute(bool m, uint16_t del = 0);
   void Op_Delay(uint16_t del);
+  void Op_SkipIf(bool b, uint8_t n);
   void Op_Final(void);
 
   uint16_t AsBrkDel; //задержка торможения
@@ -153,9 +155,9 @@ private:
   static uint8_t const NOM_TR_OPTIONS = OPT_BRKASENABLE +
     OPT_PREASENABLE + OPT_TENASENABLE + OPT_MOVASENABLE; //опции по умолчанию
   bool Option(uint8_t mask) { return(Options & mask); }; //чтение опции
-  TSoftTimer *BrakeTimer; //таймер торможения
+  TSoftTimer<TT_PLAIN> *BrakeTimer; //таймер торможения
   bool fAsBrake; //флаг включения автостопа при торможении
-  TSoftTimer *AutostopTimer; //таймер автостопа
+  TSoftTimer<TT_PLAIN> *AutostopTimer; //таймер автостопа
   uint8_t AsMode; //текущий режим автостопа
   enum AsMode_t //режимы работы автостопа
   {
@@ -168,6 +170,7 @@ private:
   };
   void SetAutoStop(uint8_t m);  //установка режима автостопа
   bool fTape;                   //флаг наличия ленты
+  bool fLowTen;                 //флаг низкого натяжения ленты
 
 public:
   TTransport(void);

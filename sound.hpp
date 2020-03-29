@@ -8,6 +8,10 @@
 #define SOUND_H
 
 //----------------------------------------------------------------------------
+
+#include "systimer.hpp"
+
+//----------------------------------------------------------------------------
 //----------------------------- Класс TSound: --------------------------------
 //----------------------------------------------------------------------------
 
@@ -15,7 +19,7 @@ class TSound
 {
 private:
   Pin_SND_t Pin_SND;
-  TSoftTimer *SoundTimer;
+  TSoftTimer<TT_ONESHOT> *SoundTimer;
   void Play(uint8_t t, uint16_t d);
   static uint8_t const PRE_256 = (1 << CS22);
   static uint8_t const SND_ON = ((1 << COM20) | (1  <<  WGM21) | PRE_256);

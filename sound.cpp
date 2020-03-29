@@ -23,8 +23,8 @@
 
 TSound::TSound(void)
 {
-  SoundTimer = new TSoftTimer();
-  SoundTimer->Oneshot = 1;
+  SoundTimer = new TSoftTimer<TT_ONESHOT>();
+  //SoundTimer->Oneshot = 1;
   TCCR2 = SND_OFF;
   Pin_SND.DirOut();
   fSoundEn = 1;

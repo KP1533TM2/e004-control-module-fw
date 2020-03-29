@@ -12,6 +12,14 @@
 uint64_t const F_CLK = 16000000; //тактовая частота, Гц
 uint16_t const T_SYS = 1000;     //системный интервал, мкс
 
+//параметры специализации шаблонного класса TSoftTimer:
+enum TimerType_t
+{
+  TT_PLAIN,
+  TT_AUTORELOAD,
+  TT_ONESHOT
+};
+
 //----------------------------------------------------------------------------
 //--------------------------- Класс TSysTimer: -------------------------------
 //----------------------------------------------------------------------------
@@ -40,28 +48,80 @@ public:
 };
 
 //----------------------------------------------------------------------------
-//-------------------------- Класс TSoftTimer: -------------------------------
+//----------------------- Шаблонный класс TSoftTimer: ------------------------
 //----------------------------------------------------------------------------
 
+template<TimerType_t T = TT_PLAIN>
 class TSoftTimer
 {
 private:
-  static const bool UseAutoreload = 0;
   uint16_t StartCount;
   bool fEvent;
+  bool fRun;
 protected:
 public:
   TSoftTimer(uint16_t t = 0);
   uint16_t Interval;
-  bool Autoreload;
-  bool Oneshot;
-  void Start();
   void Start(uint16_t t);
+  void Start();
   void Stop();
   void Force(void);
   bool Over(void);
 };
 
+//----------------------------------------------------------------------------
+//-------------------------- Реализация методов: -----------------------------
+//----------------------------------------------------------------------------
+
+//---------------------------- Конструктор: ----------------------------------
+
+template<TimerType_t T>
+TSoftTimer<T>::TSoftTimer(uint16_t t)
+{
+  Interval = t;
+  fRun = 0;
+  fEvent = 0;
+  StartCount = TSysTimer::Counter;
+}
+
+//-------------------------------- Старт: ------------------------------------
+
+template<TimerType_t T>
+void TSoftTimer<T>::Start(uint16_t t)
+{
+  Interval = t;
+  fRun = 1;
+  fEvent = 0;
+  StartCount = TSysTimer::Counter;
+}
+
+template<TimerType_t T>
+void TSoftTimer<T>::Start()
+{
+  fRun = 1;
+  fEvent = 0;
+  StartCount = TSysTimer::Counter;
+}
+
+//--------------------------------- Стоп: ------------------------------------
+
+template<TimerType_t T>
+void TSoftTimer<T>::Stop()
+{
+  fRun = 0;
+}
+
+//---------------------- Принудительное переполнение: ------------------------
+
+template<TimerType_t T>
+void TSoftTimer<T>::Force(void)
+{
+  fRun = 1;
+  StartCount = TSysTimer::Counter - Interval;
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
 #endif

@@ -88,67 +88,33 @@ bool TSysTimer::TimeoutOver_ms(void)
 }
 
 //----------------------------------------------------------------------------
-//-------------------------- Класс TSoftTimer: -------------------------------
+//-------- Специализация метода Over шаблонного класса TSoftTimer: -----------
 //----------------------------------------------------------------------------
-
-//---------------------------- Конструктор: ----------------------------------
-
-TSoftTimer::TSoftTimer(uint16_t t)
-{
-  if(UseAutoreload) Autoreload = 0;
-  Oneshot = 0;
-  fEvent = (t == 0)? 1 : 0;
-  Interval = t;
-  StartCount = TSysTimer::Counter;
-}
-
-//-------------------------------- Старт: ------------------------------------
-
-void TSoftTimer::Start()
-{
-  fEvent = 0;
-  StartCount = TSysTimer::Counter;
-}
-
-void TSoftTimer::Start(uint16_t t)
-{
-  Interval = t;
-  fEvent = (t == 0)? 1 : 0;
-  StartCount = TSysTimer::Counter;
-}
-
-//--------------------------------- Стоп: ------------------------------------
-
-void TSoftTimer::Stop()
-{
-  fEvent = 1;
-}
-
-//---------------------- Принудительное переполнение: ------------------------
-
-void TSoftTimer::Force(void)
-{
-  StartCount = TSysTimer::Counter - Interval;
-}
 
 //------------------------- Чтение переполнения: -----------------------------
 
-bool TSoftTimer::Over(void)
+template<>
+bool TSoftTimer<TT_PLAIN>::Over(void)
 {
   bool fevent = TSysTimer::Counter - StartCount >= Interval;
-  if(fevent)
-  {
-    if(Oneshot && fEvent) fevent = 0;
-    fEvent = 1;
-    if(UseAutoreload && Autoreload)
-    {
-      StartCount = TSysTimer::Counter; //перезапуск
-      fEvent = 0;
-    }
-  }
-  if(UseAutoreload) { if(!Oneshot && !Autoreload) fevent = fEvent; }
-  else { if(!Oneshot) fevent = fEvent; }
-  return(fevent);
+  if(fevent) fEvent = 1;
+  return(fEvent && fRun);
+}
+
+template<>
+bool TSoftTimer<TT_AUTORELOAD>::Over(void)
+{
+  bool fevent = TSysTimer::Counter - StartCount >= Interval;
+  if(fevent) StartCount = TSysTimer::Counter;
+  return(fevent && fRun);
+}
+
+template<>
+bool TSoftTimer<TT_ONESHOT>::Over(void)
+{
+  bool fevent = TSysTimer::Counter - StartCount >= Interval;
+  if(fevent) { if(fEvent) fevent = 0; else fEvent = 1; }
+  return(fevent && fRun);
 }
 
 //----------------------------------------------------------------------------

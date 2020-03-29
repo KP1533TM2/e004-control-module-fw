@@ -49,7 +49,7 @@ private:
   static uint8_t const RC5_MAX = 0x3F; //максимальный код команды RC-5
   static uint8_t const RC5_NO = 0xFF;  //код отсутствия команды
   uint8_t Prev_Cmd;
-  TSoftTimer *RemTimer;
+  TSoftTimer<TT_ONESHOT> *RemTimer;
   static void TmrIntEnable(uint8_t delay);
   static void TmrIntDisable(void);
   static void ExtIntEnable(void);

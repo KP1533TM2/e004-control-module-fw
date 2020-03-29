@@ -9,7 +9,6 @@
 
 //----------------------------------------------------------------------------
 
-#include "gpio.hpp"
 #include "systimer.hpp"
 
 //----------------------------- Константы: -----------------------------------
@@ -52,7 +51,7 @@ private:
   static uint16_t const DEBOUNCE_TM  = 50; //интервал подавления дребезга, ms
   static uint16_t const HOLD_DELAY = 1000; //задержка удержания кнопки, ms
   static uint16_t const LONG_DELAY = 3000; //длинная задержка удержания, ms
-  TSoftTimer *KeyTimer;
+  TSoftTimer<TT_ONESHOT> *KeyTimer;
   uint8_t State;
   enum { ST_DONE, ST_NEW, ST_PRESS, ST_HOLD };
   uint8_t New_Msg;

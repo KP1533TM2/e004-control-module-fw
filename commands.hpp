@@ -83,8 +83,8 @@ enum WakeScmd_t
 //--------------------------- Чтение состояния: ------------------------------
 
   CMD_GET_STATE,
-  //TX: RX: byte L1, byte L2, byte L3, byte L4, byte B, byte A,
-  //        byte S, word T1, word T2, word E1, word E2, word M1, word M2
+  //TX: RX: byte L1, byte L2, byte L3, byte L4, byte B, byte A, byte S,
+  //        word T1, word T2, word M1, word M2, word R1, word R2
   //L1 (LEDS_CONT), L2 (LEDS_SLOW), L3 (LEDS_NORM), L4 (LEDS_FAST)
   //LX.0 - LED_REC
   //LX.1 - LED_STOP
@@ -111,6 +111,8 @@ enum WakeScmd_t
   //T2 = 0..65535 [0..2560 mV tension sensor 2 (TP2)]
   //M1 = 0..65535 [0..2560 mV motor 1 control (TP3)]
   //M2 = 0..65535 [0..2560 mV motor 2 control (TP4)]
+  //R1 = 0..65535 [0..2560 mV tension reference 1] - not used
+  //R2 = 0..65535 [0..2560 mV tension reference 2] - not used
 
 //------------------------- Установка параметров: ----------------------------
 
