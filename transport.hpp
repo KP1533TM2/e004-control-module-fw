@@ -127,12 +127,13 @@ private:
   void Op_SetTension(uint16_t t1, uint16_t t2);
   void Op_Spool(uint8_t m, uint16_t del = 0);
   void Op_WaitStop(void);
-  void Op_AutoStop(uint8_t m);
+  void Op_AutoStop(uint8_t m, uint16_t del = 0);
   void Op_WaitTension(void);
   void Op_Mute(bool m, uint16_t del = 0);
   void Op_Delay(uint16_t del);
   void Op_SkipIf(bool b, uint8_t n);
-  void Op_Final(void);
+  void Op_GoIf(bool b, uint8_t m);
+  void Op_Final(uint8_t m = TR_NONE);
 
   uint16_t AsBrkDel; //задержка торможения
   static const uint16_t NOM_AS_BRK_DEL = 5000; //макс. время торможения, мс
@@ -179,6 +180,7 @@ public:
 
   void Execute(void);
   void SetMode(uint8_t mode);   //включение требуемого режима ЛПМ
+  uint8_t GetMode(void);        //чтение включенного режима ЛПМ
   void SetCue(bool cue);        //управление отводом ленты и MUTE
   uint8_t GetState(void);       //чтение состояния для индикации
   bool CheckAutoStop(void);     //проверка состояния автостопа

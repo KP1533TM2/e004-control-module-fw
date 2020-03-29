@@ -164,7 +164,7 @@ void TPort::Execute(void)
         t = Control->Transport->Spool->GetMot();
         WakePort->AddWord(t.m1);
         WakePort->AddWord(t.m2);
-        //not used:
+        //TODO: not used:
         //t = Control->Transport->Spool->GetTen();
         //WakePort->AddWord(t.m1);
         //WakePort->AddWord(t.m2);
@@ -184,7 +184,7 @@ void TPort::Execute(void)
         Control->Transport->SetAsPreDel(WakePort->GetWord());
         Control->Transport->SetAsTenDel(WakePort->GetWord());
         Control->Transport->SetOptions(WakePort->GetByte());
-        Control->SetOptions(WakePort->GetByte());
+        Control->SetOptions(WakePort->GetWord());
         WakePort->AddByte(ERR_NO);
         break;
       }
@@ -202,7 +202,7 @@ void TPort::Execute(void)
         WakePort->AddWord(Control->Transport->GetAsPreDel());
         WakePort->AddWord(Control->Transport->GetAsTenDel());
         WakePort->AddByte(Control->Transport->GetOptions());
-        WakePort->AddByte(Control->GetOptions());
+        WakePort->AddWord(Control->GetOptions());
         break;
       }
     case CMD_EE_SAVE: //сохранение параметров в EEPROM

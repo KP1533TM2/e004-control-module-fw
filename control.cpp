@@ -87,13 +87,17 @@ TControl::TControl(void)
   Eeprom = new TEeprom();
   Local = new TLocal();
   Remote = new TRemote();
-  KeyMsg = MSG_NO;
   KeyCode = KEY_NO;
   Sound = new TSound();
   Transport = new TTransport();
   Leds = new TLeds();
+  ProgTimer = new TSoftTimer<TT_ONESHOT>(T_PROG);
+  TrState = Transport->GetState();
   ServiceCounter = 0;
   fAutostop = 0;
+  ProgMode1 = TR_STOP;
+  ProgMode2 = TR_STOP;
+  Program = PR_OFF;
   Mode = TR_STOP;                //текущий режим STOP
   BackMode = TR_STOP;            //режим возврата - STOP
   fPause = 0;                    //PAUSE выключена
@@ -117,39 +121,23 @@ void TControl::Execute(void)
   Sound->Execute();
   Transport->Execute();
 
-  //считывание сообщения кнопок:
-  if(Local->NewMessage())
-  {
-    KeyMsg = Local->Message;
-    KeyCode = Local->Code;
-  }
-  //считывание сообщения ИК ДУ:
-  else if(Remote->NewMessage())
-  {
-    KeyMsg = Remote->Message;
-    KeyCode = Remote->Code;
-  }
-  //перекодировка отпускания кнопки RollBack:
-  if((KeyCode == KEY_ROLL) && (KeyMsg == MSG_REL))
-  {
-    KeyMsg = MSG_PRESS;
-    KeyCode = KEY_UNROLL;
-  }
+  //считывание кода кнопки:
+  KeyCode = Local->GetKeyCode();
+  //считывание кода ИК ДУ:
+  if(KeyCode == KEY_NO)
+    KeyCode = Remote->GetKeyCode();
+  //фильтрация кодов кнопок:
+  FilterKey(KeyCode);
   //обработка нажатий кнопок:
-  if(KeyMsg == MSG_PRESS)
-  {
+  if(KeyCode != KEY_NO)
     SetMode(KeyCode);
-  }
   //сервисы:
   if(ServiceTimer())   //таймер сервисов
   {
     LedsService();     //сервис светодиодов
     AutoStopService(); //сервис автостопа
-    AutoRevService();  //сервис автореверса
+    AutoPlayService(); //сервис программного режима и автореверса
   }
-  //очистка сообщения кнопки:
-  KeyMsg = MSG_NO;
-  KeyCode = KEY_NO;
 }
 
 //----------------------------------------------------------------------------
@@ -180,11 +168,50 @@ inline void TControl::HardwareInit(void)
   WDTCR = (1 << WDE) | (1 << WDP2);
 }
 
+//----------------------- Фильтрация кодов кнопок: ---------------------------
+
+inline void TControl::FilterKey(uint8_t &code)
+{
+  if(code != KEY_NO)
+  {
+    //перекодировка для кнопки PLAY (RC only):
+    if(code == KEY_PLAY)
+      code = Trs(TRS_REV)? KEY_PLAYR : KEY_PLAYF;
+    //удаление событий отпускания кнопок:
+    if(code & MSG_REL)
+    {
+      //перекодировка отпускания кнопки ROLL:
+      if(code == (KEY_ROLL | MSG_REL))
+        code = KEY_UNROLL;
+          else code = KEY_NO;
+    }
+    //удаление событий удержания кнопок:
+    if(code & MSG_HOLD)
+    {
+      //перекодировка удержания кнопки STOP:
+      if(code == (KEY_STOP | MSG_HOLD))
+        code = KEY_PROG;
+          else code = KEY_NO;
+    }
+  }
+}
+
+//-------------- Формирование кода перемотки с учетом архивной: --------------
+
+uint8_t TControl::Arch(uint8_t code)
+{
+  if(code == TR_FFD) return(Option(OPT_USEARCHIVE)? TR_AFFD : TR_FFD);
+  if(code == TR_REW) return(Option(OPT_USEARCHIVE)? TR_AREW : TR_REW);
+  return(code);
+}
+
 //-------------------------- Переключение режимов: ---------------------------
 
 void TControl::SetMode(uint8_t code)
 {
   Sound->Tick();
+  //программирование:
+  ProgMode(code);
   switch(code)
   {
   //включение режима STOP
@@ -197,13 +224,13 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима PLAYF
   case KEY_PLAYF:
-    if(Option(OPT_PLAYOFFPAUSE))         //если есть опция выключения паузы,
+    //if(Option(OPT_PLAYOFFPAUSE))         //TODO: опция выключения паузы?
     {
       fPause = 0;                        //выключение паузы
       if(Mode != TR_REC)                 //если не запись, то
         Mode = TR_PLAYF;                 //включение PLAYF
     }
-    else Mode = TR_PLAYF;                //включение PLAYF
+    //else Mode = TR_PLAYF;                //включение PLAYF
     if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
     else
     {
@@ -215,7 +242,7 @@ void TControl::SetMode(uint8_t code)
   //включение режима PLAYR
   case KEY_PLAYR:
     Mode = TR_PLAYR;
-    if(Option(OPT_PLAYOFFPAUSE))
+    //if(Option(OPT_PLAYOFFPAUSE))
       fPause = 0;                        //выключение паузы
     Transport->Audio->Rec(OFF);          //выключение тракта записи
     if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
@@ -228,12 +255,16 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима REC
   case KEY_REC:
-    Mode = TR_REC;
-    if(Option(OPT_AUTORECPAUSE))
-      fPause = 1;                        //включение паузы
-    Transport->Audio->Rec(ON);           //включение тракта записи
-    if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
-      else Transport->SetMode(TR_CAPF);  //направление вращения тонвала
+    if(Mode == TR_STOP ||
+       ((Mode == TR_PLAYF) && fPause))
+    {
+      Mode = TR_REC;
+      if(Option(OPT_AUTORECPAUSE))
+        fPause = 1;                      //включение паузы
+      Transport->Audio->Rec(ON);         //включение тракта записи
+      if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
+        else Transport->SetMode(TR_CAPF); //направление вращения тонвала
+    }
     break;
 
   //включение режима PAUSE
@@ -241,13 +272,12 @@ void TControl::SetMode(uint8_t code)
     fPause = !fPause;                    //включение/выключение режима паузы
     if(fPause)                           //если пауза включается, то в режиме
     {
-      if((Mode == TR_PLAYF) ||           //PLAYF или
-         (Mode == TR_PLAYR) ||           //PLAYR или
-         (Mode == TR_REC))               //REC -
-      {
-        Transport->SetMode(TR_PAUSE);    //остановка ленты без MUTE
-        Transport->SetCue(ON);           //выключение MUTE
-      }
+      if((Mode != TR_PLAYF) &&
+         (Mode != TR_PLAYR) &&
+         (Mode != TR_REC))
+        Mode = TR_STOP;
+      Transport->SetMode(TR_PAUSE);      //остановка ленты без MUTE
+      Transport->SetCue(ON);             //выключение MUTE
     }
     else                                 //если пауза выключается,
       Transport->SetMode(Mode);          //возобновление режима
@@ -255,20 +285,20 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима AFFD или FFD
   case KEY_FFD:
-    if(Mode == TR_AFFD ||                //если режим арх. перем. или
-       !Option(OPT_USEARCHIVE))          //арх. перем. не используется, то
+    fPause = 0;                          //выключение паузы
+    if(Mode == TR_AFFD)                  //если режим арх. перемотки,то
       Mode = TR_FFD;                     //включение обычной перемотки
-        else Mode = TR_AFFD;             //иначе включение архивной
+        else Mode = Arch(TR_FFD);        //иначе включ. арх., если разрешена
     Transport->Audio->Rec(OFF);          //выключение тракта записи
     Transport->SetMode(Mode);            //включение режима
     break;
 
   //включение режима AREW или REW
   case KEY_REW:
-    if(Mode == TR_AREW ||                //если режим арх. перем. или
-       !Option(OPT_USEARCHIVE))          //арх. перем. не используется, то
+    fPause = 0;                          //выключение паузы
+    if(Mode == TR_AREW)                  //если режим арх. перемотки,то
       Mode = TR_REW;                     //включение обычной перемотки
-        else Mode = TR_AREW;             //иначе включение архивной
+        else Mode = Arch(TR_REW);        //иначе включ. арх., если разрешена
     Transport->Audio->Rec(OFF);          //выключение тракта записи
     Transport->SetMode(Mode);            //включение режима
     break;
@@ -283,17 +313,13 @@ void TControl::SetMode(uint8_t code)
     if(Mode == TR_PLAYF)                 //если PLAYF,
     {
       BackMode = Mode;                   //запоминание режима возврата
-      if(Option(OPT_USEARCHIVE))         //если опция арх. перем., то
-        Mode = TR_AREW;                  //включение архивной перемотки
-          else Mode = TR_REW;            //иначе включение обычной
+      Mode = Arch(TR_REW);               //включение перемотки
       fRoll = 1;                         //флаг отката
     }
     else if(Mode == TR_PLAYR)            //если PLAYR,
     {
       BackMode = Mode;                   //запоминание режима возврата
-      if(Option(OPT_USEARCHIVE))         //если опция арх. перем., то
-        Mode = TR_AFFD;                  //включение архивной перемотки
-          else Mode = TR_FFD;            //иначе включение обычной
+      Mode = Arch(TR_FFD);               //включение перемотки
       fRoll = 1;                         //флаг отката
     }
     else if((Mode == TR_AFFD) ||         //если AFFD или
@@ -322,29 +348,6 @@ void TControl::SetMode(uint8_t code)
 
   //RC only:
 
-  //включение режима PLAYF или PLAYR
-  case KEY_PLAY:
-    if(Trs(TRS_REV))                     //если вал вращается назад, то
-    {
-      Mode = TR_PLAYR;                   //включение режима PLAYR,
-      Transport->Audio->Rec(OFF);        //выключение тракта записи
-      if(Option(OPT_PLAYOFFPAUSE))       //если есть такая опция, то
-        fPause = 0;                      //выключение паузы
-    }
-    else
-    {
-      if(Option(OPT_PLAYOFFPAUSE))       //если есть опция выключения паузы,
-      {
-        fPause = 0;                      //выключение паузы
-        if(Mode != TR_REC)               //если не режим записи, то
-          Mode = TR_PLAYF;               //переход в PLAYF
-      }
-      else Mode = TR_PLAYF;              //переход в PLAYF
-    }
-    if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
-      else Transport->SetCue(ON);        //выключение MUTE
-    break;
-
   //реверс
   case KEY_REV:
     if(Mode == TR_REC) break;            //если включен режим записи, выход
@@ -372,6 +375,150 @@ void TControl::SetMode(uint8_t code)
   };
   fUpdate = 1;
   fAutostop = 0;
+}
+
+//----------------------- Программирование режимов: --------------------------
+
+inline void TControl::ProgMode(uint8_t &code)
+{
+  if(!Option(OPT_ENABLEPROG)) return; //выход, если программирование запрещено
+
+  if(Mode == TR_STOP)        //текущий режим - STOP
+  {
+    if((code == (KEY_PROG)) && //удерживается кнопка STOP
+       (Program == PR_OFF))  //и если еще не режим программирования
+    {
+      Program = PR_STEP1;    //вход в программирование
+      ProgTimer->Start();    //запуск таймера
+      ProgMode1 = TR_STOP;   //очистка шага 1
+      ProgMode2 = TR_STOP;   //очистка шага 2
+      fUpdate = 1;           //требование обновления индикации
+      return;
+    }
+    if((code == KEY_STOP) && //нажата кнопка STOP
+       (Program != PR_OFF))  //в режиме программирования
+    {
+      Program = PR_OFF;      //выход из режима программирования
+      ProgTimer->Stop();     //остановка таймера
+      ProgMode1 = TR_STOP;   //очистка шага 1
+      ProgMode2 = TR_STOP;   //очистка шага 2
+      fUpdate = 1;           //требование обновления индикации
+      return;
+    }
+    switch(Program)
+    {
+    //программирование шага 1:
+    case PR_STEP1:
+      if(code == KEY_PLAYR)      ProgMode1 = TR_PLAYR;
+      else if(code == KEY_REW)   ProgMode1 = Arch(TR_REW);
+      else if(code == KEY_FFD)   ProgMode1 = Arch(TR_FFD);
+      else if(code == KEY_PLAYF) ProgMode1 = TR_PLAYF;
+      //запрещенные кнопки:
+      else if(code == KEY_PAUSE || code == KEY_REC || code == KEY_ROLL)
+      {
+        Sound->Bell();      //сигнал ошибки
+        code = KEY_STOP;    //сброс кода кнопки
+      }
+      if(ProgMode1 != TR_STOP) //если шаг 1 запрограммирован
+      {
+        code = KEY_STOP;    //сброс кода кнопки
+        Program = PR_STEP2; //переход к второму шагу
+        fUpdate = 1;        //требование обновления индикации
+      }
+      ProgTimer->Start();   //перезапуск таймера
+      break;
+    //программирование шага 2:
+    case PR_STEP2:
+      if(ProgMode1 == TR_AREW && code == KEY_REW)
+      {
+        ProgMode1 = TR_REW; //замена AREW на REW для шага 1
+        ProgTimer->Start(); //перезапуск таймера
+        code = KEY_STOP;    //сброс кода кнопки
+        break;
+      }
+      if(ProgMode1 == TR_AFFD && code == KEY_FFD)
+      {
+        ProgMode1 = TR_FFD; //замена AFFD на FFD для шага 1
+        ProgTimer->Start(); //перезапуск таймера
+        code = KEY_STOP;    //сброс кода кнопки
+        break;
+      }
+      //если на шаге 1 движение назад
+      if(ProgMode1 == TR_AREW || ProgMode1 == TR_REW || ProgMode1 == TR_PLAYR)
+      {
+        if(code == KEY_PLAYF)      ProgMode2 = TR_PLAYF;
+        else if(code == KEY_FFD)   ProgMode2 = Arch(TR_FFD);
+        else if(code == KEY_PAUSE) ProgMode2 = TR_PAUSE;
+        //запрещенные кнопки:
+        else if(code == KEY_PLAYR || code == KEY_REW ||
+                code == KEY_REC   || code == KEY_ROLL)
+        {
+          Sound->Bell();    //сигнал ошибки
+          code = KEY_STOP;  //сброс кода кнопки
+        }
+      }
+      //если на шаге 1 движение вперед
+      if(ProgMode1 == TR_AFFD || ProgMode1 == TR_FFD || ProgMode1 == TR_PLAYF)
+      {
+        if(code == KEY_PLAYR)      ProgMode2 = TR_PLAYR;
+        else if(code == KEY_REW)   ProgMode2 = Arch(TR_REW);
+        else if(code == KEY_PAUSE) ProgMode2 = TR_PAUSE;
+        //запрещенные кнопки:
+        else if(code == KEY_PLAYF || code == KEY_FFD ||
+                code == KEY_REC   || code == KEY_ROLL)
+        {
+          Sound->Bell();    //сигнал ошибки
+          code = KEY_STOP;  //сброс кода кнопки
+        }
+      }
+      if(ProgMode2 != TR_STOP) //если шаг 2 запрограммирован
+      {
+        code = KEY_STOP;    //сброс кода кнопки
+        Program = PR_RUN;   //переход к выполнению программы
+        fUpdate = 1;        //требование обновления индикации
+      }
+      ProgTimer->Start();   //перезапуск таймера
+      break;
+    //завершение программирования:
+    case PR_RUN:
+      if(ProgMode2 == TR_AREW && code == KEY_REW)
+      {
+        ProgMode2 = TR_REW; //замена AREW на REW для шага 2
+        ProgTimer->Start(); //перезапуск таймера
+        code = KEY_STOP;    //сброс кода кнопки
+        break;
+      }
+      if(ProgMode2 == TR_AFFD && code == KEY_FFD)
+      {
+        ProgMode2 = TR_FFD; //замена AFFD на FFD для шага 2
+        ProgTimer->Start(); //перезапуск таймера
+        code = KEY_STOP;    //сброс кода кнопки
+        break;
+      }
+      //запрещенные кнопки:
+      if(code == KEY_PLAYR || code == KEY_PLAYF || code == KEY_REW ||
+         code == KEY_FFD   || code == KEY_REC   || code == KEY_ROLL)
+      {
+        Sound->Bell();      //сигнал ошибки
+        code = KEY_STOP;    //сброс кода кнопки
+      }
+      break;
+    }
+  }
+  else //текущий режим - не STOP, сброс программы
+  {
+    //все кнопки управления режимами ЛПМ, кроме PAUSE
+    //другие кнопки не сбрасывают программу
+    if(code == KEY_PLAYR || code == KEY_PLAYF || code == KEY_REW ||
+       code == KEY_FFD   || code == KEY_REC   || code == KEY_STOP ||
+       code == KEY_REV)
+    {
+      Program = PR_OFF;
+      ProgMode1 = TR_STOP;
+      ProgMode2 = TR_STOP;
+      fUpdate = 1;
+    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -407,6 +554,23 @@ inline void TControl::LedsService(void)
     fUpdate = 0;
     //очистка набора светодиодов:
     Leds->Set(LED_ALL, LEDS_OFF);
+    //индикация набора программы:
+    if(Program == PR_STEP1)
+    {
+      //начальный набор для программирования:
+      Leds->Set(LED_REW + LED_PLAYR + LED_PLAYF + LED_FFD, LEDS_CONT);
+      return;
+    }
+    else if(Program == PR_STEP2 || Program == PR_RUN)
+    {
+      //набор для движения вперед:
+      if(ProgMode1 == TR_AREW || ProgMode1 == TR_REW || ProgMode1 == TR_PLAYR)
+        Leds->Set(LED_PLAYF + LED_FFD + LED_PAUSE, LEDS_CONT);
+      //набор для движения назад:
+      if(ProgMode1 == TR_AFFD || ProgMode1 == TR_FFD || ProgMode1 == TR_PLAYF)
+        Leds->Set(LED_PLAYR + LED_REW + LED_PAUSE, LEDS_CONT);
+      return;
+    }
     //индикация направления Capstan:
     if(Trs(TRS_CAP))                    //если Capstan включен
     {
@@ -491,6 +655,21 @@ inline void TControl::LedsService(void)
         Leds->Set(LED_PAUSE, LEDS_NORM); //LED_PAUSE мигает
           else Leds->Set(LED_PAUSE, LEDS_CONT); //или горит
     }
+    //индикация второго программного режима:
+    if(ProgMode2 != TR_STOP)
+    {
+      uint8_t m = Option(OPT_PROGBLINK)? LEDS_SLOW : LEDS_CONT;
+      switch(ProgMode2)
+      {
+      case TR_PAUSE: Leds->Set(LED_PAUSE, m); break;
+      case TR_PLAYR: Leds->Set(LED_PLAYR, m); break;
+      case TR_REW:
+      case TR_AREW:  Leds->Set(LED_REW,   m); break;
+      case TR_FFD:
+      case TR_AFFD:  Leds->Set(LED_FFD,   m); break;
+      case TR_PLAYF: Leds->Set(LED_PLAYF, m); break;
+      }
+    }
   }
 }
 
@@ -500,34 +679,69 @@ inline void TControl::AutoStopService(void)
 {
   if(Transport->CheckAutoStop())
   {
-    if(!fAutostop)   //если автостоп не был обработан,
+    if(!fAutostop) //если автостоп не был обработан
     {
-      ArMode = Mode; //запоминание режима, в котором сработал автостоп
+      //сохранение режима для автореверса:
+      if(Mode == TR_PLAYF) ArMode = TR_PLAYR;
+        else if(Mode == TR_PLAYR) ArMode = TR_PLAYF;
+          else ArMode = TR_STOP;
       fAutostop = 1; //установка флага автостопа
     }
     Mode = TR_STOP;
-    fUpdate = 1;
     Transport->SetMode(TR_ASTOP); //механическое торможение
+    fUpdate = 1;
   }
 }
 
-//-------------------------- Сервис автореверса: -----------------------------
+//---------------- Сервис программного режима и автореверса: -----------------
 
-inline void TControl::AutoRevService(void)
+inline void TControl::AutoPlayService(void)
 {
-  if(fAutostop &&                 //если сработал автостоп
-     !Trs(TRS_MOVE + TRS_LOWTEN)) //лента остановлена, есть натяжение
+  //проверка таймера программы:
+  if(ProgTimer->Over())         //таймер переполнился,
   {
-    if(Option(OPT_AUTOREVERSE))   //и включена опция автостопа, то
+    if(Program == PR_RUN)       //если введены 2 шага программы, то
     {
-      if(ArMode == TR_PLAYF)      //если был режим PLAYF,
-        Mode = TR_PLAYR;          //включение PLAYR
-          else if(ArMode == TR_PLAYR) //если был режим PLAYR,
-            Mode = TR_PLAYF;      //включение PLAYF
-      fUpdate = 1;
-      Transport->SetMode(Mode);
+      Mode = ProgMode1;
+      ProgMode1 = TR_STOP;
+      Transport->SetMode(Mode); //выполнение шага 1
     }
-    fAutostop = 0;                //сброс флага автостопа
+    else                        //иначе
+    {
+      Sound->Tick();
+      ProgMode1 = TR_STOP;      //сброс программы
+      ProgMode2 = TR_STOP;
+    }
+    Program = PR_OFF;
+    fUpdate = 1;
+  }
+  //проверка срабатывания автостопа:
+  if(fAutostop &&               //если сработал автостоп,
+     (Transport->GetMode() == TR_STOP)) //остановка завершена
+  {
+    if(!Trs(TRS_MOVE + TRS_LOWTEN)) //если лента не закончилась и неподвижна,
+    {
+      //программный режим (у него приоритет):
+      if(ProgMode2 != TR_STOP)
+      {
+        Mode = ProgMode2;
+        ProgMode2 = TR_STOP;
+        Transport->SetMode(Mode);
+        fUpdate = 1;
+      }
+      //автореверс:
+      else
+      {
+        if(Option(OPT_AUTOREVERSE) && //если включена опция автореверса
+           (ArMode != TR_STOP))       //и есть режим для автореверса
+        {
+          Mode = ArMode;
+          Transport->SetMode(Mode);
+          fUpdate = 1;
+        }
+      }
+    }
+    fAutostop = 0;              //сброс флага автостопа
   }
 }
 
@@ -537,16 +751,16 @@ inline void TControl::AutoRevService(void)
 
 //--------------------------- Установка опций: -------------------------------
 
-void TControl::SetOptions(uint8_t t)
+void TControl::SetOptions(uint16_t t)
 {
   Options = t;
   Sound->OnOff(!Option(OPT_NOSOUND));
   fUpdate = 1;
 }
 
-//---------------------------- Чтение опций: ---------------------------------
+//----------------------------- Чтение опций: ----------------------------------
 
-uint8_t TControl::GetOptions(void)
+uint16_t TControl::GetOptions(void)
 {
   return(Options);
 }
@@ -555,7 +769,7 @@ uint8_t TControl::GetOptions(void)
 
 void TControl::EERead(void)
 {
-  Options = Eeprom->Rd8(EE_CT_OPTIONS, NOM_CT_OPTIONS);
+  Options = Eeprom->Rd16(EE_CT_OPTIONS, NOM_CT_OPTIONS);
   Sound->OnOff(!Option(OPT_NOSOUND)); //включение/выключение звука
   Transport->EERead();
 }
@@ -564,7 +778,7 @@ void TControl::EERead(void)
 
 void TControl::EESave(void)
 {
-  Eeprom->Wr8(EE_CT_OPTIONS, Options);
+  Eeprom->Wr16(EE_CT_OPTIONS, Options);
   Transport->EESave();
   Eeprom->Validate();
 }

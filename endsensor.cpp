@@ -56,7 +56,6 @@ TEndSensor::TEndSensor(void)
   fSensorState = 0;
   fIsTape = 0;
   EndTimer = new TSoftTimer<TT_ONESHOT>(NOM_END_TAU);
-  //EndTimer->Oneshot = 1;
 }
 
 //------------------------ Выполнение управления: ----------------------------

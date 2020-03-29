@@ -31,7 +31,6 @@ TCapstan::TCapstan(void)
   fRev = 0;          //начальное направление вращения - вперед
   fLock = 0;         //двигатель не готов
   CapTimer = new TSoftTimer<TT_ONESHOT>(NOM_CAP_START);
-  //CapTimer->Oneshot = 1;
   CapTimer->Start();
 }
 

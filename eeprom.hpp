@@ -43,7 +43,7 @@ enum EE_Map_t
   EE_AS_TEN_DEL,  EE_AS_TEN_DEL_H,
   EE_EM_FORCE,    EE_EM_FORCE_H,
   //Control:
-  EE_CT_OPTIONS,
+  EE_CT_OPTIONS,  EE_CT_OPTIONS_H,
   //Size:
   EE_PARAMS
 };

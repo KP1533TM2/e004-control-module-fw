@@ -25,12 +25,10 @@
 TKeyboard::TKeyboard(void)
 {
   State = ST_DONE;
-  Message = MSG_REL;
-  New_Msg = MSG_REL;
   Prev_Key = KEY_NO;
+  LastCode = KEY_NO;
   Code = KEY_NO;
   KeyTimer = new TSoftTimer<TT_ONESHOT>();
-  //KeyTimer->Oneshot = 1;
 }
 
 //--------------------------- Обработка кнопок: ------------------------------
@@ -56,34 +54,29 @@ void TKeyboard::Execute(void)
           {
             if(Key != KEY_NO)          //если есть нажатие
             {
-              if(Message != MSG_REL)   //если не было сообщения отпускания
+              if(!(Code & MSG_REL))    //если не было сообщения отпускания
               {
-                Message = MSG_REL;     //сообщение - отпускание кнопки
+                Code &= ~MSG_HOLD;     //удаление флага удержания кнопки
+                Code |= MSG_REL;       //добавление флага отпускания кнопки
                 KeyTimer->Start(DEBOUNCE_TM); //защитный интервал
               }
               else
               {
                 Code = Key;            //сохранение кода кнопки
-                Message = MSG_PRESS;   //сообщение - нажатие кнопки
                 KeyTimer->Start(HOLD_DELAY); //запуск таймера удержания кнопки
                 State = ST_PRESS;      //нажатие обработано
               }
             }
             else                       //если нет нажатой кнопки
             {
-              Message = MSG_REL;       //сообщение - отпускание кнопки
+              Code &= ~MSG_HOLD;       //удаление флага удержания кнопки
+              Code |= MSG_REL;         //добавление флага отпускания кнопки
               State = ST_DONE;         //кнопка обработана
             }
           }
           else if(State == ST_PRESS)   //если кнопка удерживается нажатой
           {
-            Message = MSG_HOLD;        //сообщение - удержание кнопки
-            KeyTimer->Start(LONG_DELAY); //запуск таймера длинного удержания
-            State = ST_HOLD;
-          }
-          else if(State == ST_HOLD)    //если было удержание кнопки
-          {
-            Message = MSG_LONG;        //сообщение - длинное удержание кнопки
+            Code |= MSG_HOLD;          //сообщение - удержание кнопки
             State = ST_DONE;           //кнопка обработана
           }
         }
@@ -94,10 +87,10 @@ void TKeyboard::Execute(void)
 
 //--------------------- Проверка нового сообщения: --------------------------
 
-bool TKeyboard::NewMessage(void)
+uint8_t TKeyboard::GetKeyCode(void)
 {
-  if(New_Msg == Message) return(0);
-  New_Msg = Message; return(1);
+  if(LastCode == Code) return(KEY_NO);
+  LastCode = Code; return(Code);
 }
 
 //----------------------------------------------------------------------------

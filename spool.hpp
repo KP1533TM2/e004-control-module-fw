@@ -9,7 +9,7 @@
 
 //----------------------------- Константы: -----------------------------------
 
-static uint8_t const TSAMPLE = 4; //период дискретизации PID-регуляторов, мс
+static uint8_t const T_SAMPLE = 4; //период дискретизации PID-регуляторов, мс
 static int32_t const TEN_MAX = UINT16_MAX; //макс. значение кода натяжения
 static uint16_t const T_UNITS = 1000; //дискретность задания натяжения 0.1%
 
@@ -61,6 +61,7 @@ public:
   kpid_t K;     //коэффициенты PID
   uint16_t Ref; //задание для регулятора
   uint16_t Execute(uint16_t inp); //вычисление PID
+  void Preset(uint16_t p); //предустановка PID-регулятора
 };
 
 //----------------------------------------------------------------------------
@@ -71,26 +72,27 @@ class TSpool
 {
 private:
   //значения по умолчанию:
-  static uint8_t const NOM_KP = 50;
-  static uint8_t const NOM_KI = 30;
-  static uint8_t const NOM_KD = 40;
+  static uint8_t const NOM_KP = 80;
+  static uint8_t const NOM_KI = 40;
+  static uint8_t const NOM_KD = 50;
   static uint16_t const NOM_TEN_MIN  = PERCENT2CODE(8.0);
   static uint16_t const NOM_TEN_PLAY = PERCENT2CODE(25.0);
   static uint16_t const NOM_TEN_LIMT = PERCENT2CODE(100.0);
   static uint16_t const NOM_TEN_ARSP = PERCENT2CODE(15.0);
   static uint16_t const NOM_TEN_ARTU = PERCENT2CODE(30.0);
-  static uint16_t const DELTA = PERCENT2CODE(5.0); //play force delta
+  static uint16_t const DELTAP = PERCENT2CODE(0.0); //play force delta (Wind)
+  static uint16_t const DELTAM = PERCENT2CODE(5.0); //play force delta (Back)
   //константы:
   static uint8_t const ADC_DIV = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
   static uint8_t const ADC_ST =  ADC_DIV | (1 << ADEN) | (1 << ADSC);
-  static uint8_t const ADC_REF = (1 << REFS1) | (1 << REFS1);
+  static uint8_t const ADC_REF = (1 << REFS1) | (1 << REFS0);
   static uint8_t const ADMUX_T1 = ADC_REF | (1 << MUX0); //вход ADC1 (TEN1)
-  static uint8_t const ADMUX_T2 = ADC_REF;        //вход ADC0 (TEN2)
-  static uint8_t const CHANS = 2;                 //количество каналов АЦП
-  static uint8_t const NSAMPLE = TSAMPLE / CHANS; //количество сэмплов на канал
-  static uint8_t const SAMPLES = NSAMPLE * CHANS; //общее количество сэмплов
-  static uint16_t const ADC_MAX = 0x3FF;          //максимальный код АЦП
-  static uint16_t const PWM_MAX = 0x3FFF;         //14-bit PWM
+  static uint8_t const ADMUX_T2 = ADC_REF;         //вход ADC0 (TEN2)
+  static uint8_t const CHANS = 2;                  //количество каналов АЦП
+  static uint8_t const NSAMPLE = T_SAMPLE / CHANS; //количество сэмплов на канал
+  static uint8_t const SAMPLES = NSAMPLE * CHANS;  //общее количество сэмплов
+  static uint16_t const ADC_MAX = 0x3FF;           //максимальный код АЦП
+  static uint16_t const PWM_MAX = 0x3FFF;          //14-bit PWM
   static uint16_t const PWM_SCALE = TEN_MAX / PWM_MAX;
 
   uint8_t Mode;             //режим подмотки

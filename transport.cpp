@@ -271,9 +271,9 @@ void TTransport::Execute(void)
         Op_WaitTension();
         Op_WaitCapstan();
         Op_AutoStop(AS_PLAY);
-        Op_Spool(SPOOL_FORCEF, 100);
-        Op_Press(ON, 100);
-        Op_Spool(SPOOL_PLAYF, 200);
+        //Op_Spool(SPOOL_FORCEF);
+        Op_Spool(SPOOL_PLAYF);
+        Op_Press(ON, 300);
         Op_Mute(OFF);
         Op_Final();
         break;
@@ -287,14 +287,14 @@ void TTransport::Execute(void)
         Op_WaitStop();
         Op_AutoStop(AS_OFF);
         Op_Lift(OFF, 400);
-        Op_Brake(ON, 100);
+        Op_Brake(ON, 50);
         Op_AutoStop(AS_START);
         Op_WaitTension();
         Op_WaitCapstan();
         Op_AutoStop(AS_PLAY);
-        Op_Spool(SPOOL_FORCER, 100);
-        Op_Press(ON, 100);
-        Op_Spool(SPOOL_PLAYR, 200);
+        //Op_Spool(SPOOL_FORCER);
+        Op_Spool(SPOOL_PLAYR);
+        Op_Press(ON, 300);
         Op_Mute(OFF);
         Op_Final();
         break;
@@ -387,12 +387,12 @@ void TTransport::Execute(void)
         Op_Mute(ON, 10);
         Op_Press(OFF);
         Op_Spool(SPOOL_BRAKE);
-        Op_Brake(OFF, 100);
+        Op_Brake(OFF);
         Op_WaitStop();
         Op_AutoStop(AS_OFF);
-        Op_Lift(OFF, 200);
+        Op_Lift(OFF, 50);
         Op_Spool(SPOOL_OFF);
-        Op_Final();
+        Op_Final(TR_STOP);
         break;
       }
     }
@@ -426,7 +426,16 @@ void TTransport::Op_WaitCapstan(void)
   if(Op->NotDone())
   {
     if(Capstan->Ready())
+    {
       Op->Done();
+    }
+    /*
+    else
+    {
+      if(Spool->GetMode() != SPOOL_BRAKE)
+        Spool->SetMode(SPOOL_BRAKE);
+    }
+    */
   }
 }
 
@@ -499,17 +508,27 @@ void TTransport::Op_WaitStop(void)
   if(Op->NotDone())
   {
     if(!MoveSensor->Move() || fLowTen)
+    {
       Op->Done();
+    }
+    /*
+    else
+    {
+      if(Spool->GetMode() != SPOOL_BRAKE)
+        Spool->SetMode(SPOOL_BRAKE);
+    }
+    */
   }
 }
 
 //----------------------- Установка режима автостопа: ------------------------
 
-void TTransport::Op_AutoStop(uint8_t m)
+void TTransport::Op_AutoStop(uint8_t m, uint16_t del)
 {
   if(Op->NotDone())
   {
     SetAutoStop(m);
+    Op->StartDelay(del);
     Op->Done();
   }
 }
@@ -523,7 +542,16 @@ void TTransport::Op_WaitTension(void)
     if((!Spool->LowT1() &&
         !Spool->LowT2()) ||
         !Option(OPT_PREASENABLE))
+    {
       Op->Done();
+    }
+    /*
+    else
+    {
+      if(Spool->GetMode() != SPOOL_BRAKE)
+        Spool->SetMode(SPOOL_BRAKE);
+    }
+    */
   }
 }
 
@@ -566,12 +594,25 @@ void TTransport::Op_SkipIf(bool b, uint8_t n)
   }
 }
 
+//--------------------- Переход на метку внутри процесса: --------------------
+
+void TTransport::Op_GoIf(bool b, uint8_t m)
+{
+  if(b)
+  {
+    NewMode = m;
+  }
+}
+
 //----------------------- Завершение включения режима: -----------------------
 
-void TTransport::Op_Final(void)
+void TTransport::Op_Final(uint8_t m)
 {
   if(Op->NotDone())
   {
+    ReqMode = TR_NONE;
+    if(m != TR_NONE)
+      NewMode = m;
     NowMode = NewMode;
     Op->Done();
   }
@@ -628,6 +669,13 @@ void TTransport::SetMode(uint8_t mode)
   NewMode = mode;
   if((mode != TR_CAPF) && (mode != TR_CAPR))
     SetCue(OFF);
+}
+
+//--------------------- Чтение включенного режима ЛПМ: -----------------------
+
+uint8_t TTransport::GetMode(void)
+{
+  return(NowMode);
 }
 
 //------------------- Управление отводом ленты и MUTE: -----------------------

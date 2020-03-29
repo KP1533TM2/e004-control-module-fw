@@ -38,7 +38,6 @@ private:
   uint8_t BackMode;    //режим возврата
   bool fPause;         //флаг режима "Пауза"
   bool fRoll;          //флаг режима "Откат"
-  uint8_t KeyMsg;      //тип сообщения клавиатуры
   uint8_t KeyCode;     //код кнопки
   bool fUpdate;        //флаг обновления индикации
   uint8_t TrState;     //состояние ЛПМ
@@ -46,6 +45,19 @@ private:
   uint8_t IndState;    //текущее состояние индикации
   bool fAutostop;      //флаг срабатывания автостопа
   uint8_t ArMode;      //режим для автореверса
+  TSoftTimer<TT_ONESHOT> *ProgTimer; //таймер программирования
+  static uint16_t const T_PROG = 3000; //задержка выхода из программировния
+  uint8_t Program;     //режим программирования
+  enum prog_t
+  {
+    PR_OFF,
+    PR_STEP1,
+    PR_STEP2,
+    PR_RUN
+  };
+  void ProgMode(uint8_t &code); //программирование режимов
+  uint8_t ProgMode1;   //программный режим 1
+  uint8_t ProgMode2;   //программный режим 2
 
   Pin_Pvg_t Pin_Pvg;   //вход контроля питания
   //unused pins:
@@ -63,12 +75,15 @@ private:
   Pin_PB1_t Pin_PB1;   //не используется
 
   void HardwareInit(void);      //инициализация оборудования
+  void FilterKey(uint8_t &code); //фильтрация кодов кнопок
+  uint8_t Arch(uint8_t code);   //формирование кода перемотки с учетом архивной
 
   bool ServiceTimer(void);      //таймер сервисов
   void LedsService(void);       //сервис управления светодиодами
   void AutoStopService(void);   //сервис автостопа
-  void AutoRevService(void);    //сервис автореверса
+  void AutoPlayService(void);   //сервис программного режима и автореверса
 
+  uint16_t Options;             //набор опций
   enum ct_opt_t                 //опции
   {
     OPT_PAUSELEDBLINK = 1 << 0, //cветодиод паузы мигает, иначе - горит
@@ -78,18 +93,19 @@ private:
     OPT_ROLLCUE       = 1 << 4, //при откате включен обзор (и выключен Mute)
     OPT_ENABLECUE     = 1 << 5, //разреш. обзора кнопкой Roll при арх. перем.
     OPT_NOSOUND       = 1 << 6, //запрещение генерации звуковых сигналов
-    OPT_AUTOREVERSE   = 1 << 7  //включение режима автореверса
+    OPT_AUTOREVERSE   = 1 << 7, //включение режима автореверса
+    OPT_ENABLEPROG    = 1 << 8, //разрешение программирования режимов
+    OPT_PROGBLINK     = 1 << 9, //прогрммный режим мигает, иначе горит
   };
-  uint8_t Options;              //набор опций
   static uint8_t const NOM_CT_OPTIONS = 0; //опции по умолчанию
-  bool Option(uint8_t mask) { return(Options & mask); }; //чтение опции
+  bool Option(ct_opt_t mask) { return(Options & mask); }; //чтение опции
 
 public:
   TControl(void);
   void Execute(void);
   void SetMode(uint8_t code);   //включение режима
-  void SetOptions(uint8_t t);   //установка опций
-  uint8_t GetOptions(void);     //чтение опций
+  void SetOptions(uint16_t t);  //установка опций
+  uint16_t GetOptions(void);    //чтение опций
   void EERead(void);            //чтение параметров из EEPROM
   void EESave(void);            //сохранение параметров в EEPROM
 };

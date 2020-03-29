@@ -131,15 +131,19 @@ enum WakeScmd_t
   //AsPreDel = 0..65535 [ms] задержка автостопа при пред. натяжении
   //AsTenDel = 0..65535 [ms] задержка автостопа по натяжению
   //TrOptions.0 = ON (OPT_BRKASENABLE) разрешение автостопа при торможении
-  //TrOptions.0 = ON (OPT_PREASENABLE) разрешение автостопа по пред. натяжению
-  //TrOptions.0 = ON (OPT_TENASENABLE) разрешение автостопа по натяжению
-  //TrOptions.0 = ON (OPT_MOVASENABLE) разрешение автостопа по ДД
+  //TrOptions.1 = ON (OPT_PREASENABLE) разрешение автостопа по пред. натяжению
+  //TrOptions.2 = ON (OPT_TENASENABLE) разрешение автостопа по натяжению
+  //TrOptions.3 = ON (OPT_MOVASENABLE) разрешение автостопа по ДД
   //CtOptions.0 = ON (OPT_PAUSELEDBLINK) cветодиод паузы мигает, иначе - горит
-  //CtOptions.0 = ON (OPT_AUTORECPAUSE) авт. вкл. паузы при вкл. записи
-  //CtOptions.0 = ON (OPT_PLAYOFFPAUSE) кнопка Play выключает паузу
-  //CtOptions.0 = ON (OPT_USEARCHIVE) использовать архивную перемотку
-  //CtOptions.0 = ON (OPT_ROLLCUE) при откате включен обзор (и выключен Mute)
-  //CtOptions.0 = ON (OPT_ENABLECUE) разреш. обзора кнопкой Roll при арх. перем.
+  //CtOptions.1 = ON (OPT_AUTORECPAUSE) авт. вкл. паузы при вкл. записи
+  //CtOptions.2 = ON (OPT_PLAYOFFPAUSE) кнопка Play выключает паузу
+  //CtOptions.3 = ON (OPT_USEARCHIVE) использовать архивную перемотку
+  //CtOptions.4 = ON (OPT_ROLLCUE) при откате включен обзор (и выключен Mute)
+  //CtOptions.5 = ON (OPT_ENABLECUE) разреш. обзора кнопкой Roll при арх. перем.
+  //CtOptions.6 = ON (OPT_NOSOUND) запрещение генерации звуковых сигналов
+  //CtOptions.7 = ON (OPT_AUTOREVERSE) включение режима автореверса
+  //CtOptions.8 = ON (OPT_ENABLEPROG) разрешение программирования режимов
+  //CtOptions.9 = ON (OPT_PROGBLINK) прогрммный режим мигает, иначе горит
 
 //-------------------------- Чтение параметров: ------------------------------
 
@@ -158,15 +162,19 @@ enum WakeScmd_t
   //AsPreDel = 0..65535 [ms] задержка автостопа при пред. натяжении
   //AsTenDel = 0..65535 [ms] задержка автостопа по натяжению
   //TrOptions.0 = ON (OPT_BRKASENABLE) разрешение автостопа при торможении
-  //TrOptions.0 = ON (OPT_PREASENABLE) разрешение автостопа по пред. натяжению
-  //TrOptions.0 = ON (OPT_TENASENABLE) разрешение автостопа по натяжению
-  //TrOptions.0 = ON (OPT_MOVASENABLE) разрешение автостопа по ДД
+  //TrOptions.1 = ON (OPT_PREASENABLE) разрешение автостопа по пред. натяжению
+  //TrOptions.2 = ON (OPT_TENASENABLE) разрешение автостопа по натяжению
+  //TrOptions.3 = ON (OPT_MOVASENABLE) разрешение автостопа по ДД
   //CtOptions.0 = ON (OPT_PAUSELEDBLINK) cветодиод паузы мигает, иначе - горит
-  //CtOptions.0 = ON (OPT_AUTORECPAUSE) авт. вкл. паузы при вкл. записи
-  //CtOptions.0 = ON (OPT_PLAYOFFPAUSE) кнопка Play выключает паузу
-  //CtOptions.0 = ON (OPT_USEARCHIVE) использовать архивную перемотку
-  //CtOptions.0 = ON (OPT_ROLLCUE) при откате включен обзор (и выключен Mute)
-  //CtOptions.0 = ON (OPT_ENABLECUE) разреш. обзора кнопкой Roll при арх. перем.
+  //CtOptions.1 = ON (OPT_AUTORECPAUSE) авт. вкл. паузы при вкл. записи
+  //CtOptions.2 = ON (OPT_PLAYOFFPAUSE) кнопка Play выключает паузу
+  //CtOptions.3 = ON (OPT_USEARCHIVE) использовать архивную перемотку
+  //CtOptions.4 = ON (OPT_ROLLCUE) при откате включен обзор (и выключен Mute)
+  //CtOptions.5 = ON (OPT_ENABLECUE) разреш. обзора кнопкой Roll при арх. перем.
+  //CtOptions.6 = ON (OPT_NOSOUND) запрещение генерации звуковых сигналов
+  //CtOptions.7 = ON (OPT_AUTOREVERSE) включение режима автореверса
+  //CtOptions.8 = ON (OPT_ENABLEPROG) разрешение программирования режимов
+  //CtOptions.9 = ON (OPT_PROGBLINK) прогрммный режим мигает, иначе горит
 
 //-------------------- Сохранение параметров в EEPROM: -----------------------
 

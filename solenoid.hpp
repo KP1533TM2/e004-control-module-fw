@@ -60,7 +60,6 @@ TSolenoid<PinForce, PinHold>::TSolenoid(void)
   PinForce::DirOut();
   PinHold::DirOut();
   ForceTimer = new TSoftTimer<TT_ONESHOT>(NOM_EM_FORCE);
-  //ForceTimer->Oneshot = 1;
 }
 
 template<class PinForce, class PinHold>

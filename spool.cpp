@@ -8,7 +8,7 @@
 
 //Датчики натяжения поочередно считываются с помощью АЦП, период выборок 1 мс.
 //Несколько выборок усредняются, в результате получается период дискретизации,
-//задаваемый константой TSAMPLE. Код АЦП приводится к диапазону 0…65535.
+//задаваемый константой T_SAMPLE. Код АЦП приводится к диапазону 0…65535.
 //Используется внутренний ИОН, полная шкала АЦП составляет 2.56 В.
 //Подстроечными резисторами на платах УРНЛ надо установить в контрольных
 //точках TP1 и TP2 напряжение 2.56 В при крайнем нижнем положении натяжителей
@@ -112,12 +112,12 @@ uint16_t TPid::Execute(uint16_t inp)
   Y = Y - (int32_t)K.p * div1 * (SCALE_Y / 10);
   //учет интегральной составляющей:
   int32_t err = (int32_t)Ref - inp;
-  Y = Y + (int32_t)K.i * err * (SCALE_Y * TSAMPLE / 1000);
+  Y = Y + (int32_t)K.i * err * (SCALE_Y * T_SAMPLE / 1000);
   //учет дифференциальной составляющей:
   if((Y > 0) && (Y < (TEN_MAX * SCALE_Y))) //при ограничении D отключается
   {
     int32_t div2 = (int32_t)inp - 2 * (int32_t)Xp + Xpp;
-    Y = Y - (int32_t)K.d * div2 * (SCALE_Y * 10 / TSAMPLE);
+    Y = Y - (int32_t)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
   }
   //ограничение выходного значения:
   if(Y < 0) Y = 0;
@@ -127,6 +127,15 @@ uint16_t TPid::Execute(uint16_t inp)
   Xpp = Xp;
   Xp = inp;
   return(Y / SCALE_Y);
+}
+
+//--------------------- Предустановка PID-регулятора: ------------------------
+
+void TPid::Preset(uint16_t p)
+{
+  Yp = p * SCALE_Y;
+  Xp = p;
+  Xpp = p;
 }
 
 //----------------------------------------------------------------------------
@@ -247,14 +256,20 @@ void TSpool::SetTension(uint8_t m)
   if(m == SPOOL_FORCEF)
   {
     //усиление подмотки и ослабление подтормаживания при старте вперед:
-    Pid_M1->Ref = Tensions[SPOOL_PLAYF].m1 - DELTA;
-    Pid_M2->Ref = Tensions[SPOOL_PLAYF].m2 + DELTA;
+    Pid_M1->Ref = Tensions[SPOOL_PLAYF].m1 - DELTAM;
+    Pid_M2->Ref = Tensions[SPOOL_PLAYF].m2 + DELTAP;
   }
   else if(m == SPOOL_FORCER)
   {
     //усиление подмотки и ослабление подтормаживания при старте назад:
-    Pid_M1->Ref = Tensions[SPOOL_PLAYR].m1 + DELTA;
-    Pid_M2->Ref = Tensions[SPOOL_PLAYR].m2 - DELTA;
+    Pid_M1->Ref = Tensions[SPOOL_PLAYR].m1 + DELTAP;
+    Pid_M2->Ref = Tensions[SPOOL_PLAYR].m2 - DELTAM;
+  }
+  else if(m == SPOOL_OFF)
+  {
+    //выключение боковых моторов (Tensions[SPOOL_OFF] - Min. tension)
+    Pid_M1->Ref = 0;
+    Pid_M2->Ref = 0;
   }
   else
   {
@@ -280,14 +295,28 @@ void TSpool::SetMode(uint8_t m)
   case SPOOL_OFF:
     SetMot1(0);
     SetMot2(0);
+    Pid_M1->Preset(0);
+    Pid_M2->Preset(0);
     MotMode = MOT_STOP;
     break;
 
-  case SPOOL_BRAKE:
   case SPOOL_FORCEF:
-  case SPOOL_FORCER:
   case SPOOL_PLAYF:
+    Pid_M1->Preset(0);
+    Pid_M2->Preset(TEN_MAX);
+    MotMode = MOT_PLAY;
+    break;
+
+  case SPOOL_FORCER:
   case SPOOL_PLAYR:
+    Pid_M1->Preset(TEN_MAX);
+    Pid_M2->Preset(0);
+    MotMode = MOT_PLAY;
+    break;
+
+  case SPOOL_BRAKE:
+    Pid_M1->Preset(0);
+    Pid_M2->Preset(0);
     MotMode = MOT_PLAY;
     break;
 
