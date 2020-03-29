@@ -164,10 +164,9 @@ void TPort::Execute(void)
         t = Control->Transport->Spool->GetMot();
         WakePort->AddWord(t.m1);
         WakePort->AddWord(t.m2);
-        //TODO: not used:
-        //t = Control->Transport->Spool->GetTen();
-        //WakePort->AddWord(t.m1);
-        //WakePort->AddWord(t.m2);
+        t = Control->Transport->Spool->GetTen();
+        WakePort->AddWord(t.m1);
+        WakePort->AddWord(t.m2);
         break;
       }
     case CMD_SET_PARAMS: //установка параметров

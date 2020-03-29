@@ -77,6 +77,15 @@ enum SateBits_t
   STB_READY = 1 << 7  //capstan ready bit
 };
 
+enum AsResult_t
+{
+  ASR_NONE,  //автостоп не сработал
+  ASR_TEN,   //сработал автостоп по натяжению
+  ASR_BRAKE, //сработал автостоп при торможении
+  ASR_END,   //сработал автостоп по окончанию ленты
+  ASR_MOVE   //сработал автостоп по остановке ленты
+};
+
 //----------------------------------------------------------------------------
 //--------------------------- Класс TOperations: -----------------------------
 //----------------------------------------------------------------------------
@@ -183,7 +192,7 @@ public:
   uint8_t GetMode(void);        //чтение включенного режима ЛПМ
   void SetCue(bool cue);        //управление отводом ленты и MUTE
   uint8_t GetState(void);       //чтение состояния для индикации
-  bool CheckAutoStop(void);     //проверка состояния автостопа
+  uint8_t CheckAutoStop(void);  //проверка состояния автостопа
   void SetAsBrkDel(uint16_t t) { AsBrkDel = t; };   //установка AsBrkDel
   uint16_t GetAsBrkDel(void) { return(AsBrkDel); }; //чтение AsBrkDel
   void SetAsPreDel(uint16_t t) { AsPreDel = t; };   //установка AsPreDel

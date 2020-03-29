@@ -343,6 +343,7 @@ void TTransport::Execute(void)
         Op_Brake(ON, 100);
         Op_AutoStop(AS_START);
         Op_WaitTension();
+        //Op_Spool(SPOOL_ARCHF);
         Op_Lift(ON, 100);
         Op_Spool(SPOOL_AFFD, 100);
         Op_AutoStop(AS_FFD);
@@ -360,6 +361,7 @@ void TTransport::Execute(void)
         Op_Brake(ON, 100);
         Op_AutoStop(AS_START);
         Op_WaitTension();
+        //Op_Spool(SPOOL_ARCHR);
         Op_Lift(ON, 100);
         Op_Spool(SPOOL_AREW, 100);
         Op_AutoStop(AS_REW);
@@ -682,17 +684,18 @@ uint8_t TTransport::GetMode(void)
 
 void TTransport::SetCue(bool cue)
 {
-  if(cue) //CUE ON
+  if((NowMode == NewMode) && ((NowMode == TR_AFFD) || (NowMode == TR_AREW)))
   {
-    if((NewMode == TR_AFFD) || (NewMode == TR_AREW))
+    if(cue) //CUE ON
+    {
       SolLift->OnOff(OFF);
-    if(NowMode == NewMode) Audio->Mute(OFF);
-  }
-  else //CUE OFF
-  {
-    if((NewMode == TR_AFFD) || (NewMode == TR_AREW))
+      Audio->Mute(OFF);
+    }
+    else //CUE OFF
+    {
       SolLift->OnOff(ON);
-    Audio->Mute(ON);
+      Audio->Mute(ON);
+    }
   }
   SetAutoStop(AsMode); //перезапуск таймера автостопа
   fCue = cue;
@@ -717,7 +720,7 @@ uint8_t TTransport::GetState(void)
 
 //--------------------- Проверка состояния автостопа: ------------------------
 
-bool TTransport::CheckAutoStop(void)
+uint8_t TTransport::CheckAutoStop(void)
 {
   bool fas = 0;
   switch(AsMode)
@@ -750,7 +753,7 @@ bool TTransport::CheckAutoStop(void)
     fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
   };
   if(fas && AutostopTimer->Over()) //если fas = 1 и интервал истек, то
-    return(1);                     //автостоп
+    return(ASR_TEN);               //автостоп по натяжению
 
   //автостоп при торможении:
   if(fAsBrake)
@@ -758,23 +761,24 @@ bool TTransport::CheckAutoStop(void)
     if(MoveSensor->Move() &&      //если лента не остановилась,
        BrakeTimer->Over() &&      //интервал торможения истек и
        Option(OPT_BRKASENABLE))   //автостоп при торможении разрешен, то
-         return(1);               //автостоп
+         return(ASR_BRAKE);       //автостоп при торможении
   }
 
   if(AsMode > AS_START)
   {
     //автостоп по ДО:
     bool t = EndSensor->Tape();
-    if(fTape && !t) return(1);    //если лента была и пропала, автостоп
+    if(fTape && !t)               //если лента была и пропала,
+      return(ASR_END);            //автостоп по окончанию ленты
     fTape = t;
     //атостоп по ДД:
     if(!MoveSensor->Move() &&     //если лента не движется,
        !fAsBrake &&               //это не автостоп при торможении,
        AutostopTimer->Over() &&   //таймер автостопа переполнился и
        Option(OPT_MOVASENABLE))   //автостоп по ДД разрешен, то
-         return(1);               //автостоп
+         return(ASR_MOVE);        //автостоп по ДД
   }
-  return(0);
+  return(ASR_NONE);
 }
 
 //----------------- Установка времени старта электромагнитов: ----------------

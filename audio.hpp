@@ -27,6 +27,10 @@ private:
   Pin_PlayR_t Pin_PlayR;    //включение реверсного канала УВ
   Pin_PlayF_t Pin_PlayF;    //включение прямого канала УВ (не используется)
   Pin_Mute_t Pin_Mute;      //блокировка УВ
+#ifdef REV_C
+  Pin_Fast_t Pin_Fast;      //скорость FAST
+  Pin_Slow_t Pin_Slow;      //скорость SLOW
+#endif
   bool fMasterMute;         //глобальный Mute
   bool fNormalMute;         //обычный Mute
 public:

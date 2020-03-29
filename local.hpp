@@ -37,7 +37,8 @@ private:
     K_REW   = 1 << 4,
     K_PLAYR = 1 << 5,
     K_PAUSE = 1 << 6,
-    K_ROLL  = 1 << 7
+    K_ROLL  = 1 << 7,
+    K_RECPL = K_REC | K_PLAYF
   };
 public:
   TLocal(void);

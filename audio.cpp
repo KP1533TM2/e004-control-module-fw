@@ -28,6 +28,10 @@ TAudio::TAudio(void)
   Pin_PlayR.DirOut();
   Pin_PlayF.DirOut(PIN_HIGH);
   Pin_Mute.DirOut(PIN_HIGH);
+#ifdef REV_C
+  Pin_Fast.DirIn();
+  Pin_Slow.DirIn();
+#endif
   fNormalMute = 1;
   fMasterMute = 0;
 }

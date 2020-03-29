@@ -29,7 +29,9 @@ enum SpoolMode_t //режимы подмотки
   SPOOL_MODES,
   //дополнительные режимы:
   SPOOL_FORCEF,
-  SPOOL_FORCER
+  SPOOL_FORCER,
+  //SPOOL_ARCHF,
+  //SPOOL_ARCHR
 };
 
 typedef struct //коэффициенты PID
@@ -72,9 +74,9 @@ class TSpool
 {
 private:
   //значения по умолчанию:
-  static uint8_t const NOM_KP = 80;
-  static uint8_t const NOM_KI = 40;
-  static uint8_t const NOM_KD = 50;
+  static uint8_t const NOM_KP = 60;
+  static uint8_t const NOM_KI = 30;
+  static uint8_t const NOM_KD = 30;
   static uint16_t const NOM_TEN_MIN  = PERCENT2CODE(8.0);
   static uint16_t const NOM_TEN_PLAY = PERCENT2CODE(25.0);
   static uint16_t const NOM_TEN_LIMT = PERCENT2CODE(100.0);

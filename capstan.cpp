@@ -27,6 +27,10 @@
 TCapstan::TCapstan(void)
 {
   Pin_Rev.DirOut();
+#ifdef REV_C
+  Pin_Sleep.DirOut(PIN_HIGH);
+  Pin_Lock.DirIn(PIN_PULL);
+#endif
   fRun = 1;          //двигатель всегда включен
   fRev = 0;          //начальное направление вращения - вперед
   fLock = 0;         //двигатель не готов

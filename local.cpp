@@ -57,7 +57,7 @@ uint8_t TLocal::GetCode(void)
   uint8_t code;
   switch(k)
   {
-  case K_REC + K_PLAYF: code = KEY_REC; break;
+  case K_RECPL: code = KEY_REC;   break;
   case K_STOP:  code = KEY_STOP;  break;
   case K_PLAYF: code = KEY_PLAYF; break;
   case K_FFD:   code = KEY_FFD;   break;

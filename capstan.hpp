@@ -26,7 +26,11 @@ enum CapDir_t
 class TCapstan
 {
 private:
-  Pin_Rev_t Pin_Rev;    //выход управления реверсом ведущего двигателя
+  Pin_Rev_t Pin_Rev;     //выход управления реверсом ведущего двигателя
+#ifdef REV_C
+  Pin_Sleep_t Pin_Sleep; //выход выключения ведущего двигателя
+  Pin_Lock_t Pin_Lock;   //вход захвата PLL ведущего двигателя
+#endif
   TSoftTimer<TT_ONESHOT> *CapTimer; //программный таймер готовности двигателя
   uint16_t CapStart;    //время разгона
   static uint16_t const NOM_CAP_START = 2000; //номинальное время разгона, мс

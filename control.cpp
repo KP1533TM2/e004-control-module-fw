@@ -155,13 +155,19 @@ inline void TControl::HardwareInit(void)
   Pin_SDA.DirIn(PIN_PULL);
   Pin_RXD1.DirIn(PIN_PULL);
   Pin_TXD1.DirOut(PIN_HIGH);
-  Pin_XT6.DirOut();
-  Pin_XT5.DirOut();
-  Pin_XT4.DirOut();
-  Pin_XT3.DirOut();
-  Pin_XT2.DirOut();
-  Pin_XT1.DirOut();
   Pin_PB1.DirIn(PIN_PULL);
+#ifdef REV_A
+  Pin_XT1.DirOut();
+  Pin_XT2.DirOut();
+  Pin_XT3.DirOut();
+  Pin_XT4.DirOut();
+  Pin_XT5.DirOut();
+  Pin_XT6.DirOut();
+#endif
+#ifdef REV_C
+  Pin_AdcEnd.DirIn();
+  Pin_Aux.DirIn();
+#endif
   //настройка watchdog-таймера (260 ms):
   __watchdog_reset();
   WDTCR = (1 << WDCE) | (1 << WDE);
@@ -575,9 +581,11 @@ inline void TControl::LedsService(void)
     if(Trs(TRS_CAP))                    //если Capstan включен
     {
       uint8_t b;
-      if(Trs(TRS_LOCK))                 //если Capstan готов
-        b = LEDS_SLOW;                  //медленное мигание,
-          else b = LEDS_FAST;           //иначе - быстрое
+      if(!Trs(TRS_LOCK))                //если Capstan не готов
+        b = LEDS_FAST;                  //быстрое мигание
+          else if(Option(OPT_SHOWDIR))  //иначе если разреш. инд. направления
+            b = LEDS_SLOW;              //то медленное мигание,
+              else b = LEDS_OFF;        //иначе выключение
       if(Trs(TRS_REV))                  //если Capstan вращается назад,
         Leds->Set(LED_PLAYR, b);        //мигает LED_PLAYR,
           else Leds->Set(LED_PLAYF, b); //иначе мигает LED_PLAYF
@@ -677,9 +685,10 @@ inline void TControl::LedsService(void)
 
 inline void TControl::AutoStopService(void)
 {
-  if(Transport->CheckAutoStop())
+  uint8_t as = Transport->CheckAutoStop();
+  if(as)
   {
-    if(!fAutostop) //если автостоп не был обработан
+    if(!fAutostop && (as == ASR_END)) //если был автостоп по ДО
     {
       //сохранение режима для автореверса:
       if(Mode == TR_PLAYF) ArMode = TR_PLAYR;

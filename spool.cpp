@@ -237,12 +237,22 @@ void TSpool::Execute(void)
     if(fUpd1) SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
     break;                                    //M1 <- не регулируется
   case MOT_AFFD:
-    if(fUpd2) SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
-    if(fUpd2) SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
+    if(fUpd2)
+    {
+      if(Sen1 > Sen2)
+        SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
+          else SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
+      SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
+    }
     break;
   case MOT_AREW:
-    if(fUpd1) SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
-    if(fUpd1) SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
+    if(fUpd1)
+    {
+      SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
+      if(Sen2 > Sen1)
+        SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
+          else SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
+    }
     break;
   };
   fUpd1 = 0;
@@ -271,6 +281,18 @@ void TSpool::SetTension(uint8_t m)
     Pid_M1->Ref = 0;
     Pid_M2->Ref = 0;
   }
+  /*
+  else if(m == SPOOL_ARCHF)
+  {
+    Pid_M1->Ref = Tensions[SPOOL_AFFD].m1;
+    Pid_M2->Ref = Tensions[SPOOL_AFFD].m1;
+  }
+  else if(m == SPOOL_ARCHR)
+  {
+    Pid_M1->Ref = Tensions[SPOOL_AREW].m2;
+    Pid_M2->Ref = Tensions[SPOOL_AREW].m2;
+  }
+  */
   else
   {
     Pid_M1->Ref = Tensions[m].m1;
@@ -314,29 +336,37 @@ void TSpool::SetMode(uint8_t m)
     MotMode = MOT_PLAY;
     break;
 
+  //case SPOOL_ARCHF:
+  //case SPOOL_ARCHR:
   case SPOOL_BRAKE:
-    Pid_M1->Preset(0);
-    Pid_M2->Preset(0);
+    //Pid_M1->Preset(0);
+    //Pid_M2->Preset(0);
     MotMode = MOT_PLAY;
     break;
 
   case SPOOL_FFD:
     SetMot2(0);
+    Pid_M1->Preset(0);
     MotMode = MOT_FFD;
     Pin_Ffd = 1;
     break;
 
   case SPOOL_REW:
     SetMot1(0);
+    Pid_M2->Preset(0);
     MotMode = MOT_REW;
     Pin_Rew = 1;
     break;
 
   case SPOOL_AFFD:
+    Pid_M1->Preset(TEN_MAX);
+    Pid_M2->Preset(TEN_MAX);
     MotMode = MOT_AFFD;
     break;
 
   case SPOOL_AREW:
+    Pid_M1->Preset(TEN_MAX);
+    Pid_M2->Preset(TEN_MAX);
     MotMode = MOT_AREW;
     break;
   }
