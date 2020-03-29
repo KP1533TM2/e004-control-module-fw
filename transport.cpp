@@ -196,10 +196,10 @@ TTransport::TTransport(void)
   SolLift = new TSolenoid<Pin_LiftF_t, Pin_LiftH_t>();
 
   Capstan = new TCapstan();
-  Spool = new TSpool();
   MoveSensor = new TMoveSensor();
   EndSensor = new TEndSensor();
   Audio = new TAudio();
+  Spool = new TSpool();
   Op = new TOperations();
   BrakeTimer = new TSoftTimer();
   AutostopTimer = new TSoftTimer();
@@ -220,8 +220,8 @@ void TTransport::Execute(void)
   SolBrake->Execute();
   SolPress->Execute();
   Capstan->Execute();
-  Spool->Execute();
   EndSensor->Execute();
+  Spool->Execute();
 
   if(NowMode != NewMode)
   {
@@ -384,11 +384,11 @@ void TTransport::Execute(void)
 
       case TR_ASTOP:
         Op_Mute(ON, 10);
+        Op_AutoStop(AS_OFF);
         Op_Press(OFF);
         Op_Spool(SPOOL_OFF, 100);
-        Op_Brake(OFF, 100);
+        Op_Brake(OFF, 200);
         Op_Lift(OFF, 100);
-        Op_AutoStop(AS_OFF);
         Op_Final();
         break;
       }
@@ -422,7 +422,8 @@ void TTransport::Op_WaitCapstan(void)
 {
   if(Op->NotDone())
   {
-    if(Capstan->Ready()) Op->Done();
+    if(Capstan->Ready())
+      Op->Done();
   }
 }
 
@@ -576,27 +577,26 @@ void TTransport::SetAutoStop(uint8_t m)
     break;
   case AS_START:
     AutostopTimer->Start(AsPreDel); //запуск таймера пред. натяжения
-    AsMode = m; fAsBrake = OFF;
+    AsMode = m;
     break;
   case AS_PLAY:
     AutostopTimer->Start(AsTenDel); //запуск таймера натяжения
     fTape = EndSensor->Tape();      //запоминание состояния датчика ленты
     MoveSensor->SetTC(MOVE_SLOW);   //управление TC
-    AsMode = m; fAsBrake = OFF;
+    AsMode = m;
     break;
   case AS_FFD:
   case AS_REW:
     AutostopTimer->Start(AsTenDel); //запуск таймера натяжения
     fTape = EndSensor->Tape();      //запоминание состояния датчика ленты
     MoveSensor->SetTC(MOVE_FAST);   //управление TC
-    AsMode = m; fAsBrake = OFF;
+    AsMode = m;
     break;
   case AS_BRAKE:
     BrakeTimer->Start(AsBrkDel);    //запуск таймера торможения
     AutostopTimer->Start(AsTenDel); //перезапуск таймера автостопа по натяжению
-    //Устанавливается флаг включение автостопа по торможению
-    //и продолжает работать текущий режим автостопа:
-    fAsBrake = ON;
+    fAsBrake = ON;                  //флаг включения автостопа по торможению
+    //нет изменения AsMode, т.е. продолжает работать текущий режим автостопа
     break;
   }
 }
@@ -663,6 +663,7 @@ bool TTransport::CheckAutoStop(void)
         Spool->LowT2()) &&        //низкое натяжение справа
         Option(OPT_PREASENABLE))  //и автостоп по пред. натяжению разрешен, то
           fas = 1;                //автостоп (при усл. переполн. таймера)
+    break;
   //автостоп по натяжению 1 и 2:
   case AS_PLAY:
     if((Spool->LowT1() ||         //если низкое натяжение слева или

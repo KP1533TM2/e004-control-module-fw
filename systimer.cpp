@@ -95,7 +95,7 @@ bool TSysTimer::TimeoutOver_ms(void)
 
 TSoftTimer::TSoftTimer(uint16_t t)
 {
-  Autoreload = 0;
+  if(UseAutoreload) Autoreload = 0;
   Oneshot = 0;
   fEvent = (t == 0)? 1 : 0;
   Interval = t;
@@ -140,13 +140,14 @@ bool TSoftTimer::Over(void)
   {
     if(Oneshot && fEvent) fevent = 0;
     fEvent = 1;
-    if(Autoreload)
+    if(UseAutoreload && Autoreload)
     {
       StartCount = TSysTimer::Counter; //перезапуск
       fEvent = 0;
     }
   }
-  if(!Oneshot && !Autoreload) fevent = fEvent;
+  if(UseAutoreload) { if(!Oneshot && !Autoreload) fevent = fEvent; }
+  else { if(!Oneshot) fevent = fEvent; }
   return(fevent);
 }
 

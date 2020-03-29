@@ -51,7 +51,10 @@ uint8_t TLocal::GetCode(void)
   if(!Key_PlayR) k |= K_PLAYR;
   if(!Key_Pause) k |= K_PAUSE;
   if(!Key_Roll)  k |= K_ROLL;
-  uint8_t code = KEY_NO;
+
+  if(k == 0) return(KEY_NO);
+
+  uint8_t code;
   switch(k)
   {
   case K_REC + K_PLAYF: code = KEY_REC; break;
@@ -62,6 +65,7 @@ uint8_t TLocal::GetCode(void)
   case K_PLAYR: code = KEY_PLAYR; break;
   case K_PAUSE: code = KEY_PAUSE; break;
   case K_ROLL:  code = KEY_ROLL;  break;
+  default:      code = KEY_NO;
   }
   return(code);
 }

@@ -46,6 +46,7 @@ public:
 class TSoftTimer
 {
 private:
+  static const bool UseAutoreload = 0;
   uint16_t StartCount;
   bool fEvent;
 protected:

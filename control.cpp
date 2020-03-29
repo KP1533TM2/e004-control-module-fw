@@ -92,7 +92,8 @@ TControl::TControl(void)
   Sound = new TSound();
   Transport = new TTransport();
   Leds = new TLeds();
-  SlowCounter = 0;
+  ServiceCounter = 0;
+  fAutostop = 0;
   Mode = TR_STOP;                //текущий режим STOP
   BackMode = TR_STOP;            //режим возврата - STOP
   fPause = 0;                    //PAUSE выключена
@@ -139,14 +140,16 @@ void TControl::Execute(void)
   {
     SetMode(KeyCode);
   }
-
   //сервисы:
-  SlowTimerService(); //сервис медленного таймера
-  LedsService();      //сервис светодиодов
-  AutoStopService();  //сервис автостопа
-
+  if(ServiceTimer())   //таймер сервисов
+  {
+    LedsService();     //сервис светодиодов
+    AutoStopService(); //сервис автостопа
+    AutoRevService();  //сервис автореверса
+  }
   //очистка сообщения кнопки:
   KeyMsg = MSG_NO;
+  KeyCode = KEY_NO;
 }
 
 //----------------------------------------------------------------------------
@@ -376,118 +379,116 @@ void TControl::SetMode(uint8_t code)
 
 //---------- Сервис медленного таймера процессов и Watchdog-таймера: ---------
 
-inline void TControl::SlowTimerService(void)
+inline bool TControl::ServiceTimer(void)
 {
-  fSlowTick = 0;
   if(TSysTimer::Tick)
   {
-    if(++SlowCounter == T_SLOW)
+    if(++ServiceCounter == T_SLOW)
     {
-      SlowCounter = 0;
-      fSlowTick = 1;
+      ServiceCounter = 0;
+      //чтение состояния ЛПМ:
+      TrState = Transport->GetState();
       __watchdog_reset();
+      return(1);
     }
   }
+  return(0);
 }
 
 //-------------------- Сервис управления светодиодами: -----------------------
 
 inline void TControl::LedsService(void)
 {
-  if(fSlowTick)
+  Leds->Execute();
+  if(fUpdate || (IndState != TrState))
   {
-    Leds->Execute();
-    uint8_t state = Transport->GetState();
-    if(fUpdate || (IndState != state))
+    IndState = TrState;
+    fUpdate = 0;
+    //очистка набора светодиодов:
+    Leds->Set(LED_ALL, LEDS_OFF);
+    //индикация направления Capstan:
+    if(Trs(TRS_CAP))                    //если Capstan включен
     {
-      IndState = state;
-      fUpdate = 0;
-      //очистка набора светодиодов:
-      Leds->Set(LED_ALL, LEDS_OFF);
-      //индикация направления Capstan:
-      if(Ins(TRS_CAP))                    //если Capstan включен
-      {
-        uint8_t b;
-        if(Ins(TRS_LOCK))                 //если Capstan готов
-          b = LEDS_SLOW;                  //медленное мигание,
-            else b = LEDS_FAST;           //иначе - быстрое
-        if(Ins(TRS_REV))                  //если Capstan вращается назад,
-          Leds->Set(LED_PLAYR, b);        //мигает LED_PLAYR,
-            else Leds->Set(LED_PLAYF, b); //иначе мигает LED_PLAYF
-      }
-      //индикация режимов работы:
-      switch(Mode)
-      {
-      case TR_STOP:
-        if(Ins(TRS_TAPE))                 //если лента загружена, то
-          Leds->Set(LED_STOP, LEDS_CONT); //LED_STOP горит
-            else Leds->Set(LED_NONE);     //если ленты нет, то не горит
-        break;
+      uint8_t b;
+      if(Trs(TRS_LOCK))                 //если Capstan готов
+        b = LEDS_SLOW;                  //медленное мигание,
+          else b = LEDS_FAST;           //иначе - быстрое
+      if(Trs(TRS_REV))                  //если Capstan вращается назад,
+        Leds->Set(LED_PLAYR, b);        //мигает LED_PLAYR,
+          else Leds->Set(LED_PLAYF, b); //иначе мигает LED_PLAYF
+    }
+    //индикация режимов работы:
+    switch(Mode)
+    {
+    case TR_STOP:
+      if(Trs(TRS_TAPE))                 //если лента загружена, то
+        Leds->Set(LED_STOP, LEDS_CONT); //LED_STOP горит
+          else Leds->Set(LED_NONE);     //если ленты нет, то не горит
+      break;
 
-      case TR_PLAYF:
-        if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то
-          Leds->Set(LED_PLAYF, LEDS_NORM);     //LED_PLAYF мигает,
-            else if(Ins(TRS_LOCK))             //иначе если Capstan готов,
-              Leds->Set(LED_PLAYF, LEDS_CONT); //LED_PLAYF горит
-        break;
+    case TR_PLAYF:
+      if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то
+        Leds->Set(LED_PLAYF, LEDS_NORM);     //LED_PLAYF мигает,
+          else if(Trs(TRS_LOCK))             //иначе если Capstan готов,
+            Leds->Set(LED_PLAYF, LEDS_CONT); //LED_PLAYF горит
+      break;
 
-      case TR_PLAYR:
-        if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то
-          Leds->Set(LED_PLAYR, LEDS_NORM);     //LED_PLAYR мигает,
-            else if(Ins(TRS_LOCK))             //иначе если Capstan готов,
-              Leds->Set(LED_PLAYR, LEDS_CONT); //LED_PLAYR горит
-        break;
+    case TR_PLAYR:
+      if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то
+        Leds->Set(LED_PLAYR, LEDS_NORM);     //LED_PLAYR мигает,
+          else if(Trs(TRS_LOCK))             //иначе если Capstan готов,
+            Leds->Set(LED_PLAYR, LEDS_CONT); //LED_PLAYR горит
+      break;
 
-      case TR_REC:
-        if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то LED_REC + PLAYF
-          Leds->Set(LED_REC + LED_PLAYF, LEDS_NORM); //мигает,
-            else Leds->Set(LED_REC + LED_PLAYF, LEDS_CONT); //иначе горит
-        break;
+    case TR_REC:
+      if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то LED_REC + PLAYF
+        Leds->Set(LED_REC + LED_PLAYF, LEDS_NORM); //мигает,
+          else Leds->Set(LED_REC + LED_PLAYF, LEDS_CONT); //иначе горит
+      break;
 
-      case TR_FFD:
-        if(fRoll)
-          Leds->Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
-        Leds->Set(LED_FFD, LEDS_CONT);     //включение LED_FFD
-        break;
+    case TR_FFD:
+      if(fRoll)
+        Leds->Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
+      Leds->Set(LED_FFD, LEDS_CONT);     //включение LED_FFD
+      break;
 
-      case TR_REW:
-        if(fRoll)
-          Leds->Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
-        Leds->Set(LED_REW, LEDS_CONT);     //включение LED_REW
-        break;
+    case TR_REW:
+      if(fRoll)
+        Leds->Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
+      Leds->Set(LED_REW, LEDS_CONT);     //включение LED_REW
+      break;
 
-      case TR_AFFD:
-        if(fRoll)
-          Leds->Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
-        if(Ins(TRS_CUE))                   //если обзор
-          if(Ins(TRS_REV))                 //и если Capstan вращается назад,
-            Leds->Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
-              else Leds->Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
-        Leds->Set(LED_FFD, LEDS_NORM);     //LED_FFD мигает норм.
-        break;
+    case TR_AFFD:
+      if(fRoll)
+        Leds->Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
+      if(Trs(TRS_CUE))                   //если обзор
+        if(Trs(TRS_REV))                 //и если Capstan вращается назад,
+          Leds->Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
+            else Leds->Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
+      Leds->Set(LED_FFD, LEDS_NORM);     //LED_FFD мигает норм.
+      break;
 
-      case TR_AREW:
-        if(fRoll)
-          Leds->Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
-        if(Ins(TRS_CUE))                   //если обзор
-          if(Ins(TRS_REV))                 //и если Capstan вращается назад,
-            Leds->Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
-              else Leds->Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
-        Leds->Set(LED_REW, LEDS_NORM);     //LED_REW мигает норм.
-        break;
-      };
+    case TR_AREW:
+      if(fRoll)
+        Leds->Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
+      if(Trs(TRS_CUE))                   //если обзор
+        if(Trs(TRS_REV))                 //и если Capstan вращается назад,
+          Leds->Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
+            else Leds->Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
+      Leds->Set(LED_REW, LEDS_NORM);     //LED_REW мигает норм.
+      break;
+    };
 
-      //индикация торможения двигателями:
-      if(Ins(TRS_BRAKE) && Ins(TRS_MOVE))  //если торможение, то
-        Leds->Set(LED_STOP, LEDS_FAST);    //LED_STOP мигает
+    //индикация торможения двигателями:
+    if(Trs(TRS_BRAKE) && Trs(TRS_MOVE))  //если торможение, то
+      Leds->Set(LED_STOP, LEDS_FAST);    //LED_STOP мигает
 
-      //индикация режима PAUSE:
-      if(fPause)                           //если пауза, то
-      {
-        if(Option(OPT_PAUSELEDBLINK))
-          Leds->Set(LED_PAUSE, LEDS_NORM); //LED_PAUSE мигает
-            else Leds->Set(LED_PAUSE, LEDS_CONT); //или горит
-      }
+    //индикация режима PAUSE:
+    if(fPause)                           //если пауза, то
+    {
+      if(Option(OPT_PAUSELEDBLINK))
+        Leds->Set(LED_PAUSE, LEDS_NORM); //LED_PAUSE мигает
+          else Leds->Set(LED_PAUSE, LEDS_CONT); //или горит
     }
   }
 }
@@ -496,14 +497,33 @@ inline void TControl::LedsService(void)
 
 inline void TControl::AutoStopService(void)
 {
-  if(fSlowTick)
+  if(Transport->CheckAutoStop())
   {
-    if(Transport->CheckAutoStop())
+    if(!fAutostop)   //если автостоп не был обработан,
     {
-      Mode = TR_STOP;
-      fUpdate = 1;
-      Transport->SetMode(TR_ASTOP); //механическое торможение
+      ArMode = Mode; //запоминание режима, в котором сработал автостоп
+      fAutostop = 1; //установка флага автостопа
     }
+    Mode = TR_STOP;
+    fUpdate = 1;
+    Transport->SetMode(TR_ASTOP); //механическое торможение
+  }
+}
+
+//-------------------------- Сервис автореверса: -----------------------------
+
+inline void TControl::AutoRevService(void)
+{
+  if(fAutostop && !Trs(TRS_MOVE)) //если сработал автостоп, лента остановлена
+  {
+    if(Option(OPT_AUTOREVERSE))   //и включена опция автостопа, то
+    {
+      if(ArMode == TR_PLAYF)      //если был режим PLAYF,
+        SetMode(KEY_PLAYR);       //включение PLAYR
+          else if(ArMode == TR_PLAYR) //если был режим PLAYR,
+            SetMode(KEY_PLAYF);   //включение PLAYF
+    }
+    fAutostop = 0;                //сброс флага автостопа
   }
 }
 

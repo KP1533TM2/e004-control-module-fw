@@ -71,7 +71,8 @@ void TEndSensor::Execute(void)
   }
   else
   {
-    if(EndTimer->Over())
+    if((fIsTape != fSensorState) &&
+        EndTimer->Over())
     {
       fIsTape = fSensorState;
     }

@@ -33,8 +33,7 @@ private:
   TTransport *Transport; //объект управления ЛПМ
 
   static uint8_t const T_SLOW = 10; //медленные тики, мс
-  uint8_t SlowCounter; //медленный таймер
-  bool fSlowTick;      //флаг обновления медленного таймера
+  uint8_t ServiceCounter; //программный счетчик таймера сервисов
 
   uint8_t Mode;        //текущий режим
   uint8_t BackMode;    //режим возврата
@@ -43,8 +42,11 @@ private:
   uint8_t KeyMsg;      //тип сообщения клавиатуры
   uint8_t KeyCode;     //код кнопки
   bool fUpdate;        //флаг обновления индикации
+  uint8_t TrState;     //состояние ЛПМ
+  bool Trs(uint8_t mask) { return(TrState & mask); };
   uint8_t IndState;    //текущее состояние индикации
-  bool Ins(uint8_t mask) { return(IndState & mask); };
+  bool fAutostop;      //флаг срабатывания автостопа
+  uint8_t ArMode;      //режим для автореверса
 
   Pin_Pvg_t Pin_Pvg;   //вход контроля питания
   //unused pins:
@@ -63,9 +65,10 @@ private:
 
   void HardwareInit(void);      //инициализация оборудования
 
-  void SlowTimerService(void);  //сервис медленного таймера
+  bool ServiceTimer(void);      //таймер сервисов
   void LedsService(void);       //сервис управления светодиодами
   void AutoStopService(void);   //сервис автостопа
+  void AutoRevService(void);    //сервис автореверса
 
   enum ct_opt_t                 //опции
   {
@@ -75,7 +78,8 @@ private:
     OPT_USEARCHIVE    = 1 << 3, //использовать архивную перемотку
     OPT_ROLLCUE       = 1 << 4, //при откате включен обзор (и выключен Mute)
     OPT_ENABLECUE     = 1 << 5, //разреш. обзора кнопкой Roll при арх. перем.
-    OPT_NOSOUND       = 1 << 6  //запрещение генерации звуковых сигналов
+    OPT_NOSOUND       = 1 << 6, //запрещение генерации звуковых сигналов
+    OPT_AUTOREVERSE   = 1 << 7  //включение режима автореверса
   };
   uint8_t Options;              //набор опций
   static uint8_t const NOM_CT_OPTIONS = 0; //опции по умолчанию

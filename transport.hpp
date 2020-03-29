@@ -150,7 +150,8 @@ private:
     OPT_MOVASENABLE = 1 << 3  //разрешение автостопа по ДД
   };
   uint8_t Options;            //набор опций
-  static uint8_t const NOM_TR_OPTIONS = OPT_TENASENABLE + OPT_MOVASENABLE;
+  static uint8_t const NOM_TR_OPTIONS = OPT_BRKASENABLE +
+    OPT_PREASENABLE + OPT_TENASENABLE + OPT_MOVASENABLE; //опции по умолчанию
   bool Option(uint8_t mask) { return(Options & mask); }; //чтение опции
   TSoftTimer *BrakeTimer; //таймер торможения
   bool fAsBrake; //флаг включения автостопа при торможении

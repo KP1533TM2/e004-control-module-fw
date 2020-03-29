@@ -67,7 +67,7 @@ TSolenoid<PinForce, PinHold>::TSolenoid(void)
 template<class PinForce, class PinHold>
 void TSolenoid<PinForce, PinHold>::Execute(void)
 {
-  if(ForceTimer->Over())
+  if(PinForce::GetLatch() && ForceTimer->Over())
   {
     PinForce::Clr();
   }
