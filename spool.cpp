@@ -134,8 +134,8 @@ uint16_t TPid::Execute(uint16_t inp)
 void TPid::Preset(uint16_t p)
 {
   Yp = p * SCALE_Y;
-  Xp = p;
-  Xpp = p;
+  //Xp = p;
+  //Xpp = p;
 }
 
 //----------------------------------------------------------------------------
@@ -254,6 +254,9 @@ void TSpool::Execute(void)
           else SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
     }
     break;
+  default:
+    Pid_M1->Execute(Sen1);
+    Pid_M2->Execute(Sen2);
   };
   fUpd1 = 0;
   fUpd2 = 0;
@@ -281,18 +284,6 @@ void TSpool::SetTension(uint8_t m)
     Pid_M1->Ref = 0;
     Pid_M2->Ref = 0;
   }
-  /*
-  else if(m == SPOOL_ARCHF)
-  {
-    Pid_M1->Ref = Tensions[SPOOL_AFFD].m1;
-    Pid_M2->Ref = Tensions[SPOOL_AFFD].m1;
-  }
-  else if(m == SPOOL_ARCHR)
-  {
-    Pid_M1->Ref = Tensions[SPOOL_AREW].m2;
-    Pid_M2->Ref = Tensions[SPOOL_AREW].m2;
-  }
-  */
   else
   {
     Pid_M1->Ref = Tensions[m].m1;
@@ -336,37 +327,35 @@ void TSpool::SetMode(uint8_t m)
     MotMode = MOT_PLAY;
     break;
 
-  //case SPOOL_ARCHF:
-  //case SPOOL_ARCHR:
   case SPOOL_BRAKE:
-    //Pid_M1->Preset(0);
-    //Pid_M2->Preset(0);
+    Pid_M1->Preset(0);
+    Pid_M2->Preset(0);
     MotMode = MOT_PLAY;
     break;
 
   case SPOOL_FFD:
     SetMot2(0);
     Pid_M1->Preset(0);
-    MotMode = MOT_FFD;
     Pin_Ffd = 1;
+    MotMode = MOT_FFD;
     break;
 
   case SPOOL_REW:
     SetMot1(0);
     Pid_M2->Preset(0);
-    MotMode = MOT_REW;
     Pin_Rew = 1;
+    MotMode = MOT_REW;
     break;
 
   case SPOOL_AFFD:
-    Pid_M1->Preset(TEN_MAX);
+    Pid_M1->Preset(0);
     Pid_M2->Preset(TEN_MAX);
     MotMode = MOT_AFFD;
     break;
 
   case SPOOL_AREW:
     Pid_M1->Preset(TEN_MAX);
-    Pid_M2->Preset(TEN_MAX);
+    Pid_M2->Preset(0);
     MotMode = MOT_AREW;
     break;
   }

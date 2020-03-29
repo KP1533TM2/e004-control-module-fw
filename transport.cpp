@@ -266,14 +266,15 @@ void TTransport::Execute(void)
         Op_WaitStop();
         Op_AutoStop(AS_OFF);
         Op_Lift(OFF, 400);
-        Op_Brake(ON, 100);
+        Op_Brake(ON, 50);
         Op_AutoStop(AS_START);
         Op_WaitTension();
         Op_WaitCapstan();
         Op_AutoStop(AS_PLAY);
-        //Op_Spool(SPOOL_FORCEF);
         Op_Spool(SPOOL_PLAYF);
-        Op_Press(ON, 300);
+        //Op_Spool(SPOOL_FORCEF);
+        Op_Press(ON, 200);
+        //Op_Spool(SPOOL_PLAYF);
         Op_Mute(OFF);
         Op_Final();
         break;
@@ -292,9 +293,10 @@ void TTransport::Execute(void)
         Op_WaitTension();
         Op_WaitCapstan();
         Op_AutoStop(AS_PLAY);
-        //Op_Spool(SPOOL_FORCER);
         Op_Spool(SPOOL_PLAYR);
-        Op_Press(ON, 300);
+        //Op_Spool(SPOOL_FORCER);
+        Op_Press(ON, 200);
+        //Op_Spool(SPOOL_PLAYR);
         Op_Mute(OFF);
         Op_Final();
         break;
@@ -343,7 +345,6 @@ void TTransport::Execute(void)
         Op_Brake(ON, 100);
         Op_AutoStop(AS_START);
         Op_WaitTension();
-        //Op_Spool(SPOOL_ARCHF);
         Op_Lift(ON, 100);
         Op_Spool(SPOOL_AFFD, 100);
         Op_AutoStop(AS_FFD);
@@ -361,7 +362,6 @@ void TTransport::Execute(void)
         Op_Brake(ON, 100);
         Op_AutoStop(AS_START);
         Op_WaitTension();
-        //Op_Spool(SPOOL_ARCHR);
         Op_Lift(ON, 100);
         Op_Spool(SPOOL_AREW, 100);
         Op_AutoStop(AS_REW);
