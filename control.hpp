@@ -103,7 +103,9 @@ private:
     OPT_ENABLEPROG    = 1 << 8, //разрешение программирования режимов
     OPT_PROGBLINK     = 1 << 9, //прогрммный режим мигает, иначе горит
   };
-  static uint8_t const NOM_CT_OPTIONS = 0; //опции по умолчанию
+  //опции по умолчанию:
+  static uint16_t const NOM_CT_OPTIONS = OPT_SHOWDIR + OPT_USEARCHIVE +
+    OPT_ENABLECUE + OPT_AUTOREVERSE + OPT_ENABLEPROG;
   bool Option(ct_opt_t mask) { return(Options & mask); }; //чтение опции
 
 public:
