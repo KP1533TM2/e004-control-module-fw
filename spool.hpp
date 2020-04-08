@@ -59,7 +59,7 @@ private:
   uint16_t Xp;  //inp(n-1)
   uint16_t Xpp; //inp(n-2)
   int32_t Yp;   //out(n-1) * SCALE_Y
-  static int32_t const SCALE_Y = 500; //масштаб Y
+  static int32_t const SCALE_Y = 512; //масштаб Y
 public:
   TPid(void);
   kpid_t K;     //коэффициенты PID
@@ -82,6 +82,7 @@ private:
   static volatile uint8_t vAdcCounter;
   static uint16_t vAdcCode1;
   static uint16_t vAdcCode2;
+  uint16_t ErrorL, ErrorH;
   //значения по умолчанию:
   static uint8_t const NOM_KP = 100;
   static uint8_t const NOM_KI = 40;
@@ -97,7 +98,8 @@ private:
   static uint8_t const ADC_CYC  = 13;
   static uint8_t const ADC_PRE  = 128;
   static uint8_t const ADC_DIV  = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
-  static uint8_t const ADC_MODE = (1 << ADEN) | (1 << ADATE) | (1 << ADSC);
+  //static uint8_t const ADC_MODE = (1 << ADEN) | (1 << ADATE) | (1 << ADSC);
+  static uint8_t const ADC_MODE = (1 << ADEN) | (1 << ADSC);
   static uint8_t const ADC_INT  = (1 << ADIF) | (1 << ADIE);
   static uint8_t const ADC_SET  = ADC_MODE | ADC_INT | ADC_DIV;
   static uint8_t const ADC_REF  = (1 << REFS1) | (1 << REFS0);

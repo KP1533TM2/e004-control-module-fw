@@ -97,7 +97,6 @@ TPid::TPid(void)
   Yp = 0;
   Xp = 0;
   Xpp = 0;
-  K.p = 0;
 }
 
 //----------------------------- PID-регулятор: -------------------------------
@@ -134,8 +133,6 @@ uint16_t TPid::Execute(uint16_t inp)
 void TPid::Preset(uint16_t p)
 {
   Yp = p * SCALE_Y;
-  //Xp = p;
-  //Xpp = p;
 }
 
 //----------------------------------------------------------------------------
@@ -170,6 +167,7 @@ TSpool::TSpool(void)
   vAdcCode1 = 0;
   vAdcCode2 = 0;
   Sen1 = 0; Sen2 = 0;
+  ErrorL = 0; ErrorH = 0;
   //настройка АЦП:
   ADMUX = ADMUX_T1;
   ADCSRA = ADC_SET;
@@ -196,17 +194,18 @@ __interrupt void Adc_Handler(void)
 {
   if(TSpool::vAdcCounter < TSpool::SAMPLES)
   {
-    TSpool::vAdcCounter++;
-    if(ADMUX == TSpool::ADMUX_T2)
+    if(ADMUX == TSpool::ADMUX_T1)
     {
       TSpool::vAdcCode1 += ADC;
-      ADMUX = TSpool::ADMUX_T1;
+      ADMUX = TSpool::ADMUX_T2;
     }
     else
     {
       TSpool::vAdcCode2 += ADC;
-      ADMUX = TSpool::ADMUX_T2;
+      ADMUX = TSpool::ADMUX_T1;
     }
+    TSpool::vAdcCounter++;
+    ADCSRA = TSpool::ADC_SET;
   }
 }
 
@@ -223,6 +222,8 @@ void TSpool::Execute(void)
     vAdcCode1 = 0;
     vAdcCode2 = 0;
     vAdcCounter = 0;
+    ADMUX = ADMUX_T1;
+    ADCSRA = ADC_SET;
     //вычисление натяжения:
     Sen1 = Adc2Ten(code1);
     Sen2 = Adc2Ten(code2);
