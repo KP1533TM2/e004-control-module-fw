@@ -25,12 +25,14 @@ private:
   uint16_t EndTau;
   TSoftTimer<TT_ONESHOT> *EndTimer;
   static uint16_t const NOM_END_TAU = 200; //постоянная времени по умолчанию
+  static uint16_t const NOM_AR_DEL = 300;  //доп. задержка для автореверса
 public:
   TEndSensor(void);
   void Execute(void);
   bool Tape(void);           //чтение датчика окончания ленты
   void SetTau(uint16_t tau); //задание постоянной времени датчика
   uint16_t GetTau(void);     //чтение постоянной времени датчика
+  void ArDelay(void);        //увеличенная задержка для автореверса
   void EERead(void);         //чтение параметров из EEPROM
   void EESave(void);         //сохранение параметров в EEPROM
 };

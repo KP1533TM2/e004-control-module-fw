@@ -686,6 +686,13 @@ uint8_t TTransport::GetMode(void)
   return(NowMode);
 }
 
+//--------------- Дополнительная задержка для автореверса: -------------------
+
+void TTransport::ArDelay(void)
+{
+  EndSensor->ArDelay();
+}
+
 //------------------- Управление отводом ленты и MUTE: -----------------------
 
 void TTransport::SetCue(bool cue)

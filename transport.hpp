@@ -192,6 +192,7 @@ public:
   void Execute(void);
   void SetMode(uint8_t mode);   //включение требуемого режима ЛПМ
   uint8_t GetMode(void);        //чтение включенного режима ЛПМ
+  void ArDelay(void);           //дополнительная задержка для автореверса
   void SetCue(bool cue);        //управление отводом ленты и MUTE
   uint8_t GetState(void);       //чтение состояния для индикации
   uint8_t CheckAutoStop(void);  //проверка состояния автостопа

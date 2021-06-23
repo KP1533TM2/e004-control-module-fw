@@ -761,7 +761,8 @@ inline void TControl::AutoPlayService(void)
            (ArMode != TR_STOP))       //и есть режим для автореверса
         {
           Mode = ArMode;
-          Transport->SetMode(Mode);
+          Transport->SetMode(Mode);   //включение реверса
+          Transport->ArDelay();       //дополнительная задержка ДО
           fUpdate = 1;
         }
       }
