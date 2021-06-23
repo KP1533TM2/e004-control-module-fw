@@ -166,13 +166,13 @@ TSpool::TSpool(void)
   Pid_M1 = new TPid();
   Pid_M2 = new TPid();
 
-  SampCnt = SAMPLES;
-  AdcCode1 = 0; AdcCode2 = 0;
-  fUpd1 = 0; fUpd2 = 0;
+  vAdcCounter = 0;
+  vAdcCode1 = 0;
+  vAdcCode2 = 0;
   Sen1 = 0; Sen2 = 0;
   //настройка АЦП:
   ADMUX = ADMUX_T1;
-  ADCSRA = ADC_ST;
+  ADCSRA = ADC_SET;
   //настройка таймера 1:
   ICR1 = PWM_MAX; //PWM TOP
   SetMot1(0);     //PWM1 = 0
@@ -185,81 +185,77 @@ TSpool::TSpool(void)
   SetMode(SPOOL_OFF);
 }
 
+//--------------------------- Прерывание АЦП: --------------------------------
+
+volatile uint8_t TSpool::vAdcCounter;
+uint16_t TSpool::vAdcCode1;
+uint16_t TSpool::vAdcCode2;
+
+#pragma vector = ADC_vect
+__interrupt void Adc_Handler(void)
+{
+  if(TSpool::vAdcCounter < TSpool::SAMPLES)
+  {
+    TSpool::vAdcCounter++;
+    if(ADMUX == TSpool::ADMUX_T2)
+    {
+      TSpool::vAdcCode1 += ADC;
+      ADMUX = TSpool::ADMUX_T1;
+    }
+    else
+    {
+      TSpool::vAdcCode2 += ADC;
+      ADMUX = TSpool::ADMUX_T2;
+    }
+  }
+}
+
 //------------------------ Выполнение управления: ----------------------------
 
 void TSpool::Execute(void)
 {
   //измерение натяжения Tension1 и Tension2:
-  if(TSysTimer::Tick)
+  if(vAdcCounter == SAMPLES)
   {
-    if(ADMUX == ADMUX_T1)
+    //чтение АЦП:
+    uint16_t code1 = vAdcCode1;
+    uint16_t code2 = vAdcCode2;
+    vAdcCode1 = 0;
+    vAdcCode2 = 0;
+    vAdcCounter = 0;
+    //вычисление натяжения:
+    Sen1 = Adc2Ten(code1);
+    Sen2 = Adc2Ten(code2);
+    //управление двигателями:
+    switch(MotMode)
     {
-      AdcCode1 += ADC;
-      ADMUX = ADMUX_T2;
-    }
-    else
-    {
-      AdcCode2 += ADC;
-      ADMUX = ADMUX_T1;
-    }
-    ADCSRA = ADC_ST;
-    //Вычисление Tension1:
-    if(SampCnt == 2)
-    {
-      Sen1 = Adc2Ten(AdcCode1);
-      fUpd1 = 1;
-      AdcCode1 = 0;
-    }
-    //Вычисление Tension2:
-    else if(SampCnt == 1)
-    {
-      Sen2 = Adc2Ten(AdcCode2);
-      fUpd2 = 1;
-      AdcCode2 = 0;
-    }
-    if(!--SampCnt)
-    {
-      //Цикл измерения закончен:
-      SampCnt = SAMPLES;
-    }
-  }
-  //управление двигателями:
-  switch(MotMode)
-  {
-  case MOT_PLAY:
-    if(fUpd1) SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
-    if(fUpd2) SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
-    break;
-  case MOT_FFD:
-    if(fUpd2) SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
-    break;                                    //M2 <- не регулируется
-  case MOT_REW:
-    if(fUpd1) SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
-    break;                                    //M1 <- не регулируется
-  case MOT_AFFD:
-    if(fUpd2)
-    {
+    case MOT_PLAY:
+      SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
+      SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
+      break;
+    case MOT_FFD:
+      SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
+      break;                          //M2 <- не регулируется
+    case MOT_REW:
+      SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
+      break;                          //M1 <- не регулируется
+    case MOT_AFFD:
       if(Sen1 > Sen2)
         SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
           else SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
       SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
-    }
-    break;
-  case MOT_AREW:
-    if(fUpd1)
-    {
+      break;
+    case MOT_AREW:
       SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
       if(Sen2 > Sen1)
         SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
           else SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
+      break;
+    default:
+      Pid_M1->Execute(Sen1);
+      Pid_M2->Execute(Sen2);
     }
-    break;
-  default:
-    Pid_M1->Execute(Sen1);
-    Pid_M2->Execute(Sen2);
-  };
-  fUpd1 = 0;
-  fUpd2 = 0;
+  }
 }
 
 //---------------- Задание натяжений для PID-регуляторов: --------------------
@@ -280,7 +276,7 @@ void TSpool::SetTension(uint8_t m)
   }
   else if(m == SPOOL_OFF)
   {
-    //выключение боковых моторов (Tensions[SPOOL_OFF] - Min. tension)
+    //выключение боковых моторов (Tensions[SPOOL_OFF] = Min. tension!)
     Pid_M1->Ref = 0;
     Pid_M2->Ref = 0;
   }

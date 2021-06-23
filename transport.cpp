@@ -272,7 +272,7 @@ void TTransport::Execute(void)
         Op_WaitCapstan();
         Op_AutoStop(AS_PLAY);
         Op_Spool(SPOOL_PLAYF);
-        //Op_Spool(SPOOL_FORCEF);
+        //Op_Spool(SPOOL_FORCEF, 100);
         Op_Press(ON, 200);
         //Op_Spool(SPOOL_PLAYF);
         Op_Mute(OFF);
@@ -294,7 +294,7 @@ void TTransport::Execute(void)
         Op_WaitCapstan();
         Op_AutoStop(AS_PLAY);
         Op_Spool(SPOOL_PLAYR);
-        //Op_Spool(SPOOL_FORCER);
+        //Op_Spool(SPOOL_FORCER, 100);
         Op_Press(ON, 200);
         //Op_Spool(SPOOL_PLAYR);
         Op_Mute(OFF);
