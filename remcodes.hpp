@@ -58,6 +58,7 @@ __flash uint8_t const RC5_Codes[] =
 /*0x26*/ NC,
 /*0x27*/ NC,
 /*0x28*/ NC,
+/*0x29*/ NC,
 /*0x2A*/ NC,
 /*0x2B*/ NC,
 /*0x2C*/ NC,

@@ -17,9 +17,12 @@ enum EE_Map_t
   //EndSensor:
   EE_END_TAU,     EE_END_TAU_H,
   //Spool:
-  EE_KP,
-  EE_KI,
-  EE_KD,
+  EE_KP1,
+  EE_KI1,
+  EE_KD1,
+  EE_KP2,
+  EE_KI2,
+  EE_KD2,
   EE_TEN_MIN1,    EE_TEN_MIN1_H,
   EE_TEN_MIN2,    EE_TEN_MIN2_H,
   EE_TEN_BRAKE1,  EE_TEN_BRAKE1_H,
@@ -56,7 +59,7 @@ class TEeprom
 {
 private:
   static __no_init __eeprom uint8_t EEData[EE_PARAMS];
-  static uint16_t const EE_SIGNATURE = 0xBEDA;   //сигнатура EEPROM
+  static uint16_t const EE_SIGNATURE = 0xBE20;   //сигнатура EEPROM
   bool fValid;
 protected:
 public:

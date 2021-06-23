@@ -493,12 +493,14 @@ void TTransport::Op_Spool(uint8_t m, uint16_t del)
 {
   if(Op->NotDone())
   {
-    bool deal = Spool->GetMode() != m;
     if(Spool->GetMode() != m)
     {
       Spool->SetMode(m);
       Op->StartDelay(del);
     }
+    //если разрешено механическое торможение,
+    if((m == SPOOL_BRAKE) && (!Option(OPT_MOTORBRK)))
+      SolBrake->OnOff(0); //то включение тормозов
     Op->Done();
   }
 }
@@ -669,6 +671,10 @@ void TTransport::SetAutoStop(uint8_t m)
 void TTransport::SetMode(uint8_t mode)
 {
   NewMode = mode;
+  if((NewMode == TR_REC) && (NowMode == TR_PLAYF))
+    NowMode = TR_REC;
+  if((NewMode == TR_PLAYF) && (NowMode == TR_REC))
+    NowMode = TR_PLAYF;
   if((mode != TR_CAPF) && (mode != TR_CAPR))
     SetCue(OFF);
 }
@@ -750,6 +756,9 @@ uint8_t TTransport::CheckAutoStop(void)
       fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   default:
+    //TODO: в режиме STOP проверять натяжение не LowT1 or LowT2,
+    //а LowT1 and LowT2, чтобы была возможность старта с одним провисшим
+    //натяжителем.
     fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
   };
   if(fas && AutostopTimer->Over()) //если fas = 1 и интервал истек, то

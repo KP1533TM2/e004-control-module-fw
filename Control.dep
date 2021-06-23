@@ -6,101 +6,112 @@
   <configuration>
     <name>Rev_A</name>
     <outputs>
-      <file>$PROJ_DIR$\audio.cpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\leds.r90</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\stdint.h</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\control.r90</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\spool.r90</file>
-      <file>$PROJ_DIR$\Rev_A\List\Control.map</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\capstan.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\wakeport.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\limits.h</file>
-      <file>$PROJ_DIR$\Rev_A\List\main.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\endsensor.r90</file>
-      <file>$PROJ_DIR$\Rev_A\List\transport.lst</file>
-      <file>$PROJ_DIR$\Rev_A\List\keyboard.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\wakeport.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\wake.pbi</file>
       <file>$TOOLKIT_DIR$\inc\iom64.h</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\port.r90</file>
-      <file>$PROJ_DIR$\eeprom.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
       <file>$PROJ_DIR$\Rev_A\Obj\local.r90</file>
-      <file>$PROJ_DIR$\Rev_A\List\control.lst</file>
       <file>$PROJ_DIR$\Rev_A\Obj\systimer.r90</file>
-      <file>$TOOLKIT_DIR$\src\template\cfgm64.xcl</file>
+      <file>$PROJ_DIR$\capstan.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\Rev_A\List\keyboard.lst</file>
+      <file>$PROJ_DIR$\board_a.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\Control.map</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\port.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\spool.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\List\spool.lst</file>
+      <file>$PROJ_DIR$\Rev_A\List\endsensor.lst</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\systimer.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\remote.r90</file>
       <file>$PROJ_DIR$\commands.hpp</file>
       <file>$PROJ_DIR$\wakeport.hpp</file>
-      <file>$PROJ_DIR$\solenoid.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\main.r90</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\keyboard.pbi</file>
-      <file>$PROJ_DIR$\remcodes.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\sound.r90</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\leds.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\List\endsensor.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\Control.pbd</file>
-      <file>$PROJ_DIR$\Rev_A\List\systimer.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\control.pbi</file>
+      <file>$PROJ_DIR$\endsensor.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\eeprom.r90</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.h</file>
+      <file>$PROJ_DIR$\local.hpp</file>
+      <file>$PROJ_DIR$\audio.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\capstan.lst</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\port.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\transport.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\List\movesensor.lst</file>
       <file>$PROJ_DIR$\control.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\leds.lst</file>
+      <file>$PROJ_DIR$\spool.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdbool.h</file>
+      <file>$PROJ_DIR$\Rev_A\List\control.lst</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\leds.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\local.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\wake.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\movesensor.r90</file>
+      <file>$PROJ_DIR$\transport.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\movesensor.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\List\remote.lst</file>
+      <file>$TOOLKIT_DIR$\src\template\cfg3soim.xcl</file>
+      <file>$PROJ_DIR$\Rev_A\List\local.lst</file>
+      <file>$PROJ_DIR$\Rev_A\List\main.lst</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\movesensor.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\wake.lst</file>
+      <file>$PROJ_DIR$\Rev_A\Exe\Control.hex</file>
+      <file>$PROJ_DIR$\audio.cpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\Control.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Rev_A\List\eeprom.lst</file>
+      <file>$PROJ_DIR$\port.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\systimer.lst</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\capstan.r90</file>
+      <file>$PROJ_DIR$\Rev_A\List\wakeport.lst</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\limits.h</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\keyboard.pbi</file>
+      <file>$PROJ_DIR$\remote.hpp</file>
+      <file>$PROJ_DIR$\gpio.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\transport.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\capstan.pbi</file>
+      <file>$PROJ_DIR$\eeprom.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdint.h</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\wakeport.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\audio.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\leds.r90</file>
+      <file>$PROJ_DIR$\Rev_A\List\sound.lst</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\endsensor.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\keyboard.r90</file>
+      <file>$PROJ_DIR$\leds.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\endsensor.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\eeprom.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\remote.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\List\transport.lst</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\bitdefinitions\iom64.inc</file>
       <file>$PROJ_DIR$\main.hpp</file>
+      <file>$PROJ_DIR$\sound.hpp</file>
+      <file>$PROJ_DIR$\wake.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\port.lst</file>
+      <file>$PROJ_DIR$\keyboard.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\List\audio.lst</file>
+      <file>$TOOLKIT_DIR$\src\template\cfgm64.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
       <file>$PROJ_DIR$\capstan.cpp</file>
       <file>$PROJ_DIR$\control.cpp</file>
       <file>$PROJ_DIR$\eeprom.cpp</file>
       <file>$PROJ_DIR$\endsensor.cpp</file>
       <file>$PROJ_DIR$\keyboard.cpp</file>
-      <file>$PROJ_DIR$\sound.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\keyboard.r90</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\audio.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\Rev_A\List\port.lst</file>
-      <file>$PROJ_DIR$\port.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\transport.r90</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\sound.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\transport.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\systimer.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\movesensor.r90</file>
-      <file>$PROJ_DIR$\Rev_A\List\capstan.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\local.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\stdbool.h</file>
-      <file>$PROJ_DIR$\Rev_A\List\eeprom.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\endsensor.pbi</file>
-      <file>$PROJ_DIR$\spool.hpp</file>
-      <file>$PROJ_DIR$\capstan.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\List\wakeport.lst</file>
-      <file>$TOOLKIT_DIR$\inc\bitdefinitions\iom64.inc</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\remote.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\remote.r90</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\audio.r90</file>
-      <file>$PROJ_DIR$\movesensor.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\spool.pbi</file>
-      <file>$PROJ_DIR$\remote.hpp</file>
-      <file>$PROJ_DIR$\gpio.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\List\spool.lst</file>
-      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
-      <file>$PROJ_DIR$\Rev_A\List\local.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Exe\Control.hex</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\systimer.pbi</file>
-      <file>$PROJ_DIR$\keyboard.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\eeprom.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\eeprom.r90</file>
-      <file>$PROJ_DIR$\leds.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\wake.pbi</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.r90</file>
-      <file>$PROJ_DIR$\Rev_A\List\leds.lst</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\capstan.r90</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\local.hpp</file>
-      <file>$PROJ_DIR$\audio.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\Rev_A\List\sound.lst</file>
-      <file>$PROJ_DIR$\transport.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\wake.r90</file>
       <file>$PROJ_DIR$\leds.cpp</file>
       <file>$PROJ_DIR$\local.cpp</file>
       <file>$PROJ_DIR$\main.cpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\main.r90</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\sound.r90</file>
+      <file>$PROJ_DIR$\remcodes.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\audio.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\sound.pbi</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\control.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\control.pbi</file>
+      <file>$PROJ_DIR$\systimer.hpp</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\spool.r90</file>
+      <file>$PROJ_DIR$\Rev_A\Obj\wakeport.r90</file>
+      <file>$PROJ_DIR$\solenoid.hpp</file>
       <file>$PROJ_DIR$\movesensor.cpp</file>
       <file>$PROJ_DIR$\port.cpp</file>
       <file>$PROJ_DIR$\remote.cpp</file>
@@ -110,47 +121,51 @@
       <file>$PROJ_DIR$\transport.cpp</file>
       <file>$PROJ_DIR$\wake.cpp</file>
       <file>$PROJ_DIR$\wakeport.cpp</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\movesensor.pbi</file>
-      <file>$PROJ_DIR$\Rev_A\Obj\port.pbi</file>
-      <file>$PROJ_DIR$\board_a.hpp</file>
-      <file>$PROJ_DIR$\Rev_A\List\wake.lst</file>
-      <file>$PROJ_DIR$\Rev_A\List\remote.lst</file>
-      <file>$PROJ_DIR$\Rev_A\List\movesensor.lst</file>
-      <file>$PROJ_DIR$\Rev_A\List\audio.lst</file>
-      <file>$PROJ_DIR$\endsensor.hpp</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.h</file>
-      <file>$TOOLKIT_DIR$\src\template\cfg3soim.xcl</file>
-      <file>$PROJ_DIR$\wake.hpp</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 75 5</file>
+          <file> 47 9</file>
         </tool>
       </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Rev_A\Exe\Control.hex</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 9</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 84 41 98 54 100 19 69 70 67 3 94 37 10 15 96 103 4 61 36 104 35</file>
+        </tool>
+      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\audio.cpp</name>
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 110 67</file>
+          <file> 83 98</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 44</file>
+          <file> 66</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 87</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 22</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 87</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 22</file>
         </tool>
       </inputs>
     </file>
@@ -159,21 +174,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 56 84</file>
+          <file> 23 54</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 7</file>
+          <file> 62</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 62 54 35 86 77 70 42 90 24 61 68 111 87 80 48 23 114 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 5 102 27 21 82 58 79 38 105 29 45 18 22 71 52 17 80 63</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 62 54 35 86 77 70 42 90 24 61 68 111 87 80 48 23 114 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 5 102 27 21 82 58 79 38 105 29 45 18 22 71 52 17 80 63</file>
         </tool>
       </inputs>
     </file>
@@ -182,21 +197,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 19 3</file>
+          <file> 31 100</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 34</file>
+          <file> 101</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 35 86 77 54 70 42 90 24 62 61 68 111 87 80 48 23 114 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 27 21 82 102 58 79 38 105 5 29 45 18 22 71 52 17 80 63</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 35 86 77 54 70 42 90 24 62 61 68 111 87 80 48 23 114 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 27 21 82 102 58 79 38 105 5 29 45 18 22 71 52 17 80 63</file>
         </tool>
       </inputs>
     </file>
@@ -205,21 +220,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 59 79</file>
+          <file> 51 19</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 78</file>
+          <file> 73</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 63</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 63</file>
         </tool>
       </inputs>
     </file>
@@ -228,21 +243,21 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 31 11</file>
+          <file> 13 69</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 60</file>
+          <file> 72</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 111 54 35 86 77 70 42 90 24 62 61 68 87 80 48 23 114 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 18 102 27 21 82 58 79 38 105 5 29 45 22 71 52 17 80 63</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 111 54 35 86 77 70 42 90 24 62 61 68 87 80 48 23 114 17</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 18 102 27 21 82 58 79 38 105 5 29 45 22 71 52 17 80 63</file>
         </tool>
       </inputs>
     </file>
@@ -251,68 +266,7 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 13 43</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 77 54</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 77 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Rev_A\Exe\Control.hex</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 5</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 21 113 67 84 3 79 11 43 1 18 25 55 16 66 28 4 20 49 91 14 82</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\leds.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 83 1</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 29</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 80</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 80</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\local.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 74 18</file>
+          <file> 7 70</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -322,519 +276,11 @@
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 86 77 54 70</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 82 102</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 86 77 54 70</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\main.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 10 25</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 30</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 35 86 77 54 70 42 90 24 62 61 68 111 87 80 48 23 114 17</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 35 86 77 54 70 42 90 24 62 61 68 111 87 80 48 23 114 17</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\movesensor.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 109 55</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 104</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 68</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 68</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\port.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 47 16</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 105</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 35 86 77 54 70 42 90 24 62 61 68 111 87 80 48 23 114 17 22</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 35 86 77 54 70 42 90 24 62 61 68 111 87 80 48 23 114 17 22</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\remote.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 108 66</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 65</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 70 54 77 27</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 70 54 77 27</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\sound.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 89 28</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 51</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 42 54</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 42 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\spool.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 72 4</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 69</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 61 54 35 86 77 70 42 90 24 62 68 111 87 80 48 23 114 17</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 61 54 35 86 77 70 42 90 24 62 68 111 87 80 48 23 114 17</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\systimer.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 33 20</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 76</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 54</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\transport.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 12 49</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 52</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 90 54 24 62 61 68 111 87 35 86 77 70 42 80 48 23 114 17</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 90 54 24 62 61 68 111 87 35 86 77 70 42 80 48 23 114 17</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\wake.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 107 91</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 81</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 114</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 114</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\wakeport.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 63 14</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 8</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 23 114</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36 15 73 64 85 2 50 45 88 112 6 46 53 58 9 71 106 23 114</file>
-        </tool>
-      </inputs>
-    </file>
-  </configuration>
-  <configuration>
-    <name>Rev_C</name>
-    <outputs>
-      <file>$PROJ_DIR$\audio.cpp</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\stdint.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\limits.h</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\systimer.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\leds.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\local.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\List\transport.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\keyboard.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\port.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\remote.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\spool.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\movesensor.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\sound.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\main.r90</file>
-      <file>$PROJ_DIR$\Rev_C\List\leds.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\keyboard.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\spool.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\main.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\capstan.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\audio.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\systimer.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\eeprom.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\wakeport.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\Control.map</file>
-      <file>$PROJ_DIR$\Rev_C\List\movesensor.lst</file>
-      <file>$TOOLKIT_DIR$\inc\iom64.h</file>
-      <file>$PROJ_DIR$\eeprom.hpp</file>
-      <file>$PROJ_DIR$\Rev_C\List\sound.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\remote.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\systimer.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\sound.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\wake.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\wakeport.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\List\remote.lst</file>
-      <file>$PROJ_DIR$\Rev_C\List\wake.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\audio.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\spool.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\transport.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\List\port.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Exe\Control.hex</file>
-      <file>$PROJ_DIR$\Rev_C\List\control.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\eeprom.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\capstan.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\keyboard.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\capstan.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\Control.pbd</file>
-      <file>$PROJ_DIR$\Rev_C\List\endsensor.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\audio.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\wakeport.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\port.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\wake.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\control.r90</file>
-      <file>$PROJ_DIR$\Rev_C\List\local.lst</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\leds.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\control.pbi</file>
-      <file>$PROJ_DIR$\board_c.hpp</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\endsensor.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\endsensor.r90</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\transport.r90</file>
-      <file>$TOOLKIT_DIR$\src\template\cfgm64.xcl</file>
-      <file>$PROJ_DIR$\commands.hpp</file>
-      <file>$PROJ_DIR$\wakeport.hpp</file>
-      <file>$PROJ_DIR$\solenoid.hpp</file>
-      <file>$PROJ_DIR$\remcodes.hpp</file>
-      <file>$PROJ_DIR$\control.hpp</file>
-      <file>$PROJ_DIR$\main.hpp</file>
-      <file>$PROJ_DIR$\capstan.cpp</file>
-      <file>$PROJ_DIR$\control.cpp</file>
-      <file>$PROJ_DIR$\eeprom.cpp</file>
-      <file>$PROJ_DIR$\endsensor.cpp</file>
-      <file>$PROJ_DIR$\keyboard.cpp</file>
-      <file>$PROJ_DIR$\sound.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\port.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\systimer.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\stdbool.h</file>
-      <file>$PROJ_DIR$\spool.hpp</file>
-      <file>$PROJ_DIR$\capstan.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\bitdefinitions\iom64.inc</file>
-      <file>$PROJ_DIR$\movesensor.hpp</file>
-      <file>$PROJ_DIR$\remote.hpp</file>
-      <file>$PROJ_DIR$\gpio.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\movesensor.pbi</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\eeprom.r90</file>
-      <file>$PROJ_DIR$\keyboard.hpp</file>
-      <file>$PROJ_DIR$\leds.hpp</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.r90</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\local.hpp</file>
-      <file>$PROJ_DIR$\audio.hpp</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\transport.hpp</file>
-      <file>$PROJ_DIR$\leds.cpp</file>
-      <file>$PROJ_DIR$\local.cpp</file>
-      <file>$PROJ_DIR$\main.cpp</file>
-      <file>$PROJ_DIR$\movesensor.cpp</file>
-      <file>$PROJ_DIR$\port.cpp</file>
-      <file>$PROJ_DIR$\remote.cpp</file>
-      <file>$PROJ_DIR$\sound.cpp</file>
-      <file>$PROJ_DIR$\spool.cpp</file>
-      <file>$PROJ_DIR$\systimer.cpp</file>
-      <file>$PROJ_DIR$\transport.cpp</file>
-      <file>$PROJ_DIR$\wake.cpp</file>
-      <file>$PROJ_DIR$\wakeport.cpp</file>
-      <file>$PROJ_DIR$\Rev_C\Obj\local.r90</file>
-      <file>$PROJ_DIR$\endsensor.hpp</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.h</file>
-      <file>$TOOLKIT_DIR$\src\template\cfg3soim.xcl</file>
-      <file>$PROJ_DIR$\wake.hpp</file>
-    </outputs>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 41 25</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\audio.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 21 37</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 49</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 95</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 95</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Rev_C\Exe\Control.hex</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 25</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 61 113 37 44 53 89 59 9 55 110 15 13 10 11 14 12 4 60 52 50 92</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\capstan.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 20 44</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 46</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 82 79 66 94 90 85 73 97 64 81 84 111 95 91 76 63 114 28</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 82 79 66 94 90 85 73 97 64 81 84 111 95 91 76 63 114 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\control.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 42 53</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 56</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 66 94 90 79 85 73 97 64 82 81 84 111 95 91 76 63 114 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\eeprom.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 23 89</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 43</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 28</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\endsensor.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 48 59</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 58</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 111 79 66 94 90 85 73 97 64 82 81 84 95 91 76 63 114 28</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 111 79 66 94 90 85 73 97 64 82 81 84 95 91 76 63 114 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\keyboard.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 17 9</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 45</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 90 79</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 90 79</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 82 102</file>
         </tool>
       </inputs>
     </file>
@@ -843,225 +289,7 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 16 55</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 6</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 91</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 91</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\local.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 54 110</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 7</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 94 90 79 85</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\main.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 19 15</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 5</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 66 94 90 79 85 73 97 64 82 81 84 111 95 91 76 63 114 28</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 66 94 90 79 85 73 97 64 82 81 84 111 95 91 76 63 114 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\movesensor.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 26 13</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 88</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 84</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\port.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 40 10</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 51</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 66 94 90 79 85 73 97 64 82 81 84 111 95 91 76 63 114 28 62</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 66 94 90 79 85 73 97 64 82 81 84 111 95 91 76 63 114 28 62</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\remote.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 35 11</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 30</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 85 79 90 65</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 85 79 90 65</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\sound.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 29 14</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 32</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 73 79</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 73 79</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\spool.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 18 12</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 38</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 81 79 66 94 90 85 73 97 64 82 84 111 95 91 76 63 114 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\systimer.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 22 4</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 31</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 79</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 79</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\transport.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 8 60</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 39</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 97 79 64 82 81 84 111 95 66 94 90 85 73 91 76 63 114 28</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 97 79 64 82 81 84 111 95 66 94 90 85 73 91 76 63 114 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\wake.cpp</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 36 52</file>
+          <file> 28 67</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1071,20 +299,20 @@
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 114</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 71</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 114</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 71</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\wakeport.cpp</name>
+      <name>$PROJ_DIR$\local.cpp</name>
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 24 50</file>
+          <file> 42 3</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -1094,11 +322,787 @@
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 63 114</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 21 82 102 58</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 67 27 87 83 93 1 77 74 96 112 2 75 78 80 3 86 57 63 114</file>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 21 82 102 58</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 43 94</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 44</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 27 21 82 102 58 79 38 105 5 29 45 18 22 71 52 17 80 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 27 21 82 102 58 79 38 105 5 29 45 18 22 71 52 17 80 63</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\movesensor.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 26 37</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 45</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 45</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\port.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 81 10</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 24</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 27 21 82 102 58 79 38 105 5 29 45 18 22 71 52 17 80 63 16</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 27 21 82 102 58 79 38 105 5 29 45 18 22 71 52 17 80 63 16</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\remote.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 40 15</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 58 102 82 97</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 58 102 82 97</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sound.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 68 96</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 99</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 79 102</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 79 102</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\spool.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 12 103</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 11</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 29 102 27 21 82 58 79 38 105 5 45 18 22 71 52 17 80 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 29 102 27 21 82 58 79 38 105 5 45 18 22 71 52 17 80 63</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\systimer.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 53 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 14</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 102</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 102</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\transport.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 75 61</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 38 102 105 5 29 45 18 22 27 21 82 58 79 71 52 17 80 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 38 102 105 5 29 45 18 22 27 21 82 58 79 71 52 17 80 63</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\wake.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 46 36</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 80</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 80</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\wakeport.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 55 104</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 65</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 17 80</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78 1 2 77 76 64 95 32 6 20 85 60 50 30 56 59 8 17 80</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+  <configuration>
+    <name>Rev_C</name>
+    <outputs>
+      <file>$TOOLKIT_DIR$\inc\iom64.h</file>
+      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\main.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\movesensor.r90</file>
+      <file>$PROJ_DIR$\Rev_C\List\Control.map</file>
+      <file>$PROJ_DIR$\Rev_C\List\wakeport.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\movesensor.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\sound.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\remote.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\wakeport.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\wake.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\List\wake.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\audio.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\spool.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\transport.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\List\port.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Exe\Control.hex</file>
+      <file>$PROJ_DIR$\Rev_C\List\control.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\eeprom.pbi</file>
+      <file>$PROJ_DIR$\capstan.hpp</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\sound.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\port.r90</file>
+      <file>$PROJ_DIR$\Rev_C\List\main.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\audio.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\systimer.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\systimer.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\sound.r90</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\commands.hpp</file>
+      <file>$PROJ_DIR$\wakeport.hpp</file>
+      <file>$PROJ_DIR$\endsensor.hpp</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.h</file>
+      <file>$PROJ_DIR$\local.hpp</file>
+      <file>$PROJ_DIR$\audio.hpp</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\capstan.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\keyboard.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\capstan.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\List\endsensor.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\audio.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\wakeport.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\port.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\wake.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\control.r90</file>
+      <file>$PROJ_DIR$\Rev_C\List\local.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\leds.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\control.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\endsensor.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\endsensor.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\eeprom.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\transport.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\local.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\movesensor.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\leds.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\keyboard.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\systimer.r90</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\local.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\List\transport.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\spool.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\keyboard.lst</file>
+      <file>$PROJ_DIR$\Rev_C\List\capstan.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\Control.pbd</file>
+      <file>$PROJ_DIR$\Rev_C\List\eeprom.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\spool.r90</file>
+      <file>$PROJ_DIR$\board_c.hpp</file>
+      <file>$PROJ_DIR$\Rev_C\List\leds.lst</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\remote.pbi</file>
+      <file>$PROJ_DIR$\Rev_C\Obj\remote.r90</file>
+      <file>$PROJ_DIR$\control.hpp</file>
+      <file>$PROJ_DIR$\spool.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdbool.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-sf-n.r90</file>
+      <file>$PROJ_DIR$\transport.hpp</file>
+      <file>$TOOLKIT_DIR$\src\template\cfg3soim.xcl</file>
+      <file>$PROJ_DIR$\movesensor.hpp</file>
+      <file>$PROJ_DIR$\audio.cpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\port.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\limits.h</file>
+      <file>$PROJ_DIR$\remote.hpp</file>
+      <file>$PROJ_DIR$\gpio.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\eeprom.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdint.h</file>
+      <file>$PROJ_DIR$\leds.hpp</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\bitdefinitions\iom64.inc</file>
+      <file>$PROJ_DIR$\main.hpp</file>
+      <file>$PROJ_DIR$\sound.hpp</file>
+      <file>$PROJ_DIR$\wake.hpp</file>
+      <file>$PROJ_DIR$\keyboard.hpp</file>
+      <file>$TOOLKIT_DIR$\src\template\cfgm64.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\capstan.cpp</file>
+      <file>$PROJ_DIR$\control.cpp</file>
+      <file>$PROJ_DIR$\eeprom.cpp</file>
+      <file>$PROJ_DIR$\endsensor.cpp</file>
+      <file>$PROJ_DIR$\keyboard.cpp</file>
+      <file>$PROJ_DIR$\leds.cpp</file>
+      <file>$PROJ_DIR$\local.cpp</file>
+      <file>$PROJ_DIR$\main.cpp</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
+      <file>$PROJ_DIR$\remcodes.hpp</file>
+      <file>$PROJ_DIR$\systimer.hpp</file>
+      <file>$PROJ_DIR$\solenoid.hpp</file>
+      <file>$PROJ_DIR$\movesensor.cpp</file>
+      <file>$PROJ_DIR$\port.cpp</file>
+      <file>$PROJ_DIR$\remote.cpp</file>
+      <file>$PROJ_DIR$\sound.cpp</file>
+      <file>$PROJ_DIR$\spool.cpp</file>
+      <file>$PROJ_DIR$\systimer.cpp</file>
+      <file>$PROJ_DIR$\transport.cpp</file>
+      <file>$PROJ_DIR$\wake.cpp</file>
+      <file>$PROJ_DIR$\wakeport.cpp</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\Rev_C\Exe\Control.hex</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 92 74 12 34 42 48 46 54 44 50 2 3 21 67 26 63 55 49 41 39 72</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 16 4</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\audio.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 23 12</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 38</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 33</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 33</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\capstan.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 60 34</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 36</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 19 104 68 32 91 80 89 73 105 69 75 30 33 85 78 29 90 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 19 104 68 32 91 80 89 73 105 69 75 30 33 85 78 29 90 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\control.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 17 42</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 45</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 68 32 91 104 80 89 73 105 19 69 75 30 33 85 78 29 90 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 68 32 91 104 80 89 73 105 19 69 75 30 33 85 78 29 90 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\eeprom.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 62 48</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\endsensor.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 37 46</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 30 104 68 32 91 80 89 73 105 19 69 75 33 85 78 29 90 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 30 104 68 32 91 80 89 73 105 19 69 75 33 85 78 29 90 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\keyboard.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 59 54</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 35</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 91 104</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 91 104</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\leds.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 65 44</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 53</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 85</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 85</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\local.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 43 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 56</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 32 91 104 80</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 22 2</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 52</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 68 32 91 104 80 89 73 105 19 69 75 30 33 85 78 29 90 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 68 32 91 104 80 89 73 105 19 69 75 30 33 85 78 29 90 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\movesensor.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 6 3</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 75</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\port.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 15 21</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 68 32 91 104 80 89 73 105 19 69 75 30 33 85 78 29 90 83 28</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 68 32 91 104 80 89 73 105 19 69 75 30 33 85 78 29 90 83 28</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\remote.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 8 67</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 80 104 91 103</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 80 104 91 103</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sound.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 7 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 89 104</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 89 104</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\spool.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 58 63</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 69 104 68 32 91 80 89 73 105 19 75 30 33 85 78 29 90 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 69 104 68 32 91 80 89 73 105 19 75 30 33 85 78 29 90 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\systimer.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 24 55</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 104</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\transport.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 57 49</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 14</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 73 104 105 19 69 75 30 33 68 32 91 80 89 85 78 29 90 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 73 104 105 19 69 75 30 33 68 32 91 80 89 85 78 29 90 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\wake.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 11 41</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 90</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 90</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\wakeport.cpp</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 5 39</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 9</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 29 90</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 0 1 87 86 84 102 71 27 31 93 82 77 70 79 81 64 29 90</file>
         </tool>
       </inputs>
     </file>

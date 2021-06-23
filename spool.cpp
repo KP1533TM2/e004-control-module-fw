@@ -6,7 +6,7 @@
 
 //Класс TSpool осуществляет управление боковыми двигателями.
 
-//Датчики натяжения поочередно считываются с помощью АЦП, период выборок 1 мс.
+//Датчики натяжения поочередно считываются с помощью АЦП, период выборок 100 мкс.
 //Несколько выборок усредняются, в результате получается период дискретизации,
 //задаваемый константой T_SAMPLE. Код АЦП приводится к диапазону 0…65535.
 //Используется внутренний ИОН, полная шкала АЦП составляет 2.56 В.
@@ -65,14 +65,16 @@
 //двигатель фактически питается напряжением 60 В, в случае необходимости
 //оно снижается для ограничения натяжения на заданном уровне. Подающий
 //двигатель поддерживает заданное натяжение для равномерной намотки ленты
-//на катушку.
+//на катушку. Кроме того, если на подающей стороне будет обнаружено натяжение
+//больше установленного для подающего двигателя, вступает в работу датчик
+//с подающей стороны, ограничивая натяжение.
 
 //В режиме торможения двигателями натяжение регулируется так же, как в режиме
 //рабочего хода. Натяжения справа и слева должны быть установлены одинаковыми,
 //чтобы лента при остановке находилась в равновесии.
 
 //Для каждого из режимов и для каждого двигателя натяжение может быть
-//установлено индивидуально с помощью вервисной программы. Натяжение задется
+//установлено индивидуально с помощью сервисной программы. Натяжение задется
 //в процентах относительно полного хода рычагов натяжителей. Задаются следующие
 //натяжения: Brake (торможение двигателями), PlayF (рабочий ход вперед),
 //PlayR (рабочий ход назад), FFD (перемотка вперед), REW (перемотка назад),
@@ -368,18 +370,26 @@ uint8_t TSpool::GetMode(void)
 
 //--------------------- Установка коэффициентов PID: -------------------------
 
-void TSpool::SetPID(kpid_t k)
+void TSpool::SetPID1(kpid_t k)
 {
-  K = k;
-  Pid_M1->K = K;
-  Pid_M2->K = K;
+  Pid_M1->K = k;
+}
+
+void TSpool::SetPID2(kpid_t k)
+{
+  Pid_M2->K = k;
 }
 
 //----------------------- Чтение коэффициентов PID: --------------------------
 
-kpid_t TSpool::GetPID(void)
+kpid_t TSpool::GetPID1(void)
 {
-  return(K);
+  return(Pid_M1->K);
+}
+
+kpid_t TSpool::GetPID2(void)
+{
+  return(Pid_M2->K);
 }
 
 //------------------------- Управление мотором M1: ---------------------------
@@ -480,14 +490,21 @@ bool TSpool::LowT1T2(void)
   return((Sen1 <= Tensions[SPOOL_OFF].m1) || (Sen2 <= Tensions[SPOOL_OFF].m2));
 }
 
+//TODO: сделать методы LowT1orT2 и LowT1andT2
+
 //--------------------- Чтение параметров из EEPROM: -------------------------
 
 void TSpool::EERead(void)
 {
-  K.p = Eeprom->Rd8(EE_KP, NOM_KP);
-  K.i = Eeprom->Rd8(EE_KI, NOM_KI);
-  K.d = Eeprom->Rd8(EE_KD, NOM_KD);
-  SetPID(K);
+  kpid_t K;
+  K.p = Eeprom->Rd8(EE_KP1, NOM_KP);
+  K.i = Eeprom->Rd8(EE_KI1, NOM_KI);
+  K.d = Eeprom->Rd8(EE_KD1, NOM_KD);
+  SetPID1(K);
+  K.p = Eeprom->Rd8(EE_KP2, NOM_KP);
+  K.i = Eeprom->Rd8(EE_KI2, NOM_KI);
+  K.d = Eeprom->Rd8(EE_KD2, NOM_KD);
+  SetPID2(K);
   Tensions[SPOOL_OFF].m1   = Eeprom->Rd16(EE_TEN_MIN1,   NOM_TEN_MIN);
   Tensions[SPOOL_OFF].m2   = Eeprom->Rd16(EE_TEN_MIN2,   NOM_TEN_MIN);
   Tensions[SPOOL_BRAKE].m1 = Eeprom->Rd16(EE_TEN_BRAKE1, NOM_TEN_PLAY);
@@ -510,9 +527,15 @@ void TSpool::EERead(void)
 
 void TSpool::EESave(void)
 {
-  Eeprom->Wr8(EE_KP, K.p);
-  Eeprom->Wr8(EE_KI, K.i);
-  Eeprom->Wr8(EE_KD, K.d);
+  kpid_t K;
+  K = GetPID1();
+  Eeprom->Wr8(EE_KP1, K.p);
+  Eeprom->Wr8(EE_KI1, K.i);
+  Eeprom->Wr8(EE_KD1, K.d);
+  K = GetPID2();
+  Eeprom->Wr8(EE_KP2, K.p);
+  Eeprom->Wr8(EE_KI2, K.i);
+  Eeprom->Wr8(EE_KD2, K.d);
   Eeprom->Wr16(EE_TEN_MIN1,   Tensions[SPOOL_OFF].m1);
   Eeprom->Wr16(EE_TEN_MIN2,   Tensions[SPOOL_OFF].m2);
   Eeprom->Wr16(EE_TEN_BRAKE1, Tensions[SPOOL_BRAKE].m1);

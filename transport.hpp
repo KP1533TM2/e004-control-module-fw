@@ -159,12 +159,13 @@ private:
     OPT_BRKASENABLE = 1 << 0, //разрешение автостопа при торможении
     OPT_PREASENABLE = 1 << 1, //разрешение автостопа по пред. натяжению
     OPT_TENASENABLE = 1 << 2, //разрешение автостопа по натяжению
-    OPT_MOVASENABLE = 1 << 3  //разрешение автостопа по ДД
+    OPT_MOVASENABLE = 1 << 3, //разрешение автостопа по ДД
+    OPT_MOTORBRK    = 1 << 4  //торможение двигателями
   };
   uint8_t Options;            //набор опций
   //опции по умолчанию:
   static uint8_t const NOM_TR_OPTIONS = OPT_BRKASENABLE +
-    OPT_PREASENABLE + OPT_TENASENABLE + OPT_MOVASENABLE;
+    OPT_PREASENABLE + OPT_TENASENABLE + OPT_MOVASENABLE + OPT_MOTORBRK;
   bool Option(uint8_t mask) { return(Options & mask); }; //чтение опции
   TSoftTimer<TT_PLAIN> *BrakeTimer; //таймер торможения
   bool fAsBrake; //флаг включения автостопа при торможении

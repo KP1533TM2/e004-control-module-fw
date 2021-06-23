@@ -92,20 +92,24 @@ private:
   uint16_t Options;             //набор опций
   enum ct_opt_t                 //опции
   {
-    OPT_PAUSELEDBLINK = 1 << 0, //cветодиод паузы мигает, иначе - горит
-    OPT_AUTORECPAUSE  = 1 << 1, //автоматическое вкл. паузы при вкл. записи
-    OPT_SHOWDIR       = 1 << 2, //разрешение индикации направления capstan
-    OPT_USEARCHIVE    = 1 << 3, //использовать архивную перемотку
-    OPT_ROLLCUE       = 1 << 4, //при откате включен обзор (и выключен Mute)
-    OPT_ENABLECUE     = 1 << 5, //разреш. обзора кнопкой Roll при арх. перем.
-    OPT_NOSOUND       = 1 << 6, //запрещение генерации звуковых сигналов
-    OPT_AUTOREVERSE   = 1 << 7, //включение режима автореверса
-    OPT_ENABLEPROG    = 1 << 8, //разрешение программирования режимов
-    OPT_PROGBLINK     = 1 << 9, //прогрммный режим мигает, иначе горит
+    OPT_PAUSELEDBLINK = 1 << 0,  //cветодиод паузы мигает, иначе - горит
+    OPT_AUTORECPAUSE  = 1 << 1,  //автоматическое вкл. паузы при вкл. записи
+    OPT_SHOWDIR       = 1 << 2,  //разрешение индикации направления capstan
+    OPT_USEARCHIVE    = 1 << 3,  //использовать архивную перемотку
+    OPT_ROLLCUE       = 1 << 4,  //при откате включен обзор (и выключен Mute)
+    OPT_ENABLECUE     = 1 << 5,  //разреш. обзора кнопкой Roll при арх. перем.
+    OPT_NOSOUND       = 1 << 6,  //запрещение генерации звуковых сигналов
+    OPT_AUTOREVERSE   = 1 << 7,  //включение режима автореверса
+    OPT_ENABLEPROG    = 1 << 8,  //разрешение программирования режимов
+    OPT_PROGBLINK     = 1 << 9,  //прогрммный режим мигает, иначе горит
+    OPT_MUTEPAUSE     = 1 << 10, //разрешение mute в паузе
+    OPT_PLAYRECEN     = 1 << 11, //разрешение включения Rec в режиме Play
+    OPT_RECPLAYEN     = 1 << 12, //разрешение включения Play в режиме Rec
+    OPT_PLAYEXPAUSE   = 1 << 13  //Play выключает Pause
   };
   //опции по умолчанию:
   static uint16_t const NOM_CT_OPTIONS = OPT_SHOWDIR + OPT_USEARCHIVE +
-    OPT_ENABLECUE + OPT_AUTOREVERSE + OPT_ENABLEPROG;
+    OPT_ENABLECUE + OPT_AUTOREVERSE + OPT_ENABLEPROG + OPT_PLAYEXPAUSE;
   bool Option(ct_opt_t mask) { return(Options & mask); }; //чтение опции
 
 public:

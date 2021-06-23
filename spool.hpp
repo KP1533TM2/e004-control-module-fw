@@ -143,7 +143,6 @@ private:
   Pin_Rew_t Pin_Rew;        //включение мотора перемотки назад
   TPid *Pid_M1;             //PID-регулятор мотора M1
   TPid *Pid_M2;             //PID-регулятор мотора M2
-  kpid_t K;                 //коэффициенты PID
 
   ten_t Tensions[SPOOL_MODES]; //массив натяжений
   void SetTension(uint8_t m);  //задание натяжений для PID-регуляторов
@@ -153,8 +152,10 @@ public:
   void Execute(void);
   void SetMode(uint8_t m);  //включение режима подмотки
   uint8_t GetMode(void);    //чтение режима подмотки
-  void SetPID(kpid_t k);    //установка коэффициентов PID
-  kpid_t GetPID(void);      //чтение коэффициентов PID
+  void SetPID1(kpid_t k);    //установка коэффициентов PID1
+  kpid_t GetPID1(void);      //чтение коэффициентов PID1
+  void SetPID2(kpid_t k);    //установка коэффициентов PID2
+  kpid_t GetPID2(void);      //чтение коэффициентов PID2
   void SetMot1(uint16_t m); //управление мотором M1
   void SetMot2(uint16_t m); //управление мотором M2
   ten_t GetMot(void);       //чтение моторов

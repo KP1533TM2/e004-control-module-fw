@@ -230,13 +230,17 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима PLAYF
   case KEY_PLAYF:
-    //if(Option(OPT_PLAYOFFPAUSE))         //TODO: опция выключения паузы?
+    if(Mode == TR_REC)
     {
-      fPause = 0;                        //выключение паузы
-      if(Mode != TR_REC)                 //если не запись, то
+      if(Option(OPT_RECPLAYEN))
+      {
         Mode = TR_PLAYF;                 //включение PLAYF
+        Transport->Audio->Rec(OFF);      //выключение тракта записи
+      }
     }
-    //else Mode = TR_PLAYF;                //включение PLAYF
+    else Mode = TR_PLAYF;                //включение PLAYF
+    if(Option(OPT_PLAYEXPAUSE))
+      fPause = 0;                        //выключение паузы
     if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
     else
     {
@@ -247,10 +251,20 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима PLAYR
   case KEY_PLAYR:
-    Mode = TR_PLAYR;
-    //if(Option(OPT_PLAYOFFPAUSE))
-      fPause = 0;                        //выключение паузы
-    Transport->Audio->Rec(OFF);          //выключение тракта записи
+    if(Mode == TR_REC)
+    {
+      if(Option(OPT_RECPLAYEN))
+      {
+        Mode = TR_PLAYR;                 //включение PLAYR
+        Transport->Audio->Rec(OFF);      //выключение тракта записи
+      }
+    }
+    else
+    {
+      Mode = TR_PLAYR;
+      if(Option(OPT_PLAYEXPAUSE))
+        fPause = 0;                      //выключение паузы
+    }
     if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
     else
     {
@@ -261,8 +275,9 @@ void TControl::SetMode(uint8_t code)
 
   //включение режима REC
   case KEY_REC:
-    if(Mode == TR_STOP ||
-       ((Mode == TR_PLAYF) && fPause))
+    if((Mode == TR_STOP) ||
+       ((Mode == TR_PLAYF) &&
+        (fPause || Option(OPT_PLAYRECEN))))
     {
       Mode = TR_REC;
       if(Option(OPT_AUTORECPAUSE))
@@ -283,7 +298,8 @@ void TControl::SetMode(uint8_t code)
          (Mode != TR_REC))
         Mode = TR_STOP;
       Transport->SetMode(TR_PAUSE);      //остановка ленты без MUTE
-      Transport->SetCue(ON);             //выключение MUTE
+      if(!Option(OPT_MUTEPAUSE))
+        Transport->SetCue(ON);           //выключение MUTE
     }
     else                                 //если пауза выключается,
       Transport->SetMode(Mode);          //возобновление режима

@@ -175,7 +175,11 @@ void TPort::Execute(void)
         K.p = WakePort->GetByte();
         K.i = WakePort->GetByte();
         K.d = WakePort->GetByte();
-        Control->Transport->Spool->SetPID(K);
+        Control->Transport->Spool->SetPID1(K);
+        K.p = WakePort->GetByte();
+        K.i = WakePort->GetByte();
+        K.d = WakePort->GetByte();
+        Control->Transport->Spool->SetPID2(K);
         Control->Transport->Capstan->SetTstart(WakePort->GetWord());
         Control->Transport->EndSensor->SetTau(WakePort->GetWord());
         Control->Transport->SetEmForce(WakePort->GetWord());
@@ -190,10 +194,15 @@ void TPort::Execute(void)
     case CMD_GET_PARAMS: //чтение параметров
       {
         WakePort->AddByte(ERR_NO);
-        kpid_t k = Control->Transport->Spool->GetPID();
-        WakePort->AddByte(k.p);
-        WakePort->AddByte(k.i);
-        WakePort->AddByte(k.d);
+        kpid_t K;
+        K = Control->Transport->Spool->GetPID1();
+        WakePort->AddByte(K.p);
+        WakePort->AddByte(K.i);
+        WakePort->AddByte(K.d);
+        K = Control->Transport->Spool->GetPID2();
+        WakePort->AddByte(K.p);
+        WakePort->AddByte(K.i);
+        WakePort->AddByte(K.d);
         WakePort->AddWord(Control->Transport->Capstan->GetTstart());
         WakePort->AddWord(Control->Transport->EndSensor->GetTau());
         WakePort->AddWord(Control->Transport->GetEmForce());
