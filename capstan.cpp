@@ -34,8 +34,8 @@ TCapstan::TCapstan(void)
   fRun = 1;          //двигатель всегда включен
   fRev = 0;          //начальное направление вращения - вперед
   fLock = 0;         //двигатель не готов
-  CapTimer = new TSoftTimer<TT_ONESHOT>(NOM_CAP_START);
-  CapTimer->Start();
+  CapTimer = TSoftTimer<TT_ONESHOT>(NOM_CAP_START);
+  CapTimer.Start();
 }
 
 //-------------------------- Проверка готовности: ----------------------------
@@ -44,7 +44,7 @@ void TCapstan::Execute(void)
 {
   if(!fLock)
   {
-    if(CapTimer->Over()) //проверка таймера
+    if(CapTimer.Over()) //проверка таймера
     {
       fLock = 1;         //готовность двигателя
     }
@@ -63,7 +63,7 @@ void TCapstan::Start(bool rev)
   {
     Pin_Rev = rev;
     fLock = 0;
-    CapTimer->Start();
+    CapTimer.Start();
     fRev = rev;
   }
 }
@@ -94,7 +94,7 @@ bool TCapstan::Ready(void)
 void TCapstan::SetTstart(uint16_t t)
 {
   CapStart = t;
-  CapTimer->Interval = CapStart;
+  CapTimer.Interval = CapStart;
 }
 
 //-------------------------- Чтение времени старта: --------------------------
@@ -109,8 +109,8 @@ uint16_t TCapstan::GetTstart(void)
 void TCapstan::EERead(void)
 {
   CapStart = Eeprom->Rd16(EE_CAP_START, NOM_CAP_START);
-  if(!fLock) CapTimer->Start(CapStart);
-    else CapTimer->Interval = CapStart;
+  if(!fLock) CapTimer.Start(CapStart);
+    else CapTimer.Interval = CapStart;
 }
 
 //------------------- Сохранение параметров в EEPROM: ------------------------

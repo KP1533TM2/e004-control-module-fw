@@ -31,7 +31,7 @@ private:
   Pin_Sleep_t Pin_Sleep; //выход выключения ведущего двигателя
   Pin_Lock_t Pin_Lock;   //вход захвата PLL ведущего двигателя
 #endif
-  TSoftTimer<TT_ONESHOT> *CapTimer; //программный таймер готовности двигателя
+  TSoftTimer<TT_ONESHOT> CapTimer; //программный таймер готовности двигателя
   uint16_t CapStart;    //время разгона
   static uint16_t const NOM_CAP_START = 2000; //номинальное время разгона, мс
   bool fRun;            //флаг включения двигателя
