@@ -6,6 +6,8 @@
 
 #include "main.hpp"
 #include "systimer.hpp"
+#include <avr/wdt.h>
+#include <util/atomic.h>
 
 //----------------------- Используемые ресурсы: ------------------------------
 
@@ -28,7 +30,7 @@ void TSysTimer::Init(void)
   ETIMSK = (1 << OCIE3A); //разрешение прерывания по совпадению
   vCounter = 0;
   Counter = 0;
-  __enable_interrupt();   //разрешение прерываний
+  sei();   //разрешение прерываний
 }
 
 //--------------------- Прерывание системного таймера: -----------------------
@@ -47,18 +49,22 @@ ISR(SysTick_Handler)
 bool TSysTimer::Tick;
 uint16_t TSysTimer::Counter;
 
-__monitor void TSysTimer::Sync(void)
+void TSysTimer::Sync(void)
 {
-  Counter = vCounter;
-  Tick = vTick;
-  vTick = 0;
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    Counter = vCounter;
+    Tick = vTick;
+    vTick = 0;
+  }
 }
 
 //---------------------- Атомарное чтение счетчика: --------------------------
 
-__monitor uint16_t TSysTimer::GetCount(void)
+uint16_t TSysTimer::GetCount(void)
 {
-  return(vCounter);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    return(vCounter);
+  }
 }
 
 //-------------- Функция задержки миллисекундного диапазона: -----------------
@@ -66,7 +72,7 @@ __monitor uint16_t TSysTimer::GetCount(void)
 void TSysTimer::Delay_ms(uint16_t d)
 {
   uint16_t DelayStart = GetCount();
-  do { Sync(); __watchdog_reset(); }
+  do { Sync(); wdt_reset(); }
     while(Counter - DelayStart < d);
 }
 

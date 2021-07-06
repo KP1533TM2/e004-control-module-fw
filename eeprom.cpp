@@ -10,12 +10,12 @@
 
 #include "main.hpp"
 #include "eeprom.hpp"
+#include <avr/eeprom.h>
+#include <avr/wdt.h>
 
 //----------------------------------------------------------------------------
 //----------------------------- Класс TEeprom: -------------------------------
 //----------------------------------------------------------------------------
-
-__no_init __eeprom uint8_t TEeprom::EEData[EE_PARAMS];
 
 //---------------------------- Конструктор: ----------------------------------
 
@@ -34,7 +34,7 @@ TEeprom::TEeprom(void)
 uint8_t TEeprom::Rd8(uint8_t addr, uint8_t def)
 {
   if(fValid)
-    return(EEData[addr]);
+    return(eeprom_read_byte((uint8_t*)addr));
   return(def);
 }
 
@@ -42,10 +42,10 @@ uint8_t TEeprom::Rd8(uint8_t addr, uint8_t def)
 
 void TEeprom::Wr8(uint8_t addr, uint8_t val)
 {
-  if(EEData[addr] != val)
+  if(eeprom_read_byte((uint8_t*)addr) != val)
   {
-    EEData[addr] = val;
-    __watchdog_reset();
+    eeprom_write_byte((uint8_t*)addr,val);
+    wdt_reset();
   }
 }
 

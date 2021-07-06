@@ -1,6 +1,8 @@
 
 # adapted from https://gist.github.com/rynr/72734da4b8c7b962aa65
 
+#.PRECIOUS: %.o
+
 MCU     ?= atmega64
 ARCH     = avr
 PROJECT ?= e004-control
@@ -12,6 +14,7 @@ PROG     = stk500v2
 REV      = REV_C
 
 G++       = avr-g++
+GCC       = avr-gcc
 OBJCOPY   = avr-objcopy
 GCCFLAGS += -DF_CPU=$(F_CPU)UL -I. -I$(LIBDIR)
 CXXFLAGS += --stack-auto -mmcu=$(MCU)
@@ -71,4 +74,4 @@ read_eeprom:
 trash_eeprom:
 	@./trash_eeprom $(PROG) $(MCU)
 
-.PHONY: clean flash flash_opts read_eeprom trash_eeprom
+#.PHONY: clean flash flash_opts read_eeprom trash_eeprom

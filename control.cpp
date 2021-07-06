@@ -72,6 +72,7 @@
 
 #include "main.hpp"
 #include "control.hpp"
+#include <avr/wdt.h>
 
 TEeprom *Eeprom;
 
@@ -169,7 +170,7 @@ inline void TControl::HardwareInit(void)
   Pin_Aux.DirIn();
 #endif
   //настройка watchdog-таймера (260 ms):
-  __watchdog_reset();
+  wdt_reset();
   WDTCR = (1 << WDCE) | (1 << WDE);
   WDTCR = (1 << WDE) | (1 << WDP2);
 }
@@ -558,7 +559,7 @@ inline bool TControl::ServiceTimer(void)
       ServiceCounter = 0;
       //чтение состояния ЛПМ:
       TrState = Transport->GetState();
-      __watchdog_reset();
+      wdt_reset();
       return(1);
     }
   }

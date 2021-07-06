@@ -6,6 +6,7 @@
 
 #include "main.hpp"
 #include "wake.hpp"
+#include <avr/pgmspace.h>
 
 //-------------------------- Опции компиляции: -------------------------------
 
@@ -33,7 +34,7 @@ void TWake::Do_Crc8(uint8_t b, uint8_t *crc)
 {
   if(TABLE_CRC)
   {
-    static __flash uint8_t CrcTable[256] =
+    static const uint8_t CrcTable[256] PROGMEM =
     {
       0x00, 0x5E, 0xBC, 0xE2, 0x61, 0x3F, 0xDD, 0x83,
       0xC2, 0x9C, 0x7E, 0x20, 0xA3, 0xFD, 0x1F, 0x41,

@@ -58,7 +58,6 @@ enum EE_Map_t
 class TEeprom
 {
 private:
-  static __no_init __eeprom uint8_t EEData[EE_PARAMS];
   static uint16_t const EE_SIGNATURE = 0xBE20;   //сигнатура EEPROM
   bool fValid;
 protected:
