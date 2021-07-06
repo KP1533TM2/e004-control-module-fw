@@ -20,7 +20,7 @@
 
 //----------------------------- Конструктор: ---------------------------------
 
-TWakePort::TWakePort(const uint16_t br, const uint8_t frame) : TWake(frame)
+TWakePort::TWakePort(const uint16_t br) : TWake()
 {
   TWakePort::Wp = this;
   //настройка портов:

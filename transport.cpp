@@ -191,18 +191,18 @@ TTransport::TTransport(void)
   Pin_PressF_t::DirOut();
   Pin_PressH_t::DirOut();
 
-  SolBrake = new TSolenoid<Pin_BrakeF_t, Pin_BrakeH_t>();
-  SolPress = new TSolenoid<Pin_PressF_t, Pin_PressH_t>();
-  SolLift = new TSolenoid<Pin_LiftF_t, Pin_LiftH_t>();
+  SolBrake = TSolenoid<Pin_BrakeF_t, Pin_BrakeH_t>();
+  SolPress = TSolenoid<Pin_PressF_t, Pin_PressH_t>();
+  SolLift = TSolenoid<Pin_LiftF_t, Pin_LiftH_t>();
 
-  Capstan = new TCapstan();
-  MoveSensor = new TMoveSensor();
-  EndSensor = new TEndSensor();
-  Audio = new TAudio();
-  Spool = new TSpool();
-  Op = new TOperations();
-  BrakeTimer = new TSoftTimer<TT_PLAIN>();
-  AutostopTimer = new TSoftTimer<TT_PLAIN>();
+  Capstan = TCapstan();
+  MoveSensor = TMoveSensor();
+  EndSensor = TEndSensor();
+  Audio = TAudio();
+  Spool = TSpool();
+  Op = TOperations();
+  BrakeTimer = TSoftTimer<TT_PLAIN>();
+  AutostopTimer = TSoftTimer<TT_PLAIN>();
   NowMode = TR_STOP;
   NewMode = TR_STOP;
   ReqMode = TR_STOP;
@@ -217,12 +217,12 @@ TTransport::TTransport(void)
 
 void TTransport::Execute(void)
 {
-  SolLift->Execute();
-  SolBrake->Execute();
-  SolPress->Execute();
-  Capstan->Execute();
-  EndSensor->Execute();
-  Spool->Execute();
+  SolLift.Execute();
+  SolBrake.Execute();
+  SolPress.Execute();
+  Capstan.Execute();
+  EndSensor.Execute();
+  Spool.Execute();
 
   if(NowMode != NewMode)
   {
@@ -235,9 +235,9 @@ void TTransport::Execute(void)
           else ProMode = NewMode;
       ReqMode = NewMode;
       NowMode = TR_NONE;
-      Op->Start();
+      Op.Start();
     }
-    if(Op->DelayOver())
+    if(Op.DelayOver())
     {
       switch(ProMode)
       {
@@ -409,15 +409,15 @@ void TTransport::Execute(void)
 
 void TTransport::Op_Capstan(bool rev, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if(Capstan->Reverse() != rev)
+    if(Capstan.Reverse() != rev)
     {
-      Capstan->Start(rev);
-      Audio->Rev(rev);
-      Op->StartDelay(del);
+      Capstan.Start(rev);
+      Audio.Rev(rev);
+      Op.StartDelay(del);
     }
-    Op->Done();
+    Op.Done();
   }
 }
 
@@ -425,17 +425,17 @@ void TTransport::Op_Capstan(bool rev, uint16_t del)
 
 void TTransport::Op_WaitCapstan(void)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if(Capstan->Ready())
+    if(Capstan.Ready())
     {
-      Op->Done();
+      Op.Done();
     }
     /*
     else
     {
-      if(Spool->GetMode() != SPOOL_BRAKE)
-        Spool->SetMode(SPOOL_BRAKE);
+      if(Spool.GetMode() != SPOOL_BRAKE)
+        Spool.SetMode(SPOOL_BRAKE);
     }
     */
   }
@@ -445,14 +445,14 @@ void TTransport::Op_WaitCapstan(void)
 
 void TTransport::Op_Press(bool s, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if(SolPress->Hold() != s)
+    if(SolPress.Hold() != s)
     {
-      SolPress->OnOff(s);
-      Op->StartDelay(del);
+      SolPress.OnOff(s);
+      Op.StartDelay(del);
     }
-    Op->Done();
+    Op.Done();
   }
 }
 
@@ -460,14 +460,14 @@ void TTransport::Op_Press(bool s, uint16_t del)
 
 void TTransport::Op_Brake(bool s, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if(SolBrake->Hold() != s)
+    if(SolBrake.Hold() != s)
     {
-      SolBrake->OnOff(s);
-      Op->StartDelay(del);
+      SolBrake.OnOff(s);
+      Op.StartDelay(del);
     }
-    Op->Done();
+    Op.Done();
   }
 }
 
@@ -475,15 +475,15 @@ void TTransport::Op_Brake(bool s, uint16_t del)
 
 void TTransport::Op_Lift(bool s, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
     if(fCue) s = OFF;
-    if(SolLift->Hold() != s)
+    if(SolLift.Hold() != s)
     {
-      SolLift->OnOff(s);
-      Op->StartDelay(del);
+      SolLift.OnOff(s);
+      Op.StartDelay(del);
     }
-    Op->Done();
+    Op.Done();
   }
 }
 
@@ -491,17 +491,17 @@ void TTransport::Op_Lift(bool s, uint16_t del)
 
 void TTransport::Op_Spool(uint8_t m, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if(Spool->GetMode() != m)
+    if(Spool.GetMode() != m)
     {
-      Spool->SetMode(m);
-      Op->StartDelay(del);
+      Spool.SetMode(m);
+      Op.StartDelay(del);
     }
     //если разрешено механическое торможение,
     if((m == SPOOL_BRAKE) && (!Option(OPT_MOTORBRK)))
-      SolBrake->OnOff(0); //то включение тормозов
-    Op->Done();
+      SolBrake.OnOff(0); //то включение тормозов
+    Op.Done();
   }
 }
 
@@ -509,17 +509,17 @@ void TTransport::Op_Spool(uint8_t m, uint16_t del)
 
 void TTransport::Op_WaitStop(void)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if(!MoveSensor->Move() || fLowTen)
+    if(!MoveSensor.Move() || fLowTen)
     {
-      Op->Done();
+      Op.Done();
     }
     /*
     else
     {
-      if(Spool->GetMode() != SPOOL_BRAKE)
-        Spool->SetMode(SPOOL_BRAKE);
+      if(Spool.GetMode() != SPOOL_BRAKE)
+        Spool.SetMode(SPOOL_BRAKE);
     }
     */
   }
@@ -529,11 +529,11 @@ void TTransport::Op_WaitStop(void)
 
 void TTransport::Op_AutoStop(uint8_t m, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
     SetAutoStop(m);
-    Op->StartDelay(del);
-    Op->Done();
+    Op.StartDelay(del);
+    Op.Done();
   }
 }
 
@@ -541,19 +541,19 @@ void TTransport::Op_AutoStop(uint8_t m, uint16_t del)
 
 void TTransport::Op_WaitTension(void)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if((!Spool->LowT1() &&
-        !Spool->LowT2()) ||
+    if((!Spool.LowT1() &&
+        !Spool.LowT2()) ||
         !Option(OPT_PREASENABLE))
     {
-      Op->Done();
+      Op.Done();
     }
     /*
     else
     {
-      if(Spool->GetMode() != SPOOL_BRAKE)
-        Spool->SetMode(SPOOL_BRAKE);
+      if(Spool.GetMode() != SPOOL_BRAKE)
+        Spool.SetMode(SPOOL_BRAKE);
     }
     */
   }
@@ -563,14 +563,14 @@ void TTransport::Op_WaitTension(void)
 
 void TTransport::Op_Mute(bool m, uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    if((bool)(Audio->GetState() & AUD_MUTE) != m)
+    if((bool)(Audio.GetState() & AUD_MUTE) != m)
     {
-      Audio->Mute(m);
-      Op->StartDelay(del);
+      Audio.Mute(m);
+      Op.StartDelay(del);
     }
-    Op->Done();
+    Op.Done();
   }
 }
 
@@ -578,10 +578,10 @@ void TTransport::Op_Mute(bool m, uint16_t del)
 
 void TTransport::Op_Delay(uint16_t del)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
-    Op->StartDelay(del);
-    Op->Done();
+    Op.StartDelay(del);
+    Op.Done();
   }
 }
 
@@ -589,12 +589,12 @@ void TTransport::Op_Delay(uint16_t del)
 
 void TTransport::Op_SkipIf(bool b, uint8_t n)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
     if(b)
       for(uint8_t i = 0; i < n; i++)
-        Op->Done();
-    Op->Done();
+        Op.Done();
+    Op.Done();
   }
 }
 
@@ -612,13 +612,13 @@ void TTransport::Op_GoIf(bool b, uint8_t m)
 
 void TTransport::Op_Final(uint8_t m)
 {
-  if(Op->NotDone())
+  if(Op.NotDone())
   {
     ReqMode = TR_NONE;
     if(m != TR_NONE)
       NewMode = m;
     NowMode = NewMode;
-    Op->Done();
+    Op.Done();
   }
 }
 
@@ -637,25 +637,25 @@ void TTransport::SetAutoStop(uint8_t m)
     AsMode = m;
     break;
   case AS_START:
-    AutostopTimer->Start(AsPreDel); //запуск таймера пред. натяжения
+    AutostopTimer.Start(AsPreDel); //запуск таймера пред. натяжения
     AsMode = m;
     break;
   case AS_PLAY:
-    AutostopTimer->Start(AsTenDel); //запуск таймера натяжения
-    fTape = EndSensor->Tape();      //запоминание состояния датчика ленты
-    MoveSensor->SetTC(MOVE_SLOW);   //управление TC
+    AutostopTimer.Start(AsTenDel); //запуск таймера натяжения
+    fTape = EndSensor.Tape();      //запоминание состояния датчика ленты
+    MoveSensor.SetTC(MOVE_SLOW);   //управление TC
     AsMode = m;
     break;
   case AS_FFD:
   case AS_REW:
-    AutostopTimer->Start(AsTenDel); //запуск таймера натяжения
-    fTape = EndSensor->Tape();      //запоминание состояния датчика ленты
-    MoveSensor->SetTC(MOVE_FAST);   //управление TC
+    AutostopTimer.Start(AsTenDel); //запуск таймера натяжения
+    fTape = EndSensor.Tape();      //запоминание состояния датчика ленты
+    MoveSensor.SetTC(MOVE_FAST);   //управление TC
     AsMode = m;
     break;
   case AS_BRAKE:
-    BrakeTimer->Start(AsBrkDel);    //запуск таймера торможения
-    AutostopTimer->Start(AsTenDel); //перезапуск таймера автостопа по натяжению
+    BrakeTimer.Start(AsBrkDel);    //запуск таймера торможения
+    AutostopTimer.Start(AsTenDel); //перезапуск таймера автостопа по натяжению
     fAsBrake = ON;                  //флаг включения автостопа по торможению
     //нет изменения AsMode, т.е. продолжает работать текущий режим автостопа
     break;
@@ -690,7 +690,7 @@ uint8_t TTransport::GetMode(void)
 
 void TTransport::ArDelay(void)
 {
-  EndSensor->ArDelay();
+  EndSensor.ArDelay();
 }
 
 //------------------- Управление отводом ленты и MUTE: -----------------------
@@ -701,13 +701,13 @@ void TTransport::SetCue(bool cue)
   {
     if(cue) //CUE ON
     {
-      SolLift->OnOff(OFF);
-      Audio->Mute(OFF);
+      SolLift.OnOff(OFF);
+      Audio.Mute(OFF);
     }
     else //CUE OFF
     {
-      SolLift->OnOff(ON);
-      Audio->Mute(ON);
+      SolLift.OnOff(ON);
+      Audio.Mute(ON);
     }
   }
   SetAutoStop(AsMode); //перезапуск таймера автостопа
@@ -719,13 +719,13 @@ void TTransport::SetCue(bool cue)
 uint8_t TTransport::GetState(void)
 {
   uint8_t state = 0;
-  if(Capstan->Running()) state |= TRS_CAP;    //capstan вращается
-  if(Capstan->Reverse()) state |= TRS_REV;    //capstan в режиме реверс
-  if(Capstan->Ready())   state |= TRS_LOCK;   //capstan разогнался
-  if(Spool->GetMode() == SPOOL_BRAKE)
+  if(Capstan.Running()) state |= TRS_CAP;    //capstan вращается
+  if(Capstan.Reverse()) state |= TRS_REV;    //capstan в режиме реверс
+  if(Capstan.Ready())   state |= TRS_LOCK;   //capstan разогнался
+  if(Spool.GetMode() == SPOOL_BRAKE)
                          state |= TRS_BRAKE;  //торм. двигателями
-  if(EndSensor->Tape())  state |= TRS_TAPE;   //лента загружена
-  if(MoveSensor->Move()) state |= TRS_MOVE;   //лента движется
+  if(EndSensor.Tape())  state |= TRS_TAPE;   //лента загружена
+  if(MoveSensor.Move()) state |= TRS_MOVE;   //лента движется
   if(fCue)               state |= TRS_CUE;    //режим обзора
   if(fLowTen)            state |= TRS_LOWTEN; //нет натяжения
   return(state);
@@ -740,25 +740,25 @@ uint8_t TTransport::CheckAutoStop(void)
   {
   //автостоп по пред. натяжению 1 и 2:
   case AS_START:
-    fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
+    fLowTen = Spool.LowT1T2();   //проверка натяжений слева и справа
     if(fLowTen &&  Option(OPT_PREASENABLE)) //если автостоп разрешен,
       fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   //автостоп по натяжению 1 и 2:
   case AS_PLAY:
-    fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
+    fLowTen = Spool.LowT1T2();   //проверка натяжений слева и справа
     if(fLowTen && Option(OPT_TENASENABLE)) //если автостоп разрешен, то
       fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   //автостоп по натяжению 2:
   case AS_FFD:
-    fLowTen = Spool->LowT2();     //проверка натяжения справа
+    fLowTen = Spool.LowT2();     //проверка натяжения справа
     if(fLowTen && Option(OPT_TENASENABLE)) //если автостоп разрешен, то
       fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
   //автостоп по натяжению 1:
   case AS_REW:
-    fLowTen = Spool->LowT1();     //проверка натяжения слева
+    fLowTen = Spool.LowT1();     //проверка натяжения слева
     if(fLowTen && Option(OPT_TENASENABLE)) //если автостоп разрешен, то
       fas = 1;                    //автостоп (при усл. переполн. таймера)
     break;
@@ -766,16 +766,16 @@ uint8_t TTransport::CheckAutoStop(void)
     //TODO: в режиме STOP проверять натяжение не LowT1 or LowT2,
     //а LowT1 and LowT2, чтобы была возможность старта с одним провисшим
     //натяжителем.
-    fLowTen = Spool->LowT1T2();   //проверка натяжений слева и справа
+    fLowTen = Spool.LowT1T2();   //проверка натяжений слева и справа
   };
-  if(fas && AutostopTimer->Over()) //если fas = 1 и интервал истек, то
+  if(fas && AutostopTimer.Over()) //если fas = 1 и интервал истек, то
     return(ASR_TEN);               //автостоп по натяжению
 
   //автостоп при торможении:
   if(fAsBrake)
   {
-    if(MoveSensor->Move() &&      //если лента не остановилась,
-       BrakeTimer->Over() &&      //интервал торможения истек и
+    if(MoveSensor.Move() &&      //если лента не остановилась,
+       BrakeTimer.Over() &&      //интервал торможения истек и
        Option(OPT_BRKASENABLE))   //автостоп при торможении разрешен, то
          return(ASR_BRAKE);       //автостоп при торможении
   }
@@ -783,14 +783,14 @@ uint8_t TTransport::CheckAutoStop(void)
   if(AsMode > AS_START)
   {
     //автостоп по ДО:
-    bool t = EndSensor->Tape();
+    bool t = EndSensor.Tape();
     if(fTape && !t)               //если лента была и пропала,
       return(ASR_END);            //автостоп по окончанию ленты
     fTape = t;
     //атостоп по ДД:
-    if(!MoveSensor->Move() &&     //если лента не движется,
+    if(!MoveSensor.Move() &&     //если лента не движется,
        !fAsBrake &&               //это не автостоп при торможении,
-       AutostopTimer->Over() &&   //таймер автостопа переполнился и
+       AutostopTimer.Over() &&   //таймер автостопа переполнился и
        Option(OPT_MOVASENABLE))   //автостоп по ДД разрешен, то
          return(ASR_MOVE);        //автостоп по ДД
   }
@@ -802,9 +802,9 @@ uint8_t TTransport::CheckAutoStop(void)
 void TTransport::SetEmForce(uint16_t t)
 {
   EmForce = t;
-  SolBrake->Force(EmForce);
-  SolPress->Force(EmForce);
-  SolLift->Force(EmForce);
+  SolBrake.Force(EmForce);
+  SolPress.Force(EmForce);
+  SolLift.Force(EmForce);
 }
 
 //----------------- Чтение времени старта электромагнитов: -------------------
@@ -818,29 +818,29 @@ uint16_t TTransport::GetEmForce(void)
 
 void TTransport::EERead(void)
 {
-  Options  = Eeprom->Rd8(EE_TR_OPTIONS, NOM_TR_OPTIONS);
-  AsBrkDel = Eeprom->Rd16(EE_AS_BRK_DEL, NOM_AS_BRK_DEL);
-  AsPreDel = Eeprom->Rd16(EE_AS_PRE_DEL, NOM_AS_PRE_DEL);
-  AsTenDel = Eeprom->Rd16(EE_AS_TEN_DEL, NOM_AS_TEN_DEL);
-  EmForce  = Eeprom->Rd16(EE_EM_FORCE, NOM_EM_FORCE);
+  Options  = Eeprom.Rd8(EE_TR_OPTIONS, NOM_TR_OPTIONS);
+  AsBrkDel = Eeprom.Rd16(EE_AS_BRK_DEL, NOM_AS_BRK_DEL);
+  AsPreDel = Eeprom.Rd16(EE_AS_PRE_DEL, NOM_AS_PRE_DEL);
+  AsTenDel = Eeprom.Rd16(EE_AS_TEN_DEL, NOM_AS_TEN_DEL);
+  EmForce  = Eeprom.Rd16(EE_EM_FORCE, NOM_EM_FORCE);
   SetEmForce(EmForce);
-  Capstan->EERead();
-  Spool->EERead();
-  EndSensor->EERead();
+  Capstan.EERead();
+  Spool.EERead();
+  EndSensor.EERead();
 }
 
 //------------------- Сохранение параметров в EEPROM: ------------------------
 
 void TTransport::EESave(void)
 {
-  Eeprom->Wr8(EE_TR_OPTIONS, Options);
-  Eeprom->Wr16(EE_AS_BRK_DEL, AsBrkDel);
-  Eeprom->Wr16(EE_AS_PRE_DEL, AsPreDel);
-  Eeprom->Wr16(EE_AS_TEN_DEL, AsTenDel);
-  Eeprom->Wr16(EE_EM_FORCE, EmForce);
-  Capstan->EESave();
-  Spool->EESave();
-  EndSensor->EESave();
+  Eeprom.Wr8(EE_TR_OPTIONS, Options);
+  Eeprom.Wr16(EE_AS_BRK_DEL, AsBrkDel);
+  Eeprom.Wr16(EE_AS_PRE_DEL, AsPreDel);
+  Eeprom.Wr16(EE_AS_TEN_DEL, AsTenDel);
+  Eeprom.Wr16(EE_EM_FORCE, EmForce);
+  Capstan.EESave();
+  Spool.EESave();
+  EndSensor.EESave();
 }
 
 //----------------------------------------------------------------------------

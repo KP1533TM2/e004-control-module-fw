@@ -28,7 +28,7 @@ TKeyboard::TKeyboard(void)
   Prev_Key = KEY_NO;
   LastCode = KEY_NO;
   Code = KEY_NO;
-  KeyTimer = new TSoftTimer<TT_ONESHOT>();
+  KeyTimer = TSoftTimer<TT_ONESHOT>();
 }
 
 //--------------------------- Обработка кнопок: ------------------------------
@@ -40,7 +40,7 @@ void TKeyboard::Execute(void)
     uint8_t Key = GetCode();           //чтение кода кнопки
     if(Key != Prev_Key)                //состояние отличается
     {
-      KeyTimer->Start(DEBOUNCE_TM);    //запуск таймера подавления дребезга
+      KeyTimer.Start(DEBOUNCE_TM);    //запуск таймера подавления дребезга
       Prev_Key = Key;                  //сохранение нового кода
       State = ST_NEW;                  //новое состояние клавиатуры
     }
@@ -48,7 +48,7 @@ void TKeyboard::Execute(void)
     {
       if(State != ST_DONE)             //если кнопка не обработана
       {
-        if(KeyTimer->Over())           //если дребезг закончился
+        if(KeyTimer.Over())           //если дребезг закончился
         {
           if(State == ST_NEW)          //если новое состояние
           {
@@ -58,12 +58,12 @@ void TKeyboard::Execute(void)
               {
                 Code &= ~MSG_HOLD;     //удаление флага удержания кнопки
                 Code |= MSG_REL;       //добавление флага отпускания кнопки
-                KeyTimer->Start(DEBOUNCE_TM); //защитный интервал
+                KeyTimer.Start(DEBOUNCE_TM); //защитный интервал
               }
               else
               {
                 Code = Key;            //сохранение кода кнопки
-                KeyTimer->Start(HOLD_DELAY); //запуск таймера удержания кнопки
+                KeyTimer.Start(HOLD_DELAY); //запуск таймера удержания кнопки
                 State = ST_PRESS;      //нажатие обработано
               }
             }

@@ -13,8 +13,8 @@
 //--------------------------- Класс TWakePort --------------------------------
 //----------------------------------------------------------------------------
 
-#define Rx_Int USART0_RXC_vect
-#define Tx_Int USART0_TXC_vect
+#define Rx_Int USART0_RX_vect
+#define Tx_Int USART0_TX_vect
 extern "C" void Rx_Int(void) __attribute__((signal));
 extern "C" void Tx_Int(void) __attribute__((signal));
 
@@ -28,7 +28,7 @@ private:
   friend void ::Tx_Int(void);
 protected:
 public:
-  TWakePort(const uint16_t br, const uint8_t frame);
+  TWakePort(const uint16_t br);
   void StartTx(uint8_t cmd);
 };
 

@@ -96,14 +96,14 @@ private:
   uint8_t Number;
   uint8_t DoNumber;
   static const uint8_t BLOCKED = UINT8_MAX / 2;
-  TSoftTimer<TT_PLAIN> *DelTimer;
+  TSoftTimer<TT_PLAIN> DelTimer;
 public:
-  TOperations(void) { DelTimer = new TSoftTimer<TT_PLAIN>(); };
-  void Start(void) { DoNumber = 1; DelTimer->Force(); };
-  bool DelayOver(void) { Number = 0; return(DelTimer->Over()); };
+  TOperations(void) { DelTimer = TSoftTimer<TT_PLAIN>(); };
+  void Start(void) { DoNumber = 1; DelTimer.Force(); };
+  bool DelayOver(void) { Number = 0; return(DelTimer.Over()); };
   bool NotDone(void) { return(++Number == DoNumber); };
   void Done(void) { DoNumber++; Number = BLOCKED; };
-  void StartDelay(uint16_t del) { DelTimer->Start(del); };
+  void StartDelay(uint16_t del) { DelTimer.Start(del); };
 };
 
 //----------------------------------------------------------------------------
@@ -115,18 +115,18 @@ class TTransport
 private:
   friend class TPort;
   friend class TOperations;
-  TSpool *Spool;            //объект боковых двигателей
-  TMoveSensor *MoveSensor;  //объект датчика движения ленты
-  TEndSensor *EndSensor;    //объект датчика наличия ленты
-  TSolenoid<Pin_BrakeF_t, Pin_BrakeH_t> *SolBrake; //ЭМ тормозов
-  TSolenoid<Pin_PressF_t, Pin_PressH_t> *SolPress; //ЭМ прижимного ролика
-  TSolenoid<Pin_LiftF_t, Pin_LiftH_t> *SolLift;    //ЭМ отвода ленты
+  TSpool Spool;            //объект боковых двигателей
+  TMoveSensor MoveSensor;  //объект датчика движения ленты
+  TEndSensor EndSensor;    //объект датчика наличия ленты
+  TSolenoid<Pin_BrakeF_t, Pin_BrakeH_t> SolBrake; //ЭМ тормозов
+  TSolenoid<Pin_PressF_t, Pin_PressH_t> SolPress; //ЭМ прижимного ролика
+  TSolenoid<Pin_LiftF_t, Pin_LiftH_t> SolLift;    //ЭМ отвода ленты
   uint8_t NowMode;
   uint8_t NewMode;
   uint8_t ReqMode;
   uint8_t ProMode;
   bool fCue;
-  TOperations *Op;
+  TOperations Op;
 
   void Op_Capstan(bool rev, uint16_t del = 0);
   void Op_WaitCapstan(void);
@@ -167,9 +167,9 @@ private:
   static uint8_t const NOM_TR_OPTIONS = OPT_BRKASENABLE +
     OPT_PREASENABLE + OPT_TENASENABLE + OPT_MOVASENABLE + OPT_MOTORBRK;
   bool Option(uint8_t mask) { return(Options & mask); }; //чтение опции
-  TSoftTimer<TT_PLAIN> *BrakeTimer; //таймер торможения
+  TSoftTimer<TT_PLAIN> BrakeTimer; //таймер торможения
   bool fAsBrake; //флаг включения автостопа при торможении
-  TSoftTimer<TT_PLAIN> *AutostopTimer; //таймер автостопа
+  TSoftTimer<TT_PLAIN> AutostopTimer; //таймер автостопа
   uint8_t AsMode; //текущий режим автостопа
   enum AsMode_t //режимы работы автостопа
   {
@@ -186,8 +186,8 @@ private:
 
 public:
   TTransport(void);
-  TAudio *Audio;                //объект управления аудиотрактом
-  TCapstan *Capstan;            //объект ведущего двигателя
+  TAudio Audio;                //объект управления аудиотрактом
+  TCapstan Capstan;            //объект ведущего двигателя
 
   void Execute(void);
   void SetMode(uint8_t mode);   //включение требуемого режима ЛПМ

@@ -62,7 +62,7 @@ TEndSensor::TEndSensor(void)
   Pin_End1.DirIn(PIN_FLOAT);
   fSensorState = 0;
   fIsTape = 0;
-  EndTimer = new TSoftTimer<TT_ONESHOT>(NOM_END_TAU);
+  EndTimer = TSoftTimer<TT_ONESHOT>(NOM_END_TAU);
 }
 
 //------------------------ Выполнение управления: ----------------------------
@@ -73,13 +73,13 @@ void TEndSensor::Execute(void)
   if(fSensorState != fSensor)     //если состояние датчика изменилось
   {
     fSensorState = fSensor;       //сохранение состояния
-    EndTimer->Interval = EndTau;  //загрузка интервала таймера
-    EndTimer->Start();            //перезапуск таймера
+    EndTimer.Interval = EndTau;  //загрузка интервала таймера
+    EndTimer.Start();            //перезапуск таймера
   }
   else
   {
     if((fIsTape != fSensorState) &&
-        EndTimer->Over())
+        EndTimer.Over())
     {
       fIsTape = fSensorState;
     }
@@ -102,7 +102,7 @@ bool TEndSensor::Tape(void)
 void TEndSensor::SetTau(uint16_t tau)
 {
   EndTau = tau;
-  EndTimer->Interval = EndTau;
+  EndTimer.Interval = EndTau;
 }
 
 //------------------ Чтение постоянной времени датчика: ----------------------
@@ -118,22 +118,22 @@ void TEndSensor::ArDelay(void)
 {
   fSensorState = 1;
   fIsTape = 0;
-  EndTimer->Interval = EndTau + NOM_AR_DEL;
+  EndTimer.Interval = EndTau + NOM_AR_DEL;
 }
 
 //--------------------- Чтение параметров из EEPROM: -------------------------
 
 void TEndSensor::EERead(void)
 {
-  EndTau = Eeprom->Rd16(EE_END_TAU, NOM_END_TAU);
-  EndTimer->Interval = EndTau;
+  EndTau = Eeprom.Rd16(EE_END_TAU, NOM_END_TAU);
+  EndTimer.Interval = EndTau;
 }
 
 //------------------- Сохранение параметров в EEPROM: ------------------------
 
 void TEndSensor::EESave(void)
 {
-  Eeprom->Wr16(EE_END_TAU, EndTau);
+  Eeprom.Wr16(EE_END_TAU, EndTau);
 }
 
 //----------------------------------------------------------------------------

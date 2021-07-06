@@ -162,8 +162,8 @@ TSpool::TSpool(void)
   Pin_Ffd.DirOut();
   Pin_Rew.DirOut();
 
-  Pid_M1 = new TPid();
-  Pid_M2 = new TPid();
+  Pid_M1 = TPid();
+  Pid_M2 = TPid();
 
   vAdcCounter = 0;
   vAdcCode1 = 0;
@@ -232,30 +232,30 @@ void TSpool::Execute(void)
     switch(MotMode)
     {
     case MOT_PLAY:
-      SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
-      SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
+      SetMot1(Pid_M1.Execute(Sen1)); //M1 <- датчик L
+      SetMot2(Pid_M2.Execute(Sen2)); //M2 <- датчик R
       break;
     case MOT_FFD:
-      SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
+      SetMot1(Pid_M1.Execute(Sen2)); //M1 <- датчик R
       break;                          //M2 <- не регулируется
     case MOT_REW:
-      SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
+      SetMot2(Pid_M2.Execute(Sen1)); //M2 <- датчик L
       break;                          //M1 <- не регулируется
     case MOT_AFFD:
       if(Sen1 > Sen2)
-        SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
-          else SetMot1(Pid_M1->Execute(Sen2)); //M1 <- датчик R
-      SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
+        SetMot1(Pid_M1.Execute(Sen1)); //M1 <- датчик L
+          else SetMot1(Pid_M1.Execute(Sen2)); //M1 <- датчик R
+      SetMot2(Pid_M2.Execute(Sen2)); //M2 <- датчик R
       break;
     case MOT_AREW:
-      SetMot1(Pid_M1->Execute(Sen1)); //M1 <- датчик L
+      SetMot1(Pid_M1.Execute(Sen1)); //M1 <- датчик L
       if(Sen2 > Sen1)
-        SetMot2(Pid_M2->Execute(Sen2)); //M2 <- датчик R
-          else SetMot2(Pid_M2->Execute(Sen1)); //M2 <- датчик L
+        SetMot2(Pid_M2.Execute(Sen2)); //M2 <- датчик R
+          else SetMot2(Pid_M2.Execute(Sen1)); //M2 <- датчик L
       break;
     default:
-      Pid_M1->Execute(Sen1);
-      Pid_M2->Execute(Sen2);
+      Pid_M1.Execute(Sen1);
+      Pid_M2.Execute(Sen2);
     }
   }
 }
@@ -267,25 +267,25 @@ void TSpool::SetTension(uint8_t m)
   if(m == SPOOL_FORCEF)
   {
     //усиление подмотки и ослабление подтормаживания при старте вперед:
-    Pid_M1->Ref = Tensions[SPOOL_PLAYF].m1 - DELTAM;
-    Pid_M2->Ref = Tensions[SPOOL_PLAYF].m2 + DELTAP;
+    Pid_M1.Ref = Tensions[SPOOL_PLAYF].m1 - DELTAM;
+    Pid_M2.Ref = Tensions[SPOOL_PLAYF].m2 + DELTAP;
   }
   else if(m == SPOOL_FORCER)
   {
     //усиление подмотки и ослабление подтормаживания при старте назад:
-    Pid_M1->Ref = Tensions[SPOOL_PLAYR].m1 + DELTAP;
-    Pid_M2->Ref = Tensions[SPOOL_PLAYR].m2 - DELTAM;
+    Pid_M1.Ref = Tensions[SPOOL_PLAYR].m1 + DELTAP;
+    Pid_M2.Ref = Tensions[SPOOL_PLAYR].m2 - DELTAM;
   }
   else if(m == SPOOL_OFF)
   {
     //выключение боковых моторов (Tensions[SPOOL_OFF] = Min. tension!)
-    Pid_M1->Ref = 0;
-    Pid_M2->Ref = 0;
+    Pid_M1.Ref = 0;
+    Pid_M2.Ref = 0;
   }
   else
   {
-    Pid_M1->Ref = Tensions[m].m1;
-    Pid_M2->Ref = Tensions[m].m2;
+    Pid_M1.Ref = Tensions[m].m1;
+    Pid_M2.Ref = Tensions[m].m2;
   }
 }
 
@@ -306,54 +306,54 @@ void TSpool::SetMode(uint8_t m)
   case SPOOL_OFF:
     SetMot1(0);
     SetMot2(0);
-    Pid_M1->Preset(0);
-    Pid_M2->Preset(0);
+    Pid_M1.Preset(0);
+    Pid_M2.Preset(0);
     MotMode = MOT_STOP;
     break;
 
   case SPOOL_FORCEF:
   case SPOOL_PLAYF:
-    Pid_M1->Preset(0);
-    Pid_M2->Preset(TEN_MAX);
+    Pid_M1.Preset(0);
+    Pid_M2.Preset(TEN_MAX);
     MotMode = MOT_PLAY;
     break;
 
   case SPOOL_FORCER:
   case SPOOL_PLAYR:
-    Pid_M1->Preset(TEN_MAX);
-    Pid_M2->Preset(0);
+    Pid_M1.Preset(TEN_MAX);
+    Pid_M2.Preset(0);
     MotMode = MOT_PLAY;
     break;
 
   case SPOOL_BRAKE:
-    Pid_M1->Preset(0);
-    Pid_M2->Preset(0);
+    Pid_M1.Preset(0);
+    Pid_M2.Preset(0);
     MotMode = MOT_PLAY;
     break;
 
   case SPOOL_FFD:
     SetMot2(0);
-    Pid_M1->Preset(0);
+    Pid_M1.Preset(0);
     Pin_Ffd = 1;
     MotMode = MOT_FFD;
     break;
 
   case SPOOL_REW:
     SetMot1(0);
-    Pid_M2->Preset(0);
+    Pid_M2.Preset(0);
     Pin_Rew = 1;
     MotMode = MOT_REW;
     break;
 
   case SPOOL_AFFD:
-    Pid_M1->Preset(0);
-    Pid_M2->Preset(TEN_MAX);
+    Pid_M1.Preset(0);
+    Pid_M2.Preset(TEN_MAX);
     MotMode = MOT_AFFD;
     break;
 
   case SPOOL_AREW:
-    Pid_M1->Preset(TEN_MAX);
-    Pid_M2->Preset(0);
+    Pid_M1.Preset(TEN_MAX);
+    Pid_M2.Preset(0);
     MotMode = MOT_AREW;
     break;
   }
@@ -371,24 +371,24 @@ uint8_t TSpool::GetMode(void)
 
 void TSpool::SetPID1(kpid_t k)
 {
-  Pid_M1->K = k;
+  Pid_M1.K = k;
 }
 
 void TSpool::SetPID2(kpid_t k)
 {
-  Pid_M2->K = k;
+  Pid_M2.K = k;
 }
 
 //----------------------- Чтение коэффициентов PID: --------------------------
 
 kpid_t TSpool::GetPID1(void)
 {
-  return(Pid_M1->K);
+  return(Pid_M1.K);
 }
 
 kpid_t TSpool::GetPID2(void)
 {
-  return(Pid_M2->K);
+  return(Pid_M2.K);
 }
 
 //------------------------- Управление мотором M1: ---------------------------
@@ -427,8 +427,8 @@ void TSpool::SetTen(uint8_t m, ten_t t)
     Tensions[m].m2 = t.m2;
     if(m == Mode)
     {
-      Pid_M1->Ref = t.m1;
-      Pid_M2->Ref = t.m2;
+      Pid_M1.Ref = t.m1;
+      Pid_M2.Ref = t.m2;
     }
   }
 }
@@ -444,8 +444,8 @@ ten_t TSpool::GetTen(uint8_t mode)
 
 void TSpool::SetTen(ten_t t)
 {
-  Pid_M1->Ref = t.m1;
-  Pid_M2->Ref = t.m2;
+  Pid_M1.Ref = t.m1;
+  Pid_M2.Ref = t.m2;
 }
 
 //----------------------- Чтение текущего натяжения: -------------------------
@@ -453,8 +453,8 @@ void TSpool::SetTen(ten_t t)
 ten_t TSpool::GetTen(void)
 {
   ten_t t;
-  t.m1 = Pid_M1->Ref;
-  t.m2 = Pid_M2->Ref;
+  t.m1 = Pid_M1.Ref;
+  t.m2 = Pid_M2.Ref;
   return(t);
 }
 
@@ -496,30 +496,30 @@ bool TSpool::LowT1T2(void)
 void TSpool::EERead(void)
 {
   kpid_t K;
-  K.p = Eeprom->Rd8(EE_KP1, NOM_KP);
-  K.i = Eeprom->Rd8(EE_KI1, NOM_KI);
-  K.d = Eeprom->Rd8(EE_KD1, NOM_KD);
+  K.p = Eeprom.Rd8(EE_KP1, NOM_KP);
+  K.i = Eeprom.Rd8(EE_KI1, NOM_KI);
+  K.d = Eeprom.Rd8(EE_KD1, NOM_KD);
   SetPID1(K);
-  K.p = Eeprom->Rd8(EE_KP2, NOM_KP);
-  K.i = Eeprom->Rd8(EE_KI2, NOM_KI);
-  K.d = Eeprom->Rd8(EE_KD2, NOM_KD);
+  K.p = Eeprom.Rd8(EE_KP2, NOM_KP);
+  K.i = Eeprom.Rd8(EE_KI2, NOM_KI);
+  K.d = Eeprom.Rd8(EE_KD2, NOM_KD);
   SetPID2(K);
-  Tensions[SPOOL_OFF].m1   = Eeprom->Rd16(EE_TEN_MIN1,   NOM_TEN_MIN);
-  Tensions[SPOOL_OFF].m2   = Eeprom->Rd16(EE_TEN_MIN2,   NOM_TEN_MIN);
-  Tensions[SPOOL_BRAKE].m1 = Eeprom->Rd16(EE_TEN_BRAKE1, NOM_TEN_PLAY);
-  Tensions[SPOOL_BRAKE].m2 = Eeprom->Rd16(EE_TEN_BRAKE2, NOM_TEN_PLAY);
-  Tensions[SPOOL_PLAYF].m1 = Eeprom->Rd16(EE_TEN_PLAYF1, NOM_TEN_PLAY);
-  Tensions[SPOOL_PLAYF].m2 = Eeprom->Rd16(EE_TEN_PLAYF2, NOM_TEN_PLAY);
-  Tensions[SPOOL_PLAYR].m1 = Eeprom->Rd16(EE_TEN_PLAYR1, NOM_TEN_PLAY);
-  Tensions[SPOOL_PLAYR].m2 = Eeprom->Rd16(EE_TEN_PLAYR2, NOM_TEN_PLAY);
-  Tensions[SPOOL_FFD].m1   = Eeprom->Rd16(EE_TEN_FFD1,   NOM_TEN_PLAY);
-  Tensions[SPOOL_FFD].m2   = Eeprom->Rd16(EE_TEN_FFD2,   NOM_TEN_LIMT);
-  Tensions[SPOOL_REW].m1   = Eeprom->Rd16(EE_TEN_REW1,   NOM_TEN_LIMT);
-  Tensions[SPOOL_REW].m2   = Eeprom->Rd16(EE_TEN_REW2,   NOM_TEN_PLAY);
-  Tensions[SPOOL_AFFD].m1  = Eeprom->Rd16(EE_TEN_AFFD1,  NOM_TEN_ARSP);
-  Tensions[SPOOL_AFFD].m2  = Eeprom->Rd16(EE_TEN_AFFD2,  NOM_TEN_ARTU);
-  Tensions[SPOOL_AREW].m1  = Eeprom->Rd16(EE_TEN_AREW1,  NOM_TEN_ARTU);
-  Tensions[SPOOL_AREW].m2  = Eeprom->Rd16(EE_TEN_AREW2,  NOM_TEN_ARSP);
+  Tensions[SPOOL_OFF].m1   = Eeprom.Rd16(EE_TEN_MIN1,   NOM_TEN_MIN);
+  Tensions[SPOOL_OFF].m2   = Eeprom.Rd16(EE_TEN_MIN2,   NOM_TEN_MIN);
+  Tensions[SPOOL_BRAKE].m1 = Eeprom.Rd16(EE_TEN_BRAKE1, NOM_TEN_PLAY);
+  Tensions[SPOOL_BRAKE].m2 = Eeprom.Rd16(EE_TEN_BRAKE2, NOM_TEN_PLAY);
+  Tensions[SPOOL_PLAYF].m1 = Eeprom.Rd16(EE_TEN_PLAYF1, NOM_TEN_PLAY);
+  Tensions[SPOOL_PLAYF].m2 = Eeprom.Rd16(EE_TEN_PLAYF2, NOM_TEN_PLAY);
+  Tensions[SPOOL_PLAYR].m1 = Eeprom.Rd16(EE_TEN_PLAYR1, NOM_TEN_PLAY);
+  Tensions[SPOOL_PLAYR].m2 = Eeprom.Rd16(EE_TEN_PLAYR2, NOM_TEN_PLAY);
+  Tensions[SPOOL_FFD].m1   = Eeprom.Rd16(EE_TEN_FFD1,   NOM_TEN_PLAY);
+  Tensions[SPOOL_FFD].m2   = Eeprom.Rd16(EE_TEN_FFD2,   NOM_TEN_LIMT);
+  Tensions[SPOOL_REW].m1   = Eeprom.Rd16(EE_TEN_REW1,   NOM_TEN_LIMT);
+  Tensions[SPOOL_REW].m2   = Eeprom.Rd16(EE_TEN_REW2,   NOM_TEN_PLAY);
+  Tensions[SPOOL_AFFD].m1  = Eeprom.Rd16(EE_TEN_AFFD1,  NOM_TEN_ARSP);
+  Tensions[SPOOL_AFFD].m2  = Eeprom.Rd16(EE_TEN_AFFD2,  NOM_TEN_ARTU);
+  Tensions[SPOOL_AREW].m1  = Eeprom.Rd16(EE_TEN_AREW1,  NOM_TEN_ARTU);
+  Tensions[SPOOL_AREW].m2  = Eeprom.Rd16(EE_TEN_AREW2,  NOM_TEN_ARSP);
 }
 
 //------------------- Сохранение параметров в EEPROM: ------------------------
@@ -528,29 +528,29 @@ void TSpool::EESave(void)
 {
   kpid_t K;
   K = GetPID1();
-  Eeprom->Wr8(EE_KP1, K.p);
-  Eeprom->Wr8(EE_KI1, K.i);
-  Eeprom->Wr8(EE_KD1, K.d);
+  Eeprom.Wr8(EE_KP1, K.p);
+  Eeprom.Wr8(EE_KI1, K.i);
+  Eeprom.Wr8(EE_KD1, K.d);
   K = GetPID2();
-  Eeprom->Wr8(EE_KP2, K.p);
-  Eeprom->Wr8(EE_KI2, K.i);
-  Eeprom->Wr8(EE_KD2, K.d);
-  Eeprom->Wr16(EE_TEN_MIN1,   Tensions[SPOOL_OFF].m1);
-  Eeprom->Wr16(EE_TEN_MIN2,   Tensions[SPOOL_OFF].m2);
-  Eeprom->Wr16(EE_TEN_BRAKE1, Tensions[SPOOL_BRAKE].m1);
-  Eeprom->Wr16(EE_TEN_BRAKE2, Tensions[SPOOL_BRAKE].m2);
-  Eeprom->Wr16(EE_TEN_PLAYF1, Tensions[SPOOL_PLAYF].m1);
-  Eeprom->Wr16(EE_TEN_PLAYF2, Tensions[SPOOL_PLAYF].m2);
-  Eeprom->Wr16(EE_TEN_PLAYR1, Tensions[SPOOL_PLAYR].m1);
-  Eeprom->Wr16(EE_TEN_PLAYR2, Tensions[SPOOL_PLAYR].m2);
-  Eeprom->Wr16(EE_TEN_FFD1,   Tensions[SPOOL_FFD].m1);
-  Eeprom->Wr16(EE_TEN_FFD2,   Tensions[SPOOL_FFD].m2);
-  Eeprom->Wr16(EE_TEN_REW1,   Tensions[SPOOL_REW].m1);
-  Eeprom->Wr16(EE_TEN_REW2,   Tensions[SPOOL_REW].m2);
-  Eeprom->Wr16(EE_TEN_AFFD1,  Tensions[SPOOL_AFFD].m1);
-  Eeprom->Wr16(EE_TEN_AFFD2,  Tensions[SPOOL_AFFD].m2);
-  Eeprom->Wr16(EE_TEN_AREW1,  Tensions[SPOOL_AREW].m1);
-  Eeprom->Wr16(EE_TEN_AREW2,  Tensions[SPOOL_AREW].m2);
+  Eeprom.Wr8(EE_KP2, K.p);
+  Eeprom.Wr8(EE_KI2, K.i);
+  Eeprom.Wr8(EE_KD2, K.d);
+  Eeprom.Wr16(EE_TEN_MIN1,   Tensions[SPOOL_OFF].m1);
+  Eeprom.Wr16(EE_TEN_MIN2,   Tensions[SPOOL_OFF].m2);
+  Eeprom.Wr16(EE_TEN_BRAKE1, Tensions[SPOOL_BRAKE].m1);
+  Eeprom.Wr16(EE_TEN_BRAKE2, Tensions[SPOOL_BRAKE].m2);
+  Eeprom.Wr16(EE_TEN_PLAYF1, Tensions[SPOOL_PLAYF].m1);
+  Eeprom.Wr16(EE_TEN_PLAYF2, Tensions[SPOOL_PLAYF].m2);
+  Eeprom.Wr16(EE_TEN_PLAYR1, Tensions[SPOOL_PLAYR].m1);
+  Eeprom.Wr16(EE_TEN_PLAYR2, Tensions[SPOOL_PLAYR].m2);
+  Eeprom.Wr16(EE_TEN_FFD1,   Tensions[SPOOL_FFD].m1);
+  Eeprom.Wr16(EE_TEN_FFD2,   Tensions[SPOOL_FFD].m2);
+  Eeprom.Wr16(EE_TEN_REW1,   Tensions[SPOOL_REW].m1);
+  Eeprom.Wr16(EE_TEN_REW2,   Tensions[SPOOL_REW].m2);
+  Eeprom.Wr16(EE_TEN_AFFD1,  Tensions[SPOOL_AFFD].m1);
+  Eeprom.Wr16(EE_TEN_AFFD2,  Tensions[SPOOL_AFFD].m2);
+  Eeprom.Wr16(EE_TEN_AREW1,  Tensions[SPOOL_AREW].m1);
+  Eeprom.Wr16(EE_TEN_AREW2,  Tensions[SPOOL_AREW].m2);
 }
 
 //----------------------------------------------------------------------------

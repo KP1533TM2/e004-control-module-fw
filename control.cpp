@@ -74,7 +74,7 @@
 #include "control.hpp"
 #include <avr/wdt.h>
 
-TEeprom *Eeprom;
+TEeprom Eeprom;
 
 //----------------------------------------------------------------------------
 //---------------------------- Класс TControl: -------------------------------
@@ -85,15 +85,15 @@ TEeprom *Eeprom;
 TControl::TControl(void)
 {
   HardwareInit();
-  Eeprom = new TEeprom();
-  Local = new TLocal();
-  Remote = new TRemote();
+//  Eeprom = TEeprom();
+  Local = TLocal();
+  Remote = TRemote();
   KeyCode = KEY_NO;
-  Sound = new TSound();
-  Transport = new TTransport();
-  Leds = new TLeds();
-  ProgTimer = new TSoftTimer<TT_ONESHOT>(T_PROG);
-  TrState = Transport->GetState();
+  Sound = TSound();
+  Transport = TTransport();
+  Leds = TLeds();
+  ProgTimer = TSoftTimer<TT_ONESHOT>(T_PROG);
+  TrState = Transport.GetState();
   ServiceCounter = 0;
   fAutostop = 0;
   ProgMode1 = TR_STOP;
@@ -105,28 +105,28 @@ TControl::TControl(void)
   fRoll = 0;                     //ROLLBACK выключен
   fUpdate = 1;                   //требование обновления индикации
   EERead();                      //чтение EEPROM
-  Leds->Set(LED_ALL, LEDS_CONT); //включение всех светодиодов для теста
-  Leds->Execute();               //обновление
+  Leds.Set(LED_ALL, LEDS_CONT); //включение всех светодиодов для теста
+  Leds.Execute();               //обновление
   TSysTimer::Delay_ms(1000);     //задержка 1 сек.
-  Leds->Set(LED_ALL, LEDS_OFF);  //выключение всех светодиодов
-  Leds->Execute();               //обновление
-  Sound->Beep();                 //начальный звуковой сигнал
+  Leds.Set(LED_ALL, LEDS_OFF);  //выключение всех светодиодов
+  Leds.Execute();               //обновление
+  Sound.Beep();                 //начальный звуковой сигнал
 }
 
 //------------------------ Выполнение управления: ----------------------------
 
 void TControl::Execute(void)
 {
-  Local->Execute();
-  Remote->Execute();
-  Sound->Execute();
-  Transport->Execute();
+  Local.Execute();
+  Remote.Execute();
+  Sound.Execute();
+  Transport.Execute();
 
   //считывание кода кнопки:
-  KeyCode = Local->GetKeyCode();
+  KeyCode = Local.GetKeyCode();
   //считывание кода ИК ДУ:
   if(KeyCode == KEY_NO)
-    KeyCode = Remote->GetKeyCode();
+    KeyCode = Remote.GetKeyCode();
   //фильтрация кодов кнопок:
   FilterKey(KeyCode);
   //обработка нажатий кнопок:
@@ -216,7 +216,7 @@ uint8_t TControl::Arch(uint8_t code)
 
 void TControl::SetMode(uint8_t code)
 {
-  Sound->Tick();
+  Sound.Tick();
   //программирование:
   ProgMode(code);
   switch(code)
@@ -225,8 +225,8 @@ void TControl::SetMode(uint8_t code)
   case KEY_STOP:
     Mode = TR_STOP;
     fPause = 0;                          //выключение паузы
-    Transport->Audio->Rec(OFF);          //выключение тракта записи
-    Transport->SetMode(Mode);            //включение режима
+    Transport.Audio.Rec(OFF);          //выключение тракта записи
+    Transport.SetMode(Mode);            //включение режима
     break;
 
   //включение режима PLAYF
@@ -236,17 +236,17 @@ void TControl::SetMode(uint8_t code)
       if(Option(OPT_RECPLAYEN))
       {
         Mode = TR_PLAYF;                 //включение PLAYF
-        Transport->Audio->Rec(OFF);      //выключение тракта записи
+        Transport.Audio.Rec(OFF);      //выключение тракта записи
       }
     }
     else Mode = TR_PLAYF;                //включение PLAYF
     if(Option(OPT_PLAYEXPAUSE))
       fPause = 0;                        //выключение паузы
-    if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
+    if(!fPause) Transport.SetMode(Mode); //если не пауза, включение режима
     else
     {
-      Transport->SetMode(TR_CAPF);       //направление вращения тонвала
-      Transport->SetCue(ON);             //выключение MUTE
+      Transport.SetMode(TR_CAPF);       //направление вращения тонвала
+      Transport.SetCue(ON);             //выключение MUTE
     }
     break;
 
@@ -257,7 +257,7 @@ void TControl::SetMode(uint8_t code)
       if(Option(OPT_RECPLAYEN))
       {
         Mode = TR_PLAYR;                 //включение PLAYR
-        Transport->Audio->Rec(OFF);      //выключение тракта записи
+        Transport.Audio.Rec(OFF);      //выключение тракта записи
       }
     }
     else
@@ -266,11 +266,11 @@ void TControl::SetMode(uint8_t code)
       if(Option(OPT_PLAYEXPAUSE))
         fPause = 0;                      //выключение паузы
     }
-    if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
+    if(!fPause) Transport.SetMode(Mode); //если не пауза, включение режима
     else
     {
-      Transport->SetMode(TR_CAPR);       //направление вращения тонвала
-      Transport->SetCue(ON);             //выключение MUTE
+      Transport.SetMode(TR_CAPR);       //направление вращения тонвала
+      Transport.SetCue(ON);             //выключение MUTE
     }
     break;
 
@@ -283,9 +283,9 @@ void TControl::SetMode(uint8_t code)
       Mode = TR_REC;
       if(Option(OPT_AUTORECPAUSE))
         fPause = 1;                      //включение паузы
-      Transport->Audio->Rec(ON);         //включение тракта записи
-      if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
-        else Transport->SetMode(TR_CAPF); //направление вращения тонвала
+      Transport.Audio.Rec(ON);         //включение тракта записи
+      if(!fPause) Transport.SetMode(Mode); //если не пауза, включение режима
+        else Transport.SetMode(TR_CAPF); //направление вращения тонвала
     }
     break;
 
@@ -298,12 +298,12 @@ void TControl::SetMode(uint8_t code)
          (Mode != TR_PLAYR) &&
          (Mode != TR_REC))
         Mode = TR_STOP;
-      Transport->SetMode(TR_PAUSE);      //остановка ленты без MUTE
+      Transport.SetMode(TR_PAUSE);      //остановка ленты без MUTE
       if(!Option(OPT_MUTEPAUSE))
-        Transport->SetCue(ON);           //выключение MUTE
+        Transport.SetCue(ON);           //выключение MUTE
     }
     else                                 //если пауза выключается,
-      Transport->SetMode(Mode);          //возобновление режима
+      Transport.SetMode(Mode);          //возобновление режима
     break;
 
   //включение режима AFFD или FFD
@@ -312,8 +312,8 @@ void TControl::SetMode(uint8_t code)
     if(Mode == TR_AFFD)                  //если режим арх. перемотки,то
       Mode = TR_FFD;                     //включение обычной перемотки
         else Mode = Arch(TR_FFD);        //иначе включ. арх., если разрешена
-    Transport->Audio->Rec(OFF);          //выключение тракта записи
-    Transport->SetMode(Mode);            //включение режима
+    Transport.Audio.Rec(OFF);          //выключение тракта записи
+    Transport.SetMode(Mode);            //включение режима
     break;
 
   //включение режима AREW или REW
@@ -322,15 +322,15 @@ void TControl::SetMode(uint8_t code)
     if(Mode == TR_AREW)                  //если режим арх. перемотки,то
       Mode = TR_REW;                     //включение обычной перемотки
         else Mode = Arch(TR_REW);        //иначе включ. арх., если разрешена
-    Transport->Audio->Rec(OFF);          //выключение тракта записи
-    Transport->SetMode(Mode);            //включение режима
+    Transport.Audio.Rec(OFF);          //выключение тракта записи
+    Transport.SetMode(Mode);            //включение режима
     break;
 
   //включение режима ROLLBACK
   case KEY_ROLL:
     if(Mode == TR_REC)                   //если запись,
     {
-      Transport->Audio->Rec(OFF);        //выключение тракта записи
+      Transport.Audio.Rec(OFF);        //выключение тракта записи
       Mode = TR_PLAYF;                   //переход в режим PLAYF
     }
     if(Mode == TR_PLAYF)                 //если PLAYF,
@@ -349,13 +349,13 @@ void TControl::SetMode(uint8_t code)
             (Mode == TR_AREW))           //AREW
     {
       if(Option(OPT_ENABLECUE))          //если опция обзор при арх. перем., то
-        Transport->SetCue(ON);           //управление отводом ленты и MUTE
+        Transport.SetCue(ON);           //управление отводом ленты и MUTE
     }
     if(fRoll)
     {
-      Transport->SetMode(Mode);          //включение режима
+      Transport.SetMode(Mode);          //включение режима
       if(Option(OPT_ROLLCUE))            //если опция обзора при откате, то
-        Transport->SetCue(ON);           //управление отводом ленты и MUTE
+        Transport.SetCue(ON);           //управление отводом ленты и MUTE
     }
     break;
 
@@ -366,7 +366,7 @@ void TControl::SetMode(uint8_t code)
       Mode = BackMode;                   //переход в режим возврата
       fRoll = 0;                         //выключение отката
     }
-    Transport->SetMode(Mode);            //включение режима
+    Transport.SetMode(Mode);            //включение режима
     break;
 
   //RC only:
@@ -377,23 +377,23 @@ void TControl::SetMode(uint8_t code)
     if(Mode == TR_PLAYF)                 //если режим PLAYF, то
     {
       Mode = TR_PLAYR;                   //режим PLAYR
-      if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
-        else Transport->SetMode(TR_CAPR); //иначе реверс тонвала
+      if(!fPause) Transport.SetMode(Mode); //если не пауза, включение режима
+        else Transport.SetMode(TR_CAPR); //иначе реверс тонвала
     }
     else if(Mode == TR_PLAYR)            //если режим PLAYR, то
     {
       Mode = TR_PLAYF;                   //режим PLAYF
-      if(!fPause) Transport->SetMode(Mode); //если не пауза, включение режима
-        else Transport->SetMode(TR_CAPF); //иначе реверс тонвала
+      if(!fPause) Transport.SetMode(Mode); //если не пауза, включение режима
+        else Transport.SetMode(TR_CAPF); //иначе реверс тонвала
     }
     else if(Trs(TRS_REV))                 //иначе реверс тонвала
-      Transport->SetMode(TR_CAPF);
-        else Transport->SetMode(TR_CAPR);
+      Transport.SetMode(TR_CAPF);
+        else Transport.SetMode(TR_CAPR);
     break;
 
   //включение/выключение режима Mute
   case KEY_MUTE:
-    Transport->Audio->MuteToggle();      //включение/выключение MUTE
+    Transport.Audio.MuteToggle();      //включение/выключение MUTE
     break;
   };
   fUpdate = 1;
@@ -412,7 +412,7 @@ inline void TControl::ProgMode(uint8_t &code)
        (Program == PR_OFF))  //и если еще не режим программирования
     {
       Program = PR_STEP1;    //вход в программирование
-      ProgTimer->Start();    //запуск таймера
+      ProgTimer.Start();    //запуск таймера
       ProgMode1 = TR_STOP;   //очистка шага 1
       ProgMode2 = TR_STOP;   //очистка шага 2
       fUpdate = 1;           //требование обновления индикации
@@ -422,7 +422,7 @@ inline void TControl::ProgMode(uint8_t &code)
        (Program != PR_OFF))  //в режиме программирования
     {
       Program = PR_OFF;      //выход из режима программирования
-      ProgTimer->Stop();     //остановка таймера
+      ProgTimer.Stop();     //остановка таймера
       ProgMode1 = TR_STOP;   //очистка шага 1
       ProgMode2 = TR_STOP;   //очистка шага 2
       fUpdate = 1;           //требование обновления индикации
@@ -439,7 +439,7 @@ inline void TControl::ProgMode(uint8_t &code)
       //запрещенные кнопки:
       else if(code == KEY_PAUSE || code == KEY_REC || code == KEY_ROLL)
       {
-        Sound->Bell();      //сигнал ошибки
+        Sound.Bell();      //сигнал ошибки
         code = KEY_STOP;    //сброс кода кнопки
       }
       if(ProgMode1 != TR_STOP) //если шаг 1 запрограммирован
@@ -448,21 +448,21 @@ inline void TControl::ProgMode(uint8_t &code)
         Program = PR_STEP2; //переход к второму шагу
         fUpdate = 1;        //требование обновления индикации
       }
-      ProgTimer->Start();   //перезапуск таймера
+      ProgTimer.Start();   //перезапуск таймера
       break;
     //программирование шага 2:
     case PR_STEP2:
       if(ProgMode1 == TR_AREW && code == KEY_REW)
       {
         ProgMode1 = TR_REW; //замена AREW на REW для шага 1
-        ProgTimer->Start(); //перезапуск таймера
+        ProgTimer.Start(); //перезапуск таймера
         code = KEY_STOP;    //сброс кода кнопки
         break;
       }
       if(ProgMode1 == TR_AFFD && code == KEY_FFD)
       {
         ProgMode1 = TR_FFD; //замена AFFD на FFD для шага 1
-        ProgTimer->Start(); //перезапуск таймера
+        ProgTimer.Start(); //перезапуск таймера
         code = KEY_STOP;    //сброс кода кнопки
         break;
       }
@@ -476,7 +476,7 @@ inline void TControl::ProgMode(uint8_t &code)
         else if(code == KEY_PLAYR || code == KEY_REW ||
                 code == KEY_REC   || code == KEY_ROLL)
         {
-          Sound->Bell();    //сигнал ошибки
+          Sound.Bell();    //сигнал ошибки
           code = KEY_STOP;  //сброс кода кнопки
         }
       }
@@ -490,7 +490,7 @@ inline void TControl::ProgMode(uint8_t &code)
         else if(code == KEY_PLAYF || code == KEY_FFD ||
                 code == KEY_REC   || code == KEY_ROLL)
         {
-          Sound->Bell();    //сигнал ошибки
+          Sound.Bell();    //сигнал ошибки
           code = KEY_STOP;  //сброс кода кнопки
         }
       }
@@ -500,21 +500,21 @@ inline void TControl::ProgMode(uint8_t &code)
         Program = PR_RUN;   //переход к выполнению программы
         fUpdate = 1;        //требование обновления индикации
       }
-      ProgTimer->Start();   //перезапуск таймера
+      ProgTimer.Start();   //перезапуск таймера
       break;
     //завершение программирования:
     case PR_RUN:
       if(ProgMode2 == TR_AREW && code == KEY_REW)
       {
         ProgMode2 = TR_REW; //замена AREW на REW для шага 2
-        ProgTimer->Start(); //перезапуск таймера
+        ProgTimer.Start(); //перезапуск таймера
         code = KEY_STOP;    //сброс кода кнопки
         break;
       }
       if(ProgMode2 == TR_AFFD && code == KEY_FFD)
       {
         ProgMode2 = TR_FFD; //замена AFFD на FFD для шага 2
-        ProgTimer->Start(); //перезапуск таймера
+        ProgTimer.Start(); //перезапуск таймера
         code = KEY_STOP;    //сброс кода кнопки
         break;
       }
@@ -522,7 +522,7 @@ inline void TControl::ProgMode(uint8_t &code)
       if(code == KEY_PLAYR || code == KEY_PLAYF || code == KEY_REW ||
          code == KEY_FFD   || code == KEY_REC   || code == KEY_ROLL)
       {
-        Sound->Bell();      //сигнал ошибки
+        Sound.Bell();      //сигнал ошибки
         code = KEY_STOP;    //сброс кода кнопки
       }
       break;
@@ -558,7 +558,7 @@ inline bool TControl::ServiceTimer(void)
     {
       ServiceCounter = 0;
       //чтение состояния ЛПМ:
-      TrState = Transport->GetState();
+      TrState = Transport.GetState();
       wdt_reset();
       return(1);
     }
@@ -570,28 +570,28 @@ inline bool TControl::ServiceTimer(void)
 
 inline void TControl::LedsService(void)
 {
-  Leds->Execute();
+  Leds.Execute();
   if(fUpdate || (IndState != TrState))
   {
     IndState = TrState;
     fUpdate = 0;
     //очистка набора светодиодов:
-    Leds->Set(LED_ALL, LEDS_OFF);
+    Leds.Set(LED_ALL, LEDS_OFF);
     //индикация набора программы:
     if(Program == PR_STEP1)
     {
       //начальный набор для программирования:
-      Leds->Set(LED_REW + LED_PLAYR + LED_PLAYF + LED_FFD, LEDS_CONT);
+      Leds.Set(LED_REW + LED_PLAYR + LED_PLAYF + LED_FFD, LEDS_CONT);
       return;
     }
     else if(Program == PR_STEP2 || Program == PR_RUN)
     {
       //набор для движения вперед:
       if(ProgMode1 == TR_AREW || ProgMode1 == TR_REW || ProgMode1 == TR_PLAYR)
-        Leds->Set(LED_PLAYF + LED_FFD + LED_PAUSE, LEDS_CONT);
+        Leds.Set(LED_PLAYF + LED_FFD + LED_PAUSE, LEDS_CONT);
       //набор для движения назад:
       if(ProgMode1 == TR_AFFD || ProgMode1 == TR_FFD || ProgMode1 == TR_PLAYF)
-        Leds->Set(LED_PLAYR + LED_REW + LED_PAUSE, LEDS_CONT);
+        Leds.Set(LED_PLAYR + LED_REW + LED_PAUSE, LEDS_CONT);
       return;
     }
     //индикация направления Capstan:
@@ -604,81 +604,81 @@ inline void TControl::LedsService(void)
             b = LEDS_SLOW;              //то медленное мигание,
               else b = LEDS_OFF;        //иначе выключение
       if(Trs(TRS_REV))                  //если Capstan вращается назад,
-        Leds->Set(LED_PLAYR, b);        //мигает LED_PLAYR,
-          else Leds->Set(LED_PLAYF, b); //иначе мигает LED_PLAYF
+        Leds.Set(LED_PLAYR, b);        //мигает LED_PLAYR,
+          else Leds.Set(LED_PLAYF, b); //иначе мигает LED_PLAYF
     }
     //индикация режимов работы:
     switch(Mode)
     {
     case TR_STOP:
       if(Trs(TRS_TAPE))                 //если лента загружена, то
-        Leds->Set(LED_STOP, LEDS_CONT); //LED_STOP горит
-          else Leds->Set(LED_NONE);     //если ленты нет, то не горит
+        Leds.Set(LED_STOP, LEDS_CONT); //LED_STOP горит
+          else Leds.Set(LED_NONE);     //если ленты нет, то не горит
       break;
 
     case TR_PLAYF:
       if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то
-        Leds->Set(LED_PLAYF, LEDS_NORM);     //LED_PLAYF мигает,
+        Leds.Set(LED_PLAYF, LEDS_NORM);     //LED_PLAYF мигает,
           else if(Trs(TRS_LOCK))             //иначе если Capstan готов,
-            Leds->Set(LED_PLAYF, LEDS_CONT); //LED_PLAYF горит
+            Leds.Set(LED_PLAYF, LEDS_CONT); //LED_PLAYF горит
       break;
 
     case TR_PLAYR:
       if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то
-        Leds->Set(LED_PLAYR, LEDS_NORM);     //LED_PLAYR мигает,
+        Leds.Set(LED_PLAYR, LEDS_NORM);     //LED_PLAYR мигает,
           else if(Trs(TRS_LOCK))             //иначе если Capstan готов,
-            Leds->Set(LED_PLAYR, LEDS_CONT); //LED_PLAYR горит
+            Leds.Set(LED_PLAYR, LEDS_CONT); //LED_PLAYR горит
       break;
 
     case TR_REC:
       if(fPause && Option(OPT_PAUSELEDBLINK)) //если пауза, то LED_REC + PLAYF
-        Leds->Set(LED_REC + LED_PLAYF, LEDS_NORM); //мигает,
-          else Leds->Set(LED_REC + LED_PLAYF, LEDS_CONT); //иначе горит
+        Leds.Set(LED_REC + LED_PLAYF, LEDS_NORM); //мигает,
+          else Leds.Set(LED_REC + LED_PLAYF, LEDS_CONT); //иначе горит
       break;
 
     case TR_FFD:
       if(fRoll)
-        Leds->Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
-      Leds->Set(LED_FFD, LEDS_CONT);     //включение LED_FFD
+        Leds.Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
+      Leds.Set(LED_FFD, LEDS_CONT);     //включение LED_FFD
       break;
 
     case TR_REW:
       if(fRoll)
-        Leds->Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
-      Leds->Set(LED_REW, LEDS_CONT);     //включение LED_REW
+        Leds.Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
+      Leds.Set(LED_REW, LEDS_CONT);     //включение LED_REW
       break;
 
     case TR_AFFD:
       if(fRoll)
-        Leds->Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
+        Leds.Set(LED_PLAYR, LEDS_CONT); //если откат, горит LED_PLAYR
       if(Trs(TRS_CUE))                   //если обзор
         if(Trs(TRS_REV))                 //и если Capstan вращается назад,
-          Leds->Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
-            else Leds->Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
-      Leds->Set(LED_FFD, LEDS_NORM);     //LED_FFD мигает норм.
+          Leds.Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
+            else Leds.Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
+      Leds.Set(LED_FFD, LEDS_NORM);     //LED_FFD мигает норм.
       break;
 
     case TR_AREW:
       if(fRoll)
-        Leds->Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
+        Leds.Set(LED_PLAYF, LEDS_CONT); //если откат, горит LED_PLAYF
       if(Trs(TRS_CUE))                   //если обзор
         if(Trs(TRS_REV))                 //и если Capstan вращается назад,
-          Leds->Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
-            else Leds->Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
-      Leds->Set(LED_REW, LEDS_NORM);     //LED_REW мигает норм.
+          Leds.Set(LED_PLAYR, LEDS_FAST); //то быстро мигает LED_PLAYR,
+            else Leds.Set(LED_PLAYF, LEDS_FAST); //иначе LED_PLAYF
+      Leds.Set(LED_REW, LEDS_NORM);     //LED_REW мигает норм.
       break;
     };
 
     //индикация торможения двигателями:
     if(Trs(TRS_BRAKE) && Trs(TRS_MOVE))  //если торможение, то
-      Leds->Set(LED_STOP, LEDS_FAST);    //LED_STOP мигает
+      Leds.Set(LED_STOP, LEDS_FAST);    //LED_STOP мигает
 
     //индикация режима PAUSE:
     if(fPause)                           //если пауза, то
     {
       if(Option(OPT_PAUSELEDBLINK))
-        Leds->Set(LED_PAUSE, LEDS_NORM); //LED_PAUSE мигает
-          else Leds->Set(LED_PAUSE, LEDS_CONT); //или горит
+        Leds.Set(LED_PAUSE, LEDS_NORM); //LED_PAUSE мигает
+          else Leds.Set(LED_PAUSE, LEDS_CONT); //или горит
     }
     //индикация второго программного режима:
     if(ProgMode2 != TR_STOP)
@@ -686,13 +686,13 @@ inline void TControl::LedsService(void)
       uint8_t m = Option(OPT_PROGBLINK)? LEDS_SLOW : LEDS_CONT;
       switch(ProgMode2)
       {
-      case TR_PAUSE: Leds->Set(LED_PAUSE, m); break;
-      case TR_PLAYR: Leds->Set(LED_PLAYR, m); break;
+      case TR_PAUSE: Leds.Set(LED_PAUSE, m); break;
+      case TR_PLAYR: Leds.Set(LED_PLAYR, m); break;
       case TR_REW:
-      case TR_AREW:  Leds->Set(LED_REW,   m); break;
+      case TR_AREW:  Leds.Set(LED_REW,   m); break;
       case TR_FFD:
-      case TR_AFFD:  Leds->Set(LED_FFD,   m); break;
-      case TR_PLAYF: Leds->Set(LED_PLAYF, m); break;
+      case TR_AFFD:  Leds.Set(LED_FFD,   m); break;
+      case TR_PLAYF: Leds.Set(LED_PLAYF, m); break;
       }
     }
   }
@@ -702,7 +702,7 @@ inline void TControl::LedsService(void)
 
 inline void TControl::AutoStopService(void)
 {
-  uint8_t as = Transport->CheckAutoStop();
+  uint8_t as = Transport.CheckAutoStop();
   if(as)
   {
     if(!fAutostop && (as == ASR_END)) //если был автостоп по ДО
@@ -714,7 +714,7 @@ inline void TControl::AutoStopService(void)
       fAutostop = 1; //установка флага автостопа
     }
     Mode = TR_STOP;
-    Transport->SetMode(TR_ASTOP); //механическое торможение
+    Transport.SetMode(TR_ASTOP); //механическое торможение
     fUpdate = 1;
   }
 }
@@ -724,17 +724,17 @@ inline void TControl::AutoStopService(void)
 inline void TControl::AutoPlayService(void)
 {
   //проверка таймера программы:
-  if(ProgTimer->Over())         //таймер переполнился,
+  if(ProgTimer.Over())         //таймер переполнился,
   {
     if(Program == PR_RUN)       //если введены 2 шага программы, то
     {
       Mode = ProgMode1;
       ProgMode1 = TR_STOP;
-      Transport->SetMode(Mode); //выполнение шага 1
+      Transport.SetMode(Mode); //выполнение шага 1
     }
     else                        //иначе
     {
-      Sound->Tick();
+      Sound.Tick();
       ProgMode1 = TR_STOP;      //сброс программы
       ProgMode2 = TR_STOP;
     }
@@ -743,7 +743,7 @@ inline void TControl::AutoPlayService(void)
   }
   //проверка срабатывания автостопа:
   if(fAutostop &&               //если сработал автостоп,
-     (Transport->GetMode() == TR_STOP)) //остановка завершена
+     (Transport.GetMode() == TR_STOP)) //остановка завершена
   {
     if(!Trs(TRS_MOVE + TRS_LOWTEN)) //если лента не закончилась и неподвижна,
     {
@@ -752,7 +752,7 @@ inline void TControl::AutoPlayService(void)
       {
         Mode = ProgMode2;
         ProgMode2 = TR_STOP;
-        Transport->SetMode(Mode);
+        Transport.SetMode(Mode);
         fUpdate = 1;
       }
       //автореверс:
@@ -762,8 +762,8 @@ inline void TControl::AutoPlayService(void)
            (ArMode != TR_STOP))       //и есть режим для автореверса
         {
           Mode = ArMode;
-          Transport->SetMode(Mode);   //включение реверса
-          Transport->ArDelay();       //дополнительная задержка ДО
+          Transport.SetMode(Mode);   //включение реверса
+          Transport.ArDelay();       //дополнительная задержка ДО
           fUpdate = 1;
         }
       }
@@ -781,7 +781,7 @@ inline void TControl::AutoPlayService(void)
 void TControl::SetOptions(uint16_t t)
 {
   Options = t;
-  Sound->OnOff(!Option(OPT_NOSOUND));
+  Sound.OnOff(!Option(OPT_NOSOUND));
   fUpdate = 1;
 }
 
@@ -796,18 +796,18 @@ uint16_t TControl::GetOptions(void)
 
 void TControl::EERead(void)
 {
-  Options = Eeprom->Rd16(EE_CT_OPTIONS, NOM_CT_OPTIONS);
-  Sound->OnOff(!Option(OPT_NOSOUND)); //включение/выключение звука
-  Transport->EERead();
+  Options = Eeprom.Rd16(EE_CT_OPTIONS, NOM_CT_OPTIONS);
+  Sound.OnOff(!Option(OPT_NOSOUND)); //включение/выключение звука
+  Transport.EERead();
 }
 
 //------------------------ Save Params to EEPROM: ----------------------------
 
 void TControl::EESave(void)
 {
-  Eeprom->Wr16(EE_CT_OPTIONS, Options);
-  Transport->EESave();
-  Eeprom->Validate();
+  Eeprom.Wr16(EE_CT_OPTIONS, Options);
+  Transport.EESave();
+  Eeprom.Validate();
 }
 
 //----------------------------------------------------------------------------

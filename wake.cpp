@@ -18,11 +18,8 @@ static const bool TABLE_CRC = 1; //включение табличного сп�
 
 //----------------------------- Конструктор: ---------------------------------
 
-TWake::TWake(const uint8_t frame)
+TWake::TWake()
 {
-  Frame = frame;
-  RxData = new uint8_t[frame + PTR_DAT + 1]; //буфер приема
-  TxData = new uint8_t[frame + PTR_DAT + 1]; //буфер передачи
   Addr = 0;
   TxState = WST_DONE;
   RxState = WST_IDLE;
@@ -100,8 +97,8 @@ uint8_t TWake::GetCmd(void)
     if(!crc) cmd = *RxPtr;           //если CRC совпадает, код команды
       else  cmd = CMD_ERR;           //иначе код ошибки
     TxCount = 0;                     //обнуление количества байт для передачи
-    RxPtr = RxData + PTR_DAT;        //указатель приема на данные
-    TxPtr = TxData + PTR_DAT;        //указатель передачи на данные
+    RxPtr = (uint8_t*)&RxData + PTR_DAT;        //указатель приема на данные
+    TxPtr = (uint8_t*)&TxData + PTR_DAT;        //указатель передачи на данные
   }
   return(cmd);
 }
@@ -172,21 +169,21 @@ void TWake::GetData(uint8_t *d, uint8_t count)
 void TWake::SetTxPtr(uint8_t p)
 {
   if(p < Frame)
-    TxPtr = TxData + PTR_DAT + p;
+    TxPtr = (uint8_t*)&TxData + PTR_DAT + p;
 }
 
 //-------------------- Читает указатель буфера передачи: ---------------------
 
 uint8_t TWake::GetTxPtr(void)
 {
-  return(TxPtr - TxData - PTR_DAT);
+  return(TxPtr - (uint8_t*)&TxData - PTR_DAT);
 }
 
 //--------------------- Помещает байт в буфер передачи: ----------------------
 
 void TWake::AddByte(uint8_t b)
 {
-  if(TxPtr < TxData + PTR_DAT + Frame)
+  if(TxPtr < (uint8_t*)&TxData + PTR_DAT + Frame)
     *TxPtr++ = b;
 }
 
@@ -194,7 +191,7 @@ void TWake::AddByte(uint8_t b)
 
 void TWake::AddWord(int16_t w)
 {
-  if(TxPtr < TxData + PTR_DAT + Frame - 1)
+  if(TxPtr < (uint8_t*)&TxData + PTR_DAT + Frame - 1)
   {
     *TxPtr++ = LO(w);
     *TxPtr++ = HI(w);
@@ -205,7 +202,7 @@ void TWake::AddWord(int16_t w)
 
 void TWake::AddDWord(int32_t dw)
 {
-  if(TxPtr < TxData + PTR_DAT + Frame - 3)
+  if(TxPtr < (uint8_t*)&TxData + PTR_DAT + Frame - 3)
   {
     *TxPtr++ = BYTE1(dw);
     *TxPtr++ = BYTE2(dw);
@@ -218,7 +215,7 @@ void TWake::AddDWord(int32_t dw)
 
 void TWake::AddData(uint8_t *d, uint8_t count)
 {
-  if(TxPtr <= (TxData + PTR_DAT + Frame) - count)
+  if(TxPtr <= ((uint8_t*)&TxData + PTR_DAT + Frame) - count)
     for(uint8_t i = 0; i < count; i++)
       *TxPtr++ = *d++;
 }
@@ -228,18 +225,18 @@ void TWake::AddData(uint8_t *d, uint8_t count)
 void TWake::TxStart(uint8_t cmd, uint8_t &data)
 {
   TxEnd = TxPtr;                     //указатель конца пакета
-  TxCount = TxPtr - TxData - PTR_DAT; //количество байт для передачи
-  TxPtr = TxData;                    //указатель на начало буфера
+  TxCount = TxPtr - (uint8_t*)&TxData - PTR_DAT; //количество байт для передачи
+  TxPtr = (uint8_t*)&TxData;                    //указатель на начало буфера
   *TxPtr++ = Addr | 0x80;            //добавление в буфер адреса
   *TxPtr++ = cmd;                    //добавление в буфер кода команды
   *TxPtr = TxCount;                  //добавление в буфер размера пакета
   uint8_t crc = CRC_FEND;            //инициализация CRC
-  TxPtr = TxData;                    //указатель на начало буфера
+  TxPtr = (uint8_t*)&TxData;                    //указатель на начало буфера
   if(!Addr) TxPtr++;                 //пропускаем нулевой адрес
   while(TxPtr < TxEnd)
     Do_Crc8(*TxPtr++, &crc);         //расчет CRC для всего буфера
   *TxPtr = crc;                      //добавление в буфер CRC
-  TxPtr = TxData;                    //указатель на начало буфера
+  TxPtr = (uint8_t*)&TxData;                    //указатель на начало буфера
   if(!Addr) TxPtr++;                 //пропускаем нулевой адрес
   TxStuff = 0;                       //нет стаффинга
   RxState = WST_IDLE;                //разрешение приема пакета

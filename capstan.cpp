@@ -108,7 +108,7 @@ uint16_t TCapstan::GetTstart(void)
 
 void TCapstan::EERead(void)
 {
-  CapStart = Eeprom->Rd16(EE_CAP_START, NOM_CAP_START);
+  CapStart = Eeprom.Rd16(EE_CAP_START, NOM_CAP_START);
   if(!fLock) CapTimer.Start(CapStart);
     else CapTimer.Interval = CapStart;
 }
@@ -117,7 +117,7 @@ void TCapstan::EERead(void)
 
 void TCapstan::EESave(void)
 {
-  Eeprom->Wr16(EE_CAP_START, CapStart);
+  Eeprom.Wr16(EE_CAP_START, CapStart);
 }
 
 //----------------------------------------------------------------------------

@@ -41,7 +41,7 @@ template<class PinForce, class PinHold>
 class TSolenoid
 {
 private:
-  TSoftTimer<TT_ONESHOT> *ForceTimer;
+  TSoftTimer<TT_ONESHOT> ForceTimer;
 public:
   TSolenoid(void);
   void Execute(void);
@@ -59,13 +59,13 @@ TSolenoid<PinForce, PinHold>::TSolenoid(void)
 {
   PinForce::DirOut();
   PinHold::DirOut();
-  ForceTimer = new TSoftTimer<TT_ONESHOT>(NOM_EM_FORCE);
+  ForceTimer = TSoftTimer<TT_ONESHOT>(NOM_EM_FORCE);
 }
 
 template<class PinForce, class PinHold>
 void TSolenoid<PinForce, PinHold>::Execute(void)
 {
-  if(PinForce::GetLatch() && ForceTimer->Over())
+  if(PinForce::GetLatch() && ForceTimer.Over())
   {
     PinForce::Clr();
   }
@@ -76,7 +76,7 @@ void TSolenoid<PinForce, PinHold>::On(void)
 {
   PinHold::Set();
   PinForce::Set();
-  ForceTimer->Start();
+  ForceTimer.Start();
 }
 
 template<class PinForce, class PinHold>
@@ -84,7 +84,7 @@ void TSolenoid<PinForce, PinHold>::Off(void)
 {
   PinHold::Clr();
   PinForce::Clr();
-  ForceTimer->Stop();
+  ForceTimer.Stop();
 }
 
 template<class PinForce, class PinHold>
@@ -102,7 +102,7 @@ bool TSolenoid<PinForce, PinHold>::Hold(void)
 template<class PinForce, class PinHold>
 void TSolenoid<PinForce, PinHold>::Force(uint16_t t)
 {
-  ForceTimer->Interval = t;
+  ForceTimer.Interval = t;
 }
 
 //----------------------------------------------------------------------------

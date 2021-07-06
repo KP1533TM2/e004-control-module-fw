@@ -23,7 +23,7 @@
 
 TSound::TSound(void)
 {
-  SoundTimer = new TSoftTimer<TT_ONESHOT>();
+  SoundTimer = TSoftTimer<TT_ONESHOT>();
   TCCR2 = SND_OFF;
   Pin_SND.DirOut();
   fSoundEn = 1;
@@ -37,7 +37,7 @@ TSound::TSound(void)
 
 void TSound::Execute(void)
 {
-  if(SoundTimer->Over()) TCCR2 = SND_OFF;
+  if(SoundTimer.Over()) TCCR2 = SND_OFF;
 }
 
 //---------------------------- Генерация звука: ------------------------------
@@ -50,7 +50,7 @@ void TSound::Play(uint8_t t, uint16_t d)
   if(fSoundEn)
   {
     OCR2 = t;
-    SoundTimer->Start(d);
+    SoundTimer.Start(d);
     TCCR2 = SND_ON;
   }
   else

@@ -141,8 +141,8 @@ private:
   Pin_PwmM2_t Pin_PwmM2;    //выход OC1A (PWM MOTOR2)
   Pin_Ffd_t Pin_Ffd;        //включение мотора перемотки вперед
   Pin_Rew_t Pin_Rew;        //включение мотора перемотки назад
-  TPid *Pid_M1;             //PID-регулятор мотора M1
-  TPid *Pid_M2;             //PID-регулятор мотора M2
+  TPid Pid_M1;             //PID-регулятор мотора M1
+  TPid Pid_M2;             //PID-регулятор мотора M2
 
   ten_t Tensions[SPOOL_MODES]; //массив натяжений
   void SetTension(uint8_t m);  //задание натяжений для PID-регуляторов

@@ -80,7 +80,7 @@ inline void TRemote::ExtIntDisable(void)
 TRemote::TRemote(void)
 {
   Pin_IR.DirIn(PIN_PULL);            //настройка пина
-  RemTimer = new TSoftTimer<TT_ONESHOT>(REP_TM); //таймер повторения посылок
+  RemTimer = TSoftTimer<TT_ONESHOT>(REP_TM); //таймер повторения посылок
   Command = RC5_NO;                  //очистка кода команды
   Prev_Cmd = RC5_NO;                 //очистка предыдущей команды
   TCCR0 = (1 << CS02);               //прескалер CK/64 для таймера 0
@@ -175,14 +175,14 @@ uint8_t TRemote::GetCode(void)
   if(c != RC5_NO && s == *RC5_Codes) //принята команда ДУ
   {
     Command = RC5_NO;                //очистка кода команды
-    RemTimer->Start();               //перезапуск таймера
+    RemTimer.Start();               //перезапуск таймера
     if(c == Prev_Cmd)                //если повтор,
       res = c;                       //формирование выходного кода
   }
   else                               //команды не поступало
   {
     c = Prev_Cmd;                    //прежний код команды
-    if(RemTimer->Over())             //если сработал таймер,
+    if(RemTimer.Over())             //если сработал таймер,
       c = RC5_NO;                    //сброс кода команды
         else                         //иначе удержание
           res = c;                   //выходного кода

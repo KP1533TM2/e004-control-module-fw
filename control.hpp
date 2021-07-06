@@ -25,11 +25,11 @@ class TControl
 {
 private:
   friend class TPort;
-  TLocal *Local;       //объект местной клавиатуры
-  TRemote *Remote;     //объект ИК ДУ
-  TSound *Sound;       //объект управления бипером
-  TLeds *Leds;         //объект управления светодиодами
-  TTransport *Transport; //объект управления ЛПМ
+  TLocal Local;       //объект местной клавиатуры
+  TRemote Remote;     //объект ИК ДУ
+  TSound Sound;       //объект управления бипером
+  TLeds Leds;         //объект управления светодиодами
+  TTransport Transport; //объект управления ЛПМ
 
   static uint8_t const T_SLOW = 10; //медленные тики, мс
   uint8_t ServiceCounter; //программный счетчик таймера сервисов
@@ -45,7 +45,7 @@ private:
   uint8_t IndState;    //текущее состояние индикации
   bool fAutostop;      //флаг срабатывания автостопа
   uint8_t ArMode;      //режим для автореверса
-  TSoftTimer<TT_ONESHOT> *ProgTimer; //таймер программирования
+  TSoftTimer<TT_ONESHOT> ProgTimer; //таймер программирования
   static uint16_t const T_PROG = 3000; //задержка выхода из программировния
   uint8_t Program;     //режим программирования
   enum prog_t
@@ -124,7 +124,7 @@ public:
 
 //----------------------------------------------------------------------------
 
-extern TControl *Control;
+extern TControl Control;
 
 //----------------------------------------------------------------------------
 

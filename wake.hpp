@@ -67,28 +67,29 @@ private:
     WST_DONE       //состояние готовности
   };
 
+  static const uint8_t Frame = 24;
+
   uint8_t Addr;    //адрес устройства
   uint8_t RxState; //состояние процесса приема
   bool RxStuff;    //признак стаффинга при приеме
   uint8_t *RxPtr;  //указатель буфера приема
   uint8_t *RxEnd;  //значение указателя конца буфера приема
   uint8_t RxCount; //количество принятых байт
-  uint8_t *RxData; //буфер приема
+  uint8_t RxData[Frame + PTR_DAT + 1]; //буфер приема
 
   uint8_t TxState; //состояние процесса передачи
   bool TxStuff;    //признак стаффинга при передаче
   uint8_t *TxPtr;  //указатель буфера передачи
   uint8_t *TxEnd;  //значение указателя конца буфера передачи
   uint8_t TxCount; //количество передаваемых байт
-  uint8_t *TxData; //буфер передачи
-
-  uint8_t Frame;
+  uint8_t TxData[Frame + PTR_DAT + 1]; //буфер передачи
+  
   void Do_Crc8(uint8_t b, uint8_t *crc); //вычисление контрольной суммы
 protected:
   inline void Rx(uint8_t data);  //прием байта
   inline bool Tx(uint8_t &data); //передача байта
 public:
-  TWake(const uint8_t frame);
+  TWake();
   uint8_t GetCmd(void);      //возвращает текущий код команды
   uint8_t GetRxCount(void);  //возвращает количество принятых байт
   void SetRxPtr(uint8_t p);  //устанавливает указатель буфера приема
