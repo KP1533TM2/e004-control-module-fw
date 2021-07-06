@@ -37,7 +37,7 @@ private:
   static uint16_t const RC5_SLOT =  1778; //длительность слота RC-5, мкс
   static uint16_t const REP_TM =     120; //период повторения посылки, мс
   static uint16_t const PRE =         64; //предделитель таймера
-  static uint8_t const T_SAMPLE = RC5_SLOT / 2 * F_CLK / PRE / 1000000; //Ts
+  static uint8_t const T_SAMPLE = RC5_SLOT / 2 * F_CPU / PRE / 1000000; //Ts
   static uint8_t const DEL2 = 256 - T_SAMPLE;     //код задержки Ts
   static uint8_t const DEL1 = 256 - T_SAMPLE / 2; //код задержки 1/2 Ts
   static Pin_IR_t Pin_IR;

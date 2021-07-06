@@ -109,7 +109,7 @@ private:
   static uint8_t const CHANS = 2;
   //количество сэмплов на канал (~T_SAMPLE * 4.8):
   static uint32_t const ADC_NCL = ADC_CYC * ADC_PRE;
-  static uint8_t const NSAMPLE = T_SAMPLE * F_CLK / (CHANS * ADC_NCL) / 1000;
+  static uint8_t const NSAMPLE = T_SAMPLE * F_CPU / (CHANS * ADC_NCL) / 1000;
   //общее количество сэмплов:
   static uint8_t const SAMPLES = NSAMPLE * CHANS;
   //максимальный код АЦП (АЦП - 10-bit):

@@ -73,7 +73,7 @@ void TSound::OnOff(bool on)
 
 //--------------------------- Стандартные звуки: -----------------------------
 
-#define HZ2T(x) ((uint8_t)((F_CLK / 256 / 2) / (x)))
+#define HZ2T(x) ((uint8_t)((F_CPU / 256 / 2) / (x)))
 
 //Play(HZ2T(F [Hz]), T [ms])
 

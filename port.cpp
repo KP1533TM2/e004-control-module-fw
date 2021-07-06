@@ -24,7 +24,7 @@
 
 TPort::TPort(void)
 {
-  const uint16_t br = (F_CLK / BAUD_RATE / 8 + 1) / 2;
+  const uint16_t br = (F_CPU / BAUD_RATE / 8 + 1) / 2;
   WakePort = new TWakePort(br, FRAME_SIZE);
 }
 
