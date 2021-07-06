@@ -9,8 +9,7 @@
 
 //----------------------------------------------------------------------------
 
-#include <iom64.h>
-#include <intrinsics.h>
+#include <avr/io.h>
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 #include <stdbool.h>
