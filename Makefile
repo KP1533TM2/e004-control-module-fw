@@ -1,8 +1,11 @@
+
+# adapted from https://gist.github.com/rynr/72734da4b8c7b962aa65
+
 MCU     ?= atmega64
 ARCH     = avr
 PROJECT ?= e004-control
 
-F_CPU   ?= 16000000UL
+F_CPU   ?= 16000000
 
 PROG     = stk500v2
 
@@ -19,11 +22,18 @@ EXT_C   = c
 EXT_C++ = cpp
 EXT_ASM = asm
 
+CFLAGS = $(INC)
+CFLAGS += -Os
+CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CFLAGS += -Wall -Wstrict-prototypes
+CFLAGS += -DF_CPU=$(F_CPU)UL
+CFLAGS += -mmcu=$(MCU)
+
 C++FLAGS = $(INC)
 C++FLAGS += -Os -D$(REV)
 C++FLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 C++FLAGS += -Wall
-C++FLAGS += -DF_CPU=$(OSC)
+C++FLAGS += -DF_CPU=$(F_CPU)UL
 C++FLAGS += -mmcu=$(MCU)
 
 OBJECTS = \
