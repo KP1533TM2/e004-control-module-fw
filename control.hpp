@@ -114,6 +114,7 @@ private:
 
 public:
   TControl(void);
+  void Start(void);
   void Execute(void);
   void SetMode(uint8_t code);   //включение режима
   void SetOptions(uint16_t t);  //установка опций

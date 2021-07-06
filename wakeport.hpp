@@ -23,12 +23,16 @@ class TWakePort : public TWake
 private:
   Pin_RXD0_t Pin_RXD0;
   Pin_TXD0_t Pin_TXD0;
+  
+  static uint16_t const BAUD_RATE = 19200; //скорость обмена, бод
+  
   static TWakePort *Wp;
   friend void ::Rx_Int(void);
   friend void ::Tx_Int(void);
 protected:
 public:
-  TWakePort(const uint16_t br);
+  TWakePort();
+  void Start(void);
   void StartTx(uint8_t cmd);
 };
 

@@ -1,7 +1,7 @@
 
 # adapted from https://gist.github.com/rynr/72734da4b8c7b962aa65
 
-#.PRECIOUS: %.o
+.PRECIOUS: %.o %.elf
 
 MCU     ?= atmega64
 ARCH     = avr
@@ -9,6 +9,8 @@ PROJECT ?= e004-control
 
 F_CPU   ?= 16000000
 
+AVRDUDE  = avrdude
+PORT     = /dev/ttyUSB0
 PROG     = stk500v2
 
 REV      = REV_C
@@ -16,6 +18,7 @@ REV      = REV_C
 G++       = avr-g++
 GCC       = avr-gcc
 OBJCOPY   = avr-objcopy
+OBJDUMP   = avr-objdump
 GCCFLAGS += -DF_CPU=$(F_CPU)UL -I. -I$(LIBDIR)
 CXXFLAGS += --stack-auto -mmcu=$(MCU)
 LDFLAGS   = -mmcu=$(MCU)
@@ -39,10 +42,19 @@ C++FLAGS += -Wall
 C++FLAGS += -DF_CPU=$(F_CPU)UL
 C++FLAGS += -mmcu=$(MCU)
 
+#OBJECTS = main.o
+
 OBJECTS = \
 	$(patsubst %.$(EXT_C),%.o,$(wildcard *.$(EXT_C))) \
 	$(patsubst %.$(EXT_C++),%.o,$(wildcard *.$(EXT_C++))) \
 	$(patsubst %.$(EXT_ASM),%.o,$(wildcard *.$(EXT_ASM)))
+
+hex: $(PROJECT).elf
+	$(OBJCOPY) -O ihex $(PROJECT).elf $(PROJECT).hex
+
+disasm: $(PROJECT).elf
+	$(OBJDUMP) -D $(PROJECT).elf > $(PROJECT).disasm && \
+	less $(PROJECT).disasm
 
 default: $(PROJECT).elf
 	echo $(OBJECTS)
@@ -60,10 +72,10 @@ default: $(PROJECT).elf
 	$(G++) $< $(ASMFLAGS) -c -o $@
 
 clean:
-	$(RM) $(PROJECT).elf $(OBJECTS)
+	$(RM) $(PROJECT).elf $(PROJECT).hex $(OBJECTS)
 
-flash: $(TARGET)
-	@./flash $(PROG) $(MCU) $(TARGET)
+flash: hex
+	$(AVRDUDE) -c $(PROG) -p $(MCU) -P $(PORT) -U flash:w:$(PROJECT).hex:i
 
 flash_opts: $(TARGET)
 	@./flash_opts $(PROG) $(MCU) "00FF"

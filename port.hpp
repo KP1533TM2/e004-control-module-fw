@@ -23,12 +23,12 @@ uint8_t const DevName[] PROGMEM = { "E-004 V"VERSION }; //имя устройс�
 class TPort
 {
 private:
-  static uint16_t const BAUD_RATE = 19200; //скорость обмена, бод
-  static uint16_t const br = (F_CPU / BAUD_RATE / 8 + 1) / 2;
+
 public:
-  TWakePort WakePort = TWakePort(br);
-  TPort(void);
+  TPort();
+  void Start(void);
   void Execute(void);
+  TWakePort WakePort;
 };
 
 //----------------------------------------------------------------------------

@@ -84,6 +84,12 @@ TEeprom Eeprom;
 
 TControl::TControl(void)
 {
+}
+
+//----------------------------- Инициализация: -------------------------------
+
+void TControl::Start(void)
+{
   HardwareInit();
 //  Eeprom = TEeprom();
   Local = TLocal();

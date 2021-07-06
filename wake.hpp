@@ -72,15 +72,15 @@ private:
   uint8_t Addr;    //адрес устройства
   uint8_t RxState; //состояние процесса приема
   bool RxStuff;    //признак стаффинга при приеме
-  uint8_t *RxPtr;  //указатель буфера приема
-  uint8_t *RxEnd;  //значение указателя конца буфера приема
+  uint8_t RxPtr;  //указатель буфера приема
+  uint8_t RxEnd;  //значение указателя конца буфера приема
   uint8_t RxCount; //количество принятых байт
   uint8_t RxData[Frame + PTR_DAT + 1]; //буфер приема
 
   uint8_t TxState; //состояние процесса передачи
   bool TxStuff;    //признак стаффинга при передаче
-  uint8_t *TxPtr;  //указатель буфера передачи
-  uint8_t *TxEnd;  //значение указателя конца буфера передачи
+  uint8_t TxPtr;  //указатель буфера передачи
+  uint8_t TxEnd;  //значение указателя конца буфера передачи
   uint8_t TxCount; //количество передаваемых байт
   uint8_t TxData[Frame + PTR_DAT + 1]; //буфер передачи
   
@@ -123,7 +123,7 @@ inline void TWake::Rx(uint8_t data)
     if(data == FEND)                 //обнаружен FEND (из любого состояния)
     {
       RxState = WST_ADD;             //переход к приему адреса
-      RxPtr = RxData;                //указатель на начало буфера
+      RxPtr = 0;                     //указатель на начало буфера
       RxStuff = 0; return;           //нет дестаффинга
     }
     if(data == FESC)                 //принят FESC,
@@ -148,14 +148,14 @@ inline void TWake::Rx(uint8_t data)
           { RxState = WST_IDLE; return; } //переход к поиску FEND
           break;                     //переход к сохранению адреса
         }
-        else *RxPtr++ = 0;           //сохранение нулевого адреса
+        else RxData[RxPtr++] = 0;    //сохранение нулевого адреса
     case WST_CMD:                    //прием кода команды
         RxState = WST_LNG;           //далее - прием длины пакета
         break;                       //переход к сохранению команды
     case WST_LNG:                    //идет прием длины пакета
         RxState = WST_DATA;          //далее - прием данных
         if(data > Frame) data = Frame;   //ограничение длины пакета
-        RxEnd = RxData + PTR_DAT + data; //указатель на конец данных
+        RxEnd = PTR_DAT + data;      //указатель на конец данных
         break;
     case WST_DATA:                   //идет прием данных
         if(RxPtr == RxEnd)           //если все данные и CRC приняты,
@@ -163,7 +163,7 @@ inline void TWake::Rx(uint8_t data)
         break;
     default: return;
     }
-    *RxPtr++ = data;                 //сохранение данных в буфере
+    RxData[RxPtr++] = data;                 //сохранение данных в буфере
   }
 }
 
@@ -174,7 +174,7 @@ inline bool TWake::Tx(uint8_t &data)
 {
   if(TxState == WST_DATA)            //если идет передача данных,
   {
-    data = *TxPtr++;                 //то чтение байта из буфера
+    data = TxData[TxPtr++];          //то чтение байта из буфера
     if(data == FEND || data == FESC) //попытка передать FEND или FESC,
       if(!TxStuff)                   //нужен стаффинг
       {

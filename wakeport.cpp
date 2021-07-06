@@ -20,8 +20,15 @@
 
 //----------------------------- Конструктор: ---------------------------------
 
-TWakePort::TWakePort(const uint16_t br) : TWake()
+TWakePort::TWakePort() : TWake()
 {
+}
+
+//----------------------------- Инициализация: -------------------------------
+
+void TWakePort::Start(void)
+{
+  const uint16_t br = ((double)F_CPU / BAUD_RATE / 8 + 1) / 2;
   TWakePort::Wp = this;
   //настройка портов:
   Pin_RXD0.DirIn(PIN_PULL);

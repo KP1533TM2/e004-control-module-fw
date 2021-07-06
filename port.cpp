@@ -22,9 +22,14 @@
 
 //----------------------------- Конструктор: ---------------------------------
 
-TPort::TPort(void)
+TPort::TPort()
 {
-  //WakePort = TWakePort((const uint16_t)br);
+}
+
+//----------------------------- Инициализация: -------------------------------
+void TPort::Start(void)
+{
+  WakePort.Start();
 }
 
 //-------------------------- Выполнение команд: ------------------------------
@@ -57,7 +62,7 @@ void TPort::Execute(void)
       {
         uint8_t i = 0;
         while(DevName[i])
-          WakePort.AddByte(DevName[i++]);
+          WakePort.AddByte(pgm_read_byte(&DevName[i++]));
         break;
       }
 
