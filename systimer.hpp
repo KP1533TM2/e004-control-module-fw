@@ -23,12 +23,13 @@ enum TimerType_t
 //--------------------------- Класс TSysTimer: -------------------------------
 //----------------------------------------------------------------------------
 
-#pragma vector = TIMER3_COMPA_vect
-extern "C" __interrupt void SysTick_Handler(void);
+#define SysTick_Handler TIMER3_COMPA_vect
+
+extern "C" void SysTick_Handler(void) __attribute__((signal));
 
 class TSysTimer
 {
-  friend __interrupt void SysTick_Handler(void);
+  friend void ::SysTick_Handler(void);
 private:
   static volatile bool vTick;
   static volatile uint16_t vCounter;

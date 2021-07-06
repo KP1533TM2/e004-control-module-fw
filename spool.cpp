@@ -191,8 +191,7 @@ volatile uint8_t TSpool::vAdcCounter;
 uint16_t TSpool::vAdcCode1;
 uint16_t TSpool::vAdcCode2;
 
-#pragma vector = ADC_vect
-__interrupt void Adc_Handler(void)
+ISR(Adc_Handler)
 {
   if(TSpool::vAdcCounter < TSpool::SAMPLES)
   {

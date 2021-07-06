@@ -13,10 +13,10 @@
 //--------------------------- Класс TWakePort --------------------------------
 //----------------------------------------------------------------------------
 
-#pragma vector = USART0_RXC_vect
-extern "C" __interrupt void Rx_Int(void); //прерывание после приема байта
-#pragma vector = USART0_TXC_vect
-extern "C" __interrupt void Tx_Int(void); //прерывание после передачи байта
+#define Rx_Int USART0_RXC_vect
+#define Tx_Int USART0_TXC_vect
+extern "C" void Rx_Int(void) __attribute__((signal));
+extern "C" void Tx_Int(void) __attribute__((signal));
 
 class TWakePort : public TWake
 {
@@ -24,8 +24,8 @@ private:
   Pin_RXD0_t Pin_RXD0;
   Pin_TXD0_t Pin_TXD0;
   static TWakePort *Wp;
-  friend __interrupt void Rx_Int(void);
-  friend __interrupt void Tx_Int(void);
+  friend void ::Rx_Int(void);
+  friend void ::Tx_Int(void);
 protected:
 public:
   TWakePort(const uint16_t br, const uint8_t frame);

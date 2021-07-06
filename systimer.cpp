@@ -36,8 +36,7 @@ void TSysTimer::Init(void)
 volatile bool TSysTimer::vTick;
 volatile uint16_t TSysTimer::vCounter;
 
-#pragma vector = TIMER3_COMPA_vect
-__nested __interrupt void SysTick_Handler(void)
+ISR(SysTick_Handler)
 {
   TSysTimer::vCounter++;
   TSysTimer::vTick = 1;

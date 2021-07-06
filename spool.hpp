@@ -72,12 +72,12 @@ public:
 //---------------------------- Класс TSpool: ---------------------------------
 //----------------------------------------------------------------------------
 
-#pragma vector = ADC_vect
-extern "C" __interrupt void Adc_Handler(void);
+#define Adc_Handler ADC_vect
+extern "C" void Adc_Handler(void) __attribute__((signal));
 
 class TSpool
 {
-  friend __interrupt void Adc_Handler(void);
+  friend void ::Adc_Handler(void);
 private:
   static volatile uint8_t vAdcCounter;
   static uint16_t vAdcCode1;

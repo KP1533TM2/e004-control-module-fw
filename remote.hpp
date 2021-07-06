@@ -16,15 +16,15 @@
 //---------------------------- Класс TRemote: --------------------------------
 //----------------------------------------------------------------------------
 
-#pragma vector = INT4_vect
-extern "C" __interrupt void EdgeIR(void); //прерывание фотоприемника
-#pragma vector = TIMER0_OVF_vect
-extern "C" __interrupt void TimerIR(void); //прерывание таймера 0
+#define EdgeIR INT4_vect
+#define TimerIR TIMER0_OVF_vect
+extern "C" void EdgeIR(void) __attribute__((signal)); //прерывание фотоприемника
+extern "C" void TimerIR(void) __attribute__((signal)); //прерывание таймера 0
 
 class TRemote : public TKeyboard
 {
-  friend __interrupt void EdgeIR(void);
-  friend __interrupt void TimerIR(void);
+  friend void ::EdgeIR(void);
+  friend void ::TimerIR(void);
 private:
   static uint8_t const RC5_LENGTH =   14; //количество принимаемых битов
   struct RC5Struct                        //структура кода RC-5

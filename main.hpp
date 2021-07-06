@@ -10,6 +10,7 @@
 //----------------------------------------------------------------------------
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
 #include <stdbool.h>
