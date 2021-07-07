@@ -67,7 +67,7 @@ private:
     WST_DONE       //состояние готовности
   };
 
-  static const uint8_t Frame = 24;
+  static const uint8_t Frame = 64;
 
   uint8_t Addr;    //адрес устройства
   uint8_t RxState; //состояние процесса приема

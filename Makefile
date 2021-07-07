@@ -23,6 +23,8 @@ GCCFLAGS += -DF_CPU=$(F_CPU)UL -I. -I$(LIBDIR)
 CXXFLAGS += --stack-auto -mmcu=$(MCU)
 LDFLAGS   = -mmcu=$(MCU)
 
+GIT_VERSION := "$(shell git describe --abbrev=8 --dirty --always --tags)"
+
 # Files
 EXT_C   = c
 EXT_C++ = cpp
@@ -37,12 +39,11 @@ CFLAGS += -mmcu=$(MCU)
 
 C++FLAGS = $(INC)
 C++FLAGS += -Os -D$(REV)
+C++FLAGS += -DEXTRA_VER=\"$(GIT_VERSION)\"
 C++FLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 C++FLAGS += -Wall
 C++FLAGS += -DF_CPU=$(F_CPU)UL
 C++FLAGS += -mmcu=$(MCU)
-
-#OBJECTS = main.o
 
 OBJECTS = \
 	$(patsubst %.$(EXT_C),%.o,$(wildcard *.$(EXT_C))) \
@@ -57,6 +58,7 @@ disasm: $(PROJECT).elf
 	less $(PROJECT).disasm
 
 default: $(PROJECT).elf
+	echo $(GIT_VERSION)
 	echo $(OBJECTS)
 
 %.elf: $(OBJECTS)

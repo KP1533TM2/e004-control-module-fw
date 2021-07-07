@@ -61,8 +61,9 @@ void TPort::Execute(void)
     case CMD_INFO: //чтение иформации об устройстве
       {
         uint8_t i = 0;
-        while(DevName[i])
-          WakePort.AddByte(pgm_read_byte(&DevName[i++]));
+        uint8_t c = 0;
+        while(c = pgm_read_byte(&DevName[i++]))
+          WakePort.AddByte(c);
         break;
       }
 
