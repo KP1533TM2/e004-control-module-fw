@@ -91,7 +91,6 @@ TRemote::TRemote(void)
 
 //------------- Обработчик прерывания по сигналу фотоприемника: --------------
 
-#pragma vector = INT4_vect
 ISR(EdgeIR)
 {
   TRemote::ExtIntDisable();             //запрещение внешнего прерывания
@@ -101,7 +100,6 @@ ISR(EdgeIR)
 
 //------------------ Обработчик прерывания таймера 0: ------------------------
 
-#pragma vector = TIMER0_OVF_vect
 ISR(TimerIR)
 {
   static uint8_t BitCnt;        //счетчик битов посылки

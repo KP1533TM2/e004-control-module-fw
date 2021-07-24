@@ -115,7 +115,6 @@ public:
 
 //----------------------------- Прием байта: ---------------------------------
 
-#pragma inline = forced
 inline void TWake::Rx(uint8_t data)
 {
   if(RxState != WST_DONE)            //если прием разрешен
@@ -169,25 +168,24 @@ inline void TWake::Rx(uint8_t data)
 
 //---------------------------- Передача байта: -------------------------------
 
-#pragma inline = forced
 inline bool TWake::Tx(uint8_t &data)
 {
   if(TxState == WST_DATA)            //если идет передача данных,
   {
     data = TxData[TxPtr++];          //то чтение байта из буфера
     if(data == FEND || data == FESC) //попытка передать FEND или FESC,
+    {
       if(!TxStuff)                   //нужен стаффинг
       {
         data = FESC;                 //передача FESC
         TxStuff = 1;                 //начало стаффинга
         TxPtr--;                     //возврат к тому же байту
       }
-      else
-      {
-        if(data == FEND) data = TFEND; //передача TFEND
-          else data = TFESC;         //или TFESC
-        TxStuff = 0;                 //конец стаффинга
-      }
+    } else {
+      if(data == FEND) data = TFEND; //передача TFEND
+        else data = TFESC;           //или TFESC
+      TxStuff = 0;                   //конец стаффинга
+    }
     if(TxPtr > TxEnd)                //если конец буфера достигнут,
       TxState = WST_CRC;             //передается CRC
     return(1);

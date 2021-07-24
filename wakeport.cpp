@@ -46,7 +46,6 @@ void TWakePort::Start(void)
 
 TWakePort* TWakePort::Wp;
 
-#pragma vector = USART0_RXC_vect
 ISR(Rx_Int)
 {
   TWakePort::Wp->Rx(UDR0);
@@ -54,7 +53,6 @@ ISR(Rx_Int)
 
 //-------------------- Прерывание после передачи байта: ----------------------
 
-#pragma vector = USART0_TXC_vect
 ISR(Tx_Int)
 {
   uint8_t data;
