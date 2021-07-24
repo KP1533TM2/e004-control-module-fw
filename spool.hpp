@@ -58,7 +58,7 @@ class TPid
 private:
   uint16_t Xp;  //inp(n-1)
   uint16_t Xpp; //inp(n-2)
-  int32_t Yp;   //out(n-1) * SCALE_Y
+  float Yp;   //out(n-1) * SCALE_Y
   static int32_t const SCALE_Y = 512; //масштаб Y
 public:
   TPid(void);

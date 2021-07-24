@@ -46,7 +46,7 @@ EXT_ASM = asm
 CFLAGS = $(INC)
 CFLAGS += -Os
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
-CFLAGS += -Wall -Wstrict-prototypes
+CFLAGS += -Wall -Wstrict-prototypes -lm
 CFLAGS += -DF_CPU=$(F_CPU)UL
 CFLAGS += -mmcu=$(MCU)
 
@@ -54,7 +54,7 @@ C++FLAGS = $(INC)
 C++FLAGS += -Os -D$(REV)
 C++FLAGS += -DEXTRA_VER=\"$(GIT_VERSION)\"
 C++FLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
-C++FLAGS += -Wall
+C++FLAGS += -Wall -lm
 C++FLAGS += -DF_CPU=$(F_CPU)UL
 C++FLAGS += -mmcu=$(MCU)
 

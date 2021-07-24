@@ -107,18 +107,18 @@ uint16_t TPid::Execute(uint16_t inp)
 {
   //PID-регулятор реализован в дифференциальной форме:
   //Y(n) = Y(n-1) - Kp*[X(n)-X(n-1)] + Ki*Err(n) - Kd*[X(n)-2*X(n-1)+X(n-2)]
-  int32_t Y = Yp;
+  float Y = Yp;
   //учет пропорциональной составляющей:
-  int32_t div1 = (int32_t)inp - Xp;
-  Y = Y - (int32_t)K.p * div1 * (SCALE_Y / 10);
+  int32_t div1 = (float)inp - Xp;
+  Y -= (float)K.p * div1 * (SCALE_Y / 10);
   //учет интегральной составляющей:
-  int32_t err = (int32_t)Ref - inp;
-  Y = Y + (int32_t)K.i * err * (SCALE_Y * T_SAMPLE / 1000);
+  float err = (float)Ref - inp;
+  Y += (float)K.i * err * (SCALE_Y * T_SAMPLE / 1000);
   //учет дифференциальной составляющей:
   if((Y > 0) && (Y < (TEN_MAX * SCALE_Y))) //при ограничении D отключается
   {
     int32_t div2 = (int32_t)inp - 2 * (int32_t)Xp + Xpp;
-    Y = Y - (int32_t)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
+    Y -= (float)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
   }
   //ограничение выходного значения:
   if(Y < 0) Y = 0;
