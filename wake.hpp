@@ -181,10 +181,12 @@ inline bool TWake::Tx(uint8_t &data)
         TxStuff = 1;                 //начало стаффинга
         TxPtr--;                     //возврат к тому же байту
       }
-    } else {
-      if(data == FEND) data = TFEND; //передача TFEND
-        else data = TFESC;           //или TFESC
-      TxStuff = 0;                   //конец стаффинга
+      else
+      {
+        if(data == FEND) data = TFEND; //передача TFEND
+          else data = TFESC;         //или TFESC
+        TxStuff = 0;                 //конец стаффинга
+      }
     }
     if(TxPtr > TxEnd)                //если конец буфера достигнут,
       TxState = WST_CRC;             //передается CRC
