@@ -200,6 +200,7 @@ TTransport::TTransport(void)
   EndSensor = TEndSensor();
   Audio = TAudio();
   Spool = TSpool();
+  Spool.Init();
   Op = TOperations();
   BrakeTimer = TSoftTimer<TT_PLAIN>();
   AutostopTimer = TSoftTimer<TT_PLAIN>();

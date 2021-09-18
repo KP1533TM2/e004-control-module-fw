@@ -87,6 +87,11 @@
 #include "main.hpp"
 #include "spool.hpp"
 #include "control.hpp"
+#include "comp.h"
+
+static uint16_t curve_points[COMP_PTS] = {
+    0, 40000, 60000, 65535 // COMP_SEGS 3 very little motor noise
+};
 
 //----------------------------------------------------------------------------
 //------------------------------ Класс TPid: ---------------------------------
@@ -107,18 +112,18 @@ uint16_t TPid::Execute(uint16_t inp)
 {
   //PID-регулятор реализован в дифференциальной форме:
   //Y(n) = Y(n-1) - Kp*[X(n)-X(n-1)] + Ki*Err(n) - Kd*[X(n)-2*X(n-1)+X(n-2)]
-  float Y = Yp;
+  int32_t Y = Yp;
   //учет пропорциональной составляющей:
-  int32_t div1 = (float)inp - Xp;
-  Y -= (float)K.p * div1 * (SCALE_Y / 10);
+  int32_t div1 = (int32_t)inp - Xp;
+  Y = Y - (int32_t)K.p * div1 * (SCALE_Y / 10);
   //учет интегральной составляющей:
-  float err = (float)Ref - inp;
-  Y += (float)K.i * err * (SCALE_Y * T_SAMPLE / 1000);
+  int32_t err = (int32_t)Ref - inp;
+  Y = Y + (int32_t)K.i * err * (SCALE_Y * T_SAMPLE / 1000);
   //учет дифференциальной составляющей:
   if((Y > 0) && (Y < (TEN_MAX * SCALE_Y))) //при ограничении D отключается
   {
     int32_t div2 = (int32_t)inp - 2 * (int32_t)Xp + Xpp;
-    Y -= (float)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
+    Y = Y - (int32_t)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
   }
   //ограничение выходного значения:
   if(Y < 0) Y = 0;
@@ -183,6 +188,12 @@ TSpool::TSpool(void)
   TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS10);
 
   SetMode(SPOOL_OFF);
+}
+
+void TSpool::Init(void)
+{
+  // Расчет кривой управления мотором
+  calc_coeffs(curve_points);
 }
 
 //--------------------------- Прерывание АЦП: --------------------------------
@@ -395,16 +406,18 @@ kpid_t TSpool::GetPID2(void)
 
 void TSpool::SetMot1(uint16_t m)
 {
-  Mot1 = m;
-  OCR1B = (TEN_MAX - m) / PWM_SCALE;
+  uint16_t c = get_point(m);
+  Mot1 = c;
+  OCR1B = (TEN_MAX - c) / PWM_SCALE;
 }
 
 //------------------------- Управление мотором M2: ---------------------------
 
 void TSpool::SetMot2(uint16_t m)
 {
-  Mot2 = m;
-  OCR1A = (TEN_MAX - m) / PWM_SCALE;
+  uint16_t c = get_point(m);
+  Mot2 = c;
+  OCR1A = (TEN_MAX - c) / PWM_SCALE;
 }
 
 //---------------------------- Чтение моторов: -------------------------------

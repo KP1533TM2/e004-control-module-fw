@@ -58,7 +58,7 @@ class TPid
 private:
   uint16_t Xp;  //inp(n-1)
   uint16_t Xpp; //inp(n-2)
-  float Yp;   //out(n-1) * SCALE_Y
+  int32_t Yp;   //out(n-1) * SCALE_Y
   static int32_t const SCALE_Y = 512; //масштаб Y
 public:
   TPid(void);
@@ -149,6 +149,7 @@ private:
 
 public:
   TSpool(void);
+  void Init(void);
   void Execute(void);
   void SetMode(uint8_t m);  //включение режима подмотки
   uint8_t GetMode(void);    //чтение режима подмотки
