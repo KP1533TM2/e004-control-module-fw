@@ -115,35 +115,47 @@ TPid::TPid(void)
 
 //----------------------------- PID-регулятор: -------------------------------
 
+inline int32_t scale(int32_t in, uint16_t scaler) {
+    return ((in/16)*scaler)/16;
+}
+
 uint16_t TPid::Execute(uint16_t inp)
 {
+
+  uint16_t err_abs = ((Ref>inp)?Ref-inp:inp-Ref)>>8;
+  uint16_t err_exp = (err_abs*err_abs);
+
+  uint16_t scale_P = err_exp/512+96;
+  uint16_t scale_I = err_exp/256+80;
+  uint16_t scale_D = err_exp/1024+128;
+
+
+  if(scale_P>256) scale_P=256;
+  if(scale_I>256) scale_I=256;
+  if(scale_D>256) scale_D=256;
+
   //PID-регулятор реализован в дифференциальной форме:
   //Y(n) = Y(n-1) - Kp*[X(n)-X(n-1)] + Ki*Err(n) - Kd*[X(n)-2*X(n-1)+X(n-2)]
   int32_t Y = 0;
   //учет пропорциональной составляющей:
   int32_t div1 = (int32_t)inp - Xp;
-//  div1 = div1*abs(div1)/65536;
-  Y = Y - (int32_t)K.p * div1 * (SCALE_Y / 10);
+  Y -= scale((int32_t)K.p * div1 * (SCALE_Y / 10), scale_P);
   
-//  Y = (Y/32) * abs(Y/128) / 128;
-
-    
   //учет интегральной составляющей:
-  int32_t err = (int32_t)Ref - inp;
-  Y = Y + (int32_t)K.i * err * (SCALE_Y * T_SAMPLE / 1000);
+  int32_t err = (int32_t)Ref - (int32_t)inp;
+  Y += scale((int32_t)K.i * err * (SCALE_Y * T_SAMPLE / 1000), scale_I);
 
-//  Y = (Y/256) * abs(Y/256) / 8;
-  Y = (Y/256) * abs(Y/128) / 32;
-  
-  //учет дифференциальной составляющей:
-/*  if((Y > 0) && (Y < (TEN_MAX * SCALE_Y))) //при ограничении D отключается
-  {*/
+//  Y = (Y/256) * abs(Y/128) / 32;
+
+//  Y = ((Y/16)*err_exp)/16;
+  Y += Yp; 
+
+  if((Y > 0) && (Y < (TEN_MAX * SCALE_Y))) //при ограничении D отключается
+  {
     int32_t div2 = (int32_t)inp - 2 * (int32_t)Xp + Xpp;
-    Y = Y - (int32_t)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
-/*  }*/
- 
-  
-  Y += Yp;
+    int32_t d = (int32_t)K.d * div2 * (SCALE_Y * 10 / T_SAMPLE);
+    Y -= scale(d, scale_D);
+  } 
   
   //ограничение выходного значения:
   if(Y < 0) Y = 0;
@@ -159,7 +171,7 @@ uint16_t TPid::Execute(uint16_t inp)
 
 void TPid::Preset(uint16_t p)
 {
-  Yp = p * SCALE_Y;
+//  Yp = p * SCALE_Y;
 }
 
 //----------------------------------------------------------------------------

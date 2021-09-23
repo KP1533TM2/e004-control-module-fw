@@ -115,7 +115,7 @@ private:
   //максимальный код АЦП (АЦП - 10-bit):
   static uint16_t const ADC_MAX = 0x3FF;
   //максимальный код PWM (используется 8-bit PWM):
-  static uint16_t const PWM_MAX = 0x00FF;
+  static uint16_t const PWM_MAX = 0x3FFF;
   static uint16_t const PWM_SCALE = TEN_MAX / PWM_MAX;
 
   uint8_t Mode;             //режим подмотки
